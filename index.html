@@ -358,12 +358,12 @@
     <div class="atmosphere" aria-hidden="true"></div>
 
     <header class="masthead">
-      <div class="brand" aria-label="صهيل">
-        <span class="brand-ar">صَهيل</span>
-        <span class="brand-en">SAHEEL</span>
+      <div class="brand" aria-label="سباقات الخيل الإلكترونية">
+        <span class="brand-ar">سباقات الخيل الإلكترونية</span>
+        <span class="brand-en">E-EQUESTRIAN RACING</span>
       </div>
       <div class="mast-title">OFFICIAL SPONSORSHIP PROPOSAL · 2026</div>
-      <div class="counter"><b id="pageNow">01</b> / <span id="pageTotal">18</span></div>
+      <div class="counter"><b id="pageNow">01</b> / <span id="pageTotal">19</span></div>
     </header>
 
     <nav class="rail" id="rail" aria-label="التنقل بين صفحات العرض"></nav>
@@ -376,7 +376,7 @@
           <span class="scene-no">01 — OFFICIAL SPONSORSHIP</span>
           <div class="cover-copy">
             <div class="eyebrow">RIYADH · 2026</div>
-            <h1><span class="title-small">ملف الرعاية الرسمي</span>بطولة [اسم البطولة]<br>لسباقات الخيل الإلكترونية</h1>
+            <h1><span class="title-small">ملف الرعاية الرسمي</span>سباقات الخيل الإلكترونية</h1>
             <p class="lead ltr">BEYOND SPONSORSHIP · A YEAR OF STRATEGIC VALUE</p>
             <div class="subline"><span>الفروسية</span><i>×</i><span>التقنية</span><i>×</i><span>التجربة</span><i>×</i><span>الأثر الممتد</span></div>
             <div class="scroll-cue">SCROLL TO EXPLORE</div>
@@ -400,8 +400,8 @@
         </div>
       </section>
 
-      <!-- 03: WHY SAHEEL -->
-      <section class="scene" data-label="WHY SAHEEL">
+      <!-- 03: WHY THIS CHAMPIONSHIP -->
+      <section class="scene" data-label="WHY RACING">
         <div class="scene-inner">
           <span class="scene-no">03 — WHY THIS CHAMPIONSHIP</span>
           <div class="eyebrow">FOUR CONNECTED FORCES</div>
@@ -435,11 +435,11 @@
           <span class="scene-no">05 — OFFICIAL MAIN SPONSOR</span>
           <div class="eyebrow">THE HIGHEST LEVEL OF COMMERCIAL VISIBILITY</div>
           <h2>[اسم الراعي]</h2>
-          <p class="subhead">الراعي الرسمي الرئيسي لبطولة [اسم البطولة]</p>
+          <p class="subhead">الراعي الرسمي الرئيسي لبطولة سباقات الخيل الإلكترونية</p>
           <div class="sponsor-lockup" aria-label="موضع شعاري الراعي والبطولة">
             <div class="logo-space"><div><strong>[شعار الراعي]</strong><span>OFFICIAL MAIN SPONSOR</span></div></div>
             <div class="lock-mark">×</div>
-            <div class="logo-space"><div><strong>صَهيل</strong><span>[CHAMPIONSHIP LOGO]</span></div></div>
+            <div class="logo-space"><div><strong>[شعار البطولة]</strong><span>CHAMPIONSHIP LOGO</span></div></div>
           </div>
           <p class="lead" style="margin-top:28px">حيازة الصفة الرسمية وأعلى مستوى من الحضور التجاري، التقني، والإعلامي الحصري طوال فترة الشراكة.</p>
         </div>
@@ -776,7 +776,7 @@
           <div class="eyebrow">BE AT THE HEART OF THE RACE</div>
           <h2>كن في قلب السباق.</h2>
           <div class="sponsor-name">[اسم الراعي]</div>
-          <div class="sponsor-role">OFFICIAL MAIN SPONSOR · بطولة [اسم البطولة]</div>
+          <div class="sponsor-role">OFFICIAL MAIN SPONSOR · بطولة سباقات الخيل الإلكترونية</div>
           <div class="contact">
             <span>[البريد الإلكتروني]</span>
             <span>[رقم التواصل]</span>
@@ -811,131 +811,174 @@
 
     if (pageTotal) pageTotal.textContent = String(scenes.length).padStart(2,"0");
 
-    scenes.forEach((scene, i) => {
-      const b = document.createElement("button");
-      b.type = "button";
-      b.dataset.index = i;
-      b.innerHTML = `<span class="label">${scene.dataset.label}</span><span class="tick"></span>`;
-      b.setAttribute("aria-label", `الانتقال إلى الصفحة ${i + 1}`);
-      b.addEventListener("click", () => jump(i));
-      rail.appendChild(b);
-    });
-    const dots = [...rail.querySelectorAll("button")];
-
-    let targetProgress = 0;
-    let progress = 0;
-    let active = -1;
-    let touchStart = null;
-
-    function scrollTotal() { return Math.max(1, document.documentElement.scrollHeight - innerHeight); }
-    function jump(index) {
-      const i = Math.max(0, Math.min(scenes.length - 1, index));
-      const y = ((i + .16) / scenes.length) * scrollTotal();
-      scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
-    }
     function syncScroll() {
-      targetProgress = Math.max(0, Math.min(.999999, scrollY / scrollTotal()));
+      const H = window.innerHeight;
+      const totalH = document.documentElement.scrollHeight - H;
+      const targetP = totalH > 0 ? window.scrollY / totalH : 0;
+      targetProgress = Math.max(0, Math.min(1, targetP));
     }
-    function setActive(index) {
-      if (active === index) return;
-      active = index;
-      scenes.forEach((s,i) => s.classList.toggle("active", i === index));
-      dots.forEach((d,i) => d.classList.toggle("active", i === index));
-      pageNow.textContent = String(index + 1).padStart(2,"0");
-      document.title = `${String(index + 1).padStart(2,"0")} · ${scenes[index].dataset.label} — ملف الرعاية الرسمي`;
+
+    let targetProgress = 0, progress = 0;
+    window.addEventListener("scroll", syncScroll, { passive: true });
+
+    function jump(target) {
+      const maxIdx = Math.max(1, scenes.length - 1);
+      const frac = Math.max(0, Math.min(1, target / maxIdx));
+      const totalH = document.documentElement.scrollHeight - window.innerHeight;
+      window.scrollTo({ top: frac * totalH, behavior: "smooth" });
     }
-    addEventListener("scroll", syncScroll, {passive:true});
-    addEventListener("resize", syncScroll);
-    addEventListener("keydown", e => {
-      if (["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)) { e.preventDefault(); jump(active + 1); }
-      if (["ArrowUp","ArrowLeft","PageUp"].includes(e.key)) { e.preventDefault(); jump(active - 1); }
-      if (e.key === "Home") { e.preventDefault(); jump(0); }
-      if (e.key === "End") { e.preventDefault(); jump(scenes.length - 1); }
+
+    const prevBtn = document.getElementById("prev");
+    const nextBtn = document.getElementById("next");
+    if (prevBtn) prevBtn.addEventListener("click", () => jump(Math.round(progress * (scenes.length - 1)) - 1));
+    if (nextBtn) nextBtn.addEventListener("click", () => jump(Math.round(progress * (scenes.length - 1)) + 1));
+
+    window.addEventListener("keydown", e => {
+      const cur = Math.round(progress * (scenes.length - 1));
+      if (e.key === "ArrowDown" || e.key === "ArrowLeft" || e.key === "PageDown" || e.key === " ") {
+        e.preventDefault(); jump(cur + 1);
+      } else if (e.key === "ArrowUp" || e.key === "ArrowRight" || e.key === "PageUp") {
+        e.preventDefault(); jump(cur - 1);
+      } else if (e.key === "Home") {
+        e.preventDefault(); jump(0);
+      } else if (e.key === "End") {
+        e.preventDefault(); jump(scenes.length - 1);
+      }
     });
-    document.getElementById("prev").addEventListener("click", () => jump(active - 1));
-    document.getElementById("next").addEventListener("click", () => jump(active + 1));
-    addEventListener("touchstart", e => { touchStart = e.touches[0].clientY; }, {passive:true});
-    addEventListener("touchend", e => {
-      if (touchStart == null) return;
-      const delta = touchStart - e.changedTouches[0].clientY;
-      if (Math.abs(delta) > 80) jump(active + (delta > 0 ? 1 : -1));
-      touchStart = null;
-    }, {passive:true});
+
+    let touchStartY = 0;
+    window.addEventListener("touchstart", e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+    window.addEventListener("touchend", e => {
+      const diff = touchStartY - e.changedTouches[0].clientY;
+      const cur = Math.round(progress * (scenes.length - 1));
+      if (Math.abs(diff) > 40) {
+        jump(diff > 0 ? cur + 1 : cur - 1);
+      }
+    }, { passive: true });
+
+    if (rail) {
+      rail.innerHTML = "";
+      scenes.forEach((sc, i) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "dot" + (i === 0 ? " active" : "");
+        dot.setAttribute("aria-label", `الانتقال إلى ${sc.dataset.label || "الصفحة " + (i+1)}`);
+        dot.title = sc.dataset.label || `المشهد ${i+1}`;
+        dot.addEventListener("click", () => jump(i));
+        rail.appendChild(dot);
+      });
+    }
+
+    const dots = rail ? [...rail.querySelectorAll(".dot")] : [];
+    function setActive(idx) {
+      dots.forEach((d, i) => d.classList.toggle("active", i === idx));
+      if (pageNow) pageNow.textContent = String(idx + 1).padStart(2, "0");
+    }
 
     class ParticleHorse {
       constructor(canvas) {
-        this.canvas = canvas;
-        this.ctx = canvas.getContext("2d", {alpha:false});
-        this.dprCap = mobile ? 1.35 : 2;
-        this.t = 0;
-        this.pointer = {x:-9999,y:-9999,active:false};
-        this.seed = 917;
-        this.sprite = this.makeSprite();
-        this.parts = Array.from({length:count}, (_,i) => this.makeParticle(i));
+        this.c = canvas; this.ctx = canvas.getContext("2d");
+        this.parts = []; this.ripples = []; this.seed = 42; this.t = 0;
+        this.pointer = { x: -9999, y: -9999, active: false };
         this.horsePts = this.buildHorse();
+        this.sprite = this.buildSprite();
         this.resize();
-        addEventListener("resize", () => this.resize());
-        addEventListener("pointermove", e => { this.pointer.x=e.clientX; this.pointer.y=e.clientY; this.pointer.active=true; }, {passive:true});
-        addEventListener("pointerleave", () => { this.pointer.active=false; });
-        addEventListener("pointerdown", e => this.burst(e.clientX,e.clientY), {passive:true});
-        this.ripples=[];
+        window.addEventListener("resize", () => this.resize());
+        window.addEventListener("pointermove", e => { this.pointer.x = e.clientX; this.pointer.y = e.clientY; this.pointer.active = true; });
+        window.addEventListener("pointerleave", () => { this.pointer.active = false; });
+        window.addEventListener("click", e => this.burst(e.clientX, e.clientY));
       }
-      random() {
-        this.seed = (this.seed * 16807) % 2147483647;
-        return (this.seed - 1) / 2147483646;
-      }
-      makeParticle(i) {
-        const s=this.random();
-        return {x:this.random()*innerWidth,y:this.random()*innerHeight,px:0,py:0,s,rx:this.random(),ry:this.random(),a:this.random()*Math.PI*2,k:.045+s*.055,size:.55+this.random()*1.8,index:i};
-      }
-      makeSprite() {
-        const c=document.createElement("canvas"); c.width=c.height=32;
-        const x=c.getContext("2d"), g=x.createRadialGradient(16,16,0,16,16,16);
-        g.addColorStop(0,"rgba(255,244,218,1)"); g.addColorStop(.22,"rgba(233,188,92,.9)"); g.addColorStop(.58,"rgba(169,112,30,.2)"); g.addColorStop(1,"rgba(80,48,8,0)");
-        x.fillStyle=g; x.fillRect(0,0,32,32); return c;
+      random() { this.seed = (this.seed * 9301 + 49297) % 233280; return this.seed / 233280; }
+      buildSprite() {
+        const s = document.createElement("canvas"); s.width = 64; s.height = 64;
+        const x = s.getContext("2d");
+        const g = x.createRadialGradient(32,32,0, 32,32,32);
+        g.addColorStop(0, "rgba(255,248,220,1)");
+        g.addColorStop(.25, `rgba(${GOLD.join(",")},.9)`);
+        g.addColorStop(.6, `rgba(${GOLD.join(",")},.28)`);
+        g.addColorStop(1, "rgba(233,188,92,0)");
+        x.fillStyle = g; x.beginPath(); x.arc(32,32,32,0,Math.PI*2); x.fill();
+        return s;
       }
       resize() {
-        this.W=innerWidth; this.H=innerHeight;
-        const dpr=Math.min(devicePixelRatio||1,this.dprCap);
-        this.canvas.width=Math.floor(this.W*dpr); this.canvas.height=Math.floor(this.H*dpr);
-        this.canvas.style.width=this.W+"px"; this.canvas.style.height=this.H+"px";
-        this.ctx.setTransform(dpr,0,0,dpr,0,0);
-        this.ctx.fillStyle="#050504"; this.ctx.fillRect(0,0,this.W,this.H);
+        this.W = this.c.width = window.innerWidth;
+        this.H = this.c.height = window.innerHeight;
+        this.init();
+      }
+      init() {
+        this.parts = []; this.seed = 101;
+        for (let i = 0; i < count; i++) {
+          this.parts.push({
+            x: this.random() * this.W, y: this.random() * this.H,
+            px: 0, py: 0,
+            rx: this.random(), ry: this.random(),
+            a: this.random() * Math.PI * 2,
+            s: this.random(),
+            k: .045 + this.random() * .055,
+            size: .55 + this.random() * .9
+          });
+        }
       }
       buildHorse() {
-        const w=1000,h=600,c=document.createElement("canvas"); c.width=w;c.height=h;
-        const x=c.getContext("2d"); x.fillStyle="#fff";x.strokeStyle="#fff";x.lineCap="round";x.lineJoin="round";
-        const el=(cx,cy,rx,ry,rot=0)=>{x.beginPath();x.ellipse(cx,cy,rx,ry,rot,0,Math.PI*2);x.fill();};
-        const limb=(pts,widths)=>{for(let i=0;i<pts.length-1;i++){x.lineWidth=widths[i];x.beginPath();x.moveTo(...pts[i]);x.lineTo(...pts[i+1]);x.stroke();}};
-        el(344,302,74,70,-.08); el(618,300,58,60,.06);
-        x.beginPath();x.moveTo(300,254);x.bezierCurveTo(400,232,522,238,600,250);x.bezierCurveTo(642,256,656,286,668,318);x.bezierCurveTo(674,332,660,346,640,354);x.bezierCurveTo(598,382,520,394,450,386);x.bezierCurveTo(400,379,360,368,340,352);x.bezierCurveTo(318,338,298,330,288,306);x.bezierCurveTo(277,284,282,264,300,254);x.closePath();x.fill();
-        x.beginPath();x.moveTo(594,246);x.bezierCurveTo(650,196,716,160,768,134);x.lineTo(800,172);x.bezierCurveTo(748,198,706,244,670,320);x.closePath();x.fill();
-        x.beginPath();x.moveTo(766,130);x.bezierCurveTo(800,130,830,150,856,186);x.bezierCurveTo(878,208,896,224,898,238);x.bezierCurveTo(890,252,872,252,856,244);x.bezierCurveTo(834,232,810,214,788,196);x.bezierCurveTo(772,182,760,156,766,130);x.closePath();x.fill();
-        x.beginPath();x.moveTo(760,130);x.lineTo(752,100);x.lineTo(778,126);x.closePath();x.fill();x.beginPath();x.moveTo(780,128);x.lineTo(784,98);x.lineTo(798,126);x.closePath();x.fill();
-        limb([[298,250],[232,224],[150,230],[86,266]],[24,15,8]);limb([[300,268],[238,258],[166,276],[110,306]],[12,8,5]);
-        limb([[648,332],[688,392],[746,406],[800,430],[822,442]],[27,18,13,9]);el(828,446,12,7,.3);limb([[628,338],[646,404],[606,444],[636,472]],[24,16,11]);el(642,476,11,7,-.5);
-        limb([[346,336],[300,404],[236,446],[176,486],[152,498]],[31,20,13,9]);el(146,502,12,7,.25);limb([[368,344],[352,420],[386,470],[418,512]],[27,17,11]);el(422,518,11,7,-.35);
-        x.beginPath();x.moveTo(556,216);x.bezierCurveTo(586,184,636,166,674,168);x.bezierCurveTo(688,180,690,192,686,198);x.bezierCurveTo(650,208,606,234,578,254);x.closePath();x.fill();el(700,152,30,27);x.beginPath();x.moveTo(722,144);x.lineTo(750,156);x.lineTo(720,166);x.closePath();x.fill();el(694,182,15,12,.2);limb([[676,188],[714,208],[762,216]],[14,9]);limb([[762,216],[820,226],[868,234]],[4,3]);limb([[586,242],[624,270],[622,306]],[17,11]);el(634,312,17,8,.12);
-        const data=x.getImageData(0,0,w,h).data, on=(px,py)=>px>=0&&py>=0&&px<w&&py<h&&data[(py*w+px)*4+3]>120;
-        const edge=[],inside=[]; this.seed=2026;
-        for(let i=0;i<90000&&edge.length<2100;i++){
-          const px=80+Math.floor(this.random()*830),py=90+Math.floor(this.random()*440); if(!on(px,py))continue;
-          const e=!on(px+3,py)||!on(px-3,py)||!on(px,py+3)||!on(px,py-3);
-          const pt=[(px-495)/830,(py-305)/440]; if(e)edge.push(pt);else if(inside.length<820)inside.push(pt);
+        const off = document.createElement("canvas"), w = off.width = 1000, h = off.height = 600;
+        const x = off.getContext("2d");
+        const el = (cx,cy,rx,ry,rot=0) => { x.beginPath(); x.ellipse(cx,cy,rx,ry,rot,0,Math.PI*2); x.fill(); };
+        const limb = (pts, widths) => {
+          x.lineCap = "round"; x.lineJoin = "round";
+          for (let i = 0; i < pts.length - 1; i++) {
+            x.lineWidth = widths[i] || widths[widths.length-1];
+            x.beginPath(); x.moveTo(pts[i][0], pts[i][1]); x.lineTo(pts[i+1][0], pts[i+1][1]); x.stroke();
+          }
+        };
+        x.fillStyle = "#fff"; x.strokeStyle = "#fff";
+        el(460,285,148,82,-.14); el(350,305,108,78,.18); el(570,250,92,68,-.38);
+        x.beginPath(); x.moveTo(560,230); x.bezierCurveTo(620,180, 680,120, 750,95); x.bezierCurveTo(775,100, 785,120, 770,140); x.bezierCurveTo(705,185, 660,265, 620,295); x.closePath(); x.fill();
+        x.beginPath(); x.moveTo(766,130); x.bezierCurveTo(800,130, 830,150, 856,186); x.bezierCurveTo(878,208, 896,224, 898,238); x.bezierCurveTo(890,252, 872,252, 856,244); x.bezierCurveTo(834,232, 810,214, 788,196); x.bezierCurveTo(772,182, 760,156, 766,130); x.closePath(); x.fill();
+        x.beginPath(); x.moveTo(760,130); x.lineTo(752,100); x.lineTo(778,126); x.closePath(); x.fill();
+        x.beginPath(); x.moveTo(780,128); x.lineTo(784,98); x.lineTo(798,126); x.closePath(); x.fill();
+        limb([[298,250],[232,224],[150,230],[86,266]], [24,15,8]); limb([[300,268],[238,258],[166,276],[110,306]], [12,8,5]);
+        limb([[648,332],[688,392],[746,406],[800,430],[822,442]], [27,18,13,9]); el(828,446,12,7,.3);
+        limb([[628,338],[646,404],[606,444],[636,472]], [24,16,11]); el(642,476,11,7,-.5);
+        limb([[346,336],[300,404],[236,446],[176,486],[152,498]], [31,20,13,9]); el(146,502,12,7,.25);
+        limb([[368,344],[352,420],[386,470],[418,512]], [27,17,11]); el(422,518,11,7,-.35);
+        x.beginPath(); x.moveTo(556,216); x.bezierCurveTo(586,184, 636,166, 674,168); x.bezierCurveTo(688,180, 690,192, 686,198); x.bezierCurveTo(650,208, 606,234, 578,254); x.closePath(); x.fill();
+        el(700,152,30,27);
+        x.beginPath(); x.moveTo(722,144); x.lineTo(750,156); x.lineTo(720,166); x.closePath(); x.fill();
+        el(694,182,15,12,.2);
+        limb([[676,188],[714,208],[762,216]], [14,9]); limb([[762,216],[820,226],[868,234]], [4,3]);
+        limb([[586,242],[624,270],[622,306]], [17,11]); el(634,312,17,8,.12);
+        const data = x.getImageData(0,0,w,h).data, on = (px,py) => px>=0 && py>=0 && px<w && py<h && data[(py*w+px)*4+3]>120;
+        const edge = [], inside = []; this.seed = 2026;
+        for (let i = 0; i < 90000 && edge.length < 2100; i++) {
+          const px = 80 + Math.floor(this.random() * 830), py = 90 + Math.floor(this.random() * 440);
+          if (!on(px,py)) continue;
+          const e = !on(px+3,py) || !on(px-3,py) || !on(px,py+3) || !on(px,py-3);
+          const pt = [(px-495)/830, (py-305)/440];
+          if (e) edge.push(pt); else if (inside.length < 820) inside.push(pt);
         }
-        const pts=[]; edge.forEach((pt,i)=>{pts.push(pt);if(i%3===0&&inside.length)pts.push(inside[(i/3|0)%inside.length]);}); return pts;
+        const pts = [];
+        edge.forEach((pt,i) => {
+          pts.push(pt);
+          if (i%3===0 && inside.length) pts.push(inside[(i/3|0)%inside.length]);
+        });
+        return pts;
       }
       horse(q,k,variant=0) {
-        const pt=this.horsePts[k%this.horsePts.length];
-        const final=variant===2, sponsor=variant===1;
-        const scale=Math.min(
-          this.W*(final?(mobile?.68:.38):(mobile?.9:.54)),
-          this.H*(final?(mobile?.52:.55):(mobile?.74:.72))
+        const pt = this.horsePts[k % this.horsePts.length];
+        const final = variant === 2, sponsor = variant === 1;
+        const scale = Math.min(
+          this.W * (final ? (mobile ? .68 : .38) : (mobile ? .9 : .54)),
+          this.H * (final ? (mobile ? .52 : .55) : (mobile ? .74 : .72))
         );
-        const cx=mobile?.5:(final?.5:(sponsor?.28:.31));
-        const cy=mobile?(final?.52:.30):(final?.56:.56);
-        const gait=this.t*4.8+pt[0]*2.2;
-        return {x:this.W*cx+pt[0]*scale+Math.sin(this.t*.7+q.s*8)*2.2,y:this.H*cy+pt[1]*scale*.66+Math.sin(gait)*this.H*.006,a:.34+q.s*.62,size:.48+q.s*.45};
+        const cx = mobile ? .5 : (final ? .5 : (sponsor ? .28 : .31));
+        const cy = mobile ? (final ? .52 : .30) : (final ? .56 : .56);
+        const gait = this.t * 4.8 + pt[0] * 2.2;
+        return {
+          x: this.W * cx + pt[0] * scale + Math.sin(this.t * .7 + q.s * 8) * 2.2,
+          y: this.H * cy + pt[1] * scale * .66 + Math.sin(gait) * this.H * .006,
+          a: .34 + q.s * .62,
+          size: .48 + q.s * .45
+        };
       }
       target(scene,q,k) {
         const W=this.W,H=this.H,t=this.t,a=q.a;
@@ -1019,7 +1062,7 @@
       requestAnimationFrame(frame);
     }
     syncScroll(); setActive(0); requestAnimationFrame(frame);
-    window.SaheelSponsorship = { jump, scenes, horse };
+    window.EquestrianSponsorship = { jump, scenes, horse };
   })();
   </script>
 </body>

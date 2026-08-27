@@ -1,5 +1,5 @@
-# صَهيل 2026 | بطولة سباقات الخيل الإلكترونية
-### SAHEEL E-Racing Cup — Official Sponsorship Deck & Platform
+# بطولة سباقات الخيل الإلكترونية 2026
+### E-Equestrian Racing Cup 2026 — Official Sponsorship Deck & Platform
 
 ملف الرعاية الرسمي التفاعلي والمنظومة الرقمية لبطولة سباقات الخيل الإلكترونية 2026 (حين يلتقي التراث بالتقنية).
 

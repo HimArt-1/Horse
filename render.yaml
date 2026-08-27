@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: saheel-horse-championship
+    name: equestrian-esports-championship
     env: static
     buildCommand: ""
     staticPublishPath: .
