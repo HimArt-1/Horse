@@ -1,0 +1,548 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050504">
+  <meta name="description" content="البوابة الرسمية لبطولة سباقات الخيل الإلكترونية 2026 — أول بطولة تفاعلية تجمع أصالة الفروسية مع أحدث التقنيات الرقمية">
+  <title>بطولة سباقات الخيل الإلكترونية 2026 — البوابة الرسمية</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #050504;
+      --surface: #0c0b09;
+      --surface-2: #14120e;
+      --card-bg: rgba(18, 16, 13, 0.72);
+      --gold: #e9bc5c;
+      --gold-light: #f6d88e;
+      --gold-deep: #b38025;
+      --gold-glow: rgba(233, 188, 92, 0.28);
+      --paper: #f5e9d2;
+      --muted: rgba(245, 233, 210, 0.65);
+      --faint: rgba(245, 233, 210, 0.12);
+      --border: rgba(233, 188, 92, 0.2);
+      --border-strong: rgba(233, 188, 92, 0.45);
+      --radius: 16px;
+      --radius-sm: 8px;
+      --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { background: var(--bg); color: var(--paper); font-family: "IBM Plex Sans Arabic", -apple-system, sans-serif; scroll-behavior: smooth; }
+    body { min-height: 100vh; overflow-x: hidden; line-height: 1.6; background: radial-gradient(circle at 50% 0%, #17140e 0%, var(--bg) 65%); }
+
+    /* Navigation */
+    .nav {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 100;
+      height: 72px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 clamp(20px, 5vw, 64px);
+      background: rgba(5, 5, 4, 0.78); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+    .brand-icon { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border-strong); display: grid; place-items: center; background: rgba(233, 188, 92, 0.08); }
+    .brand-icon img { width: 24px; height: 24px; }
+    .brand-text h1 { font: 700 16px/1.2 "Almarai", sans-serif; color: var(--paper); }
+    .brand-text span { font: 600 8.5px/1 "IBM Plex Mono", monospace; color: var(--gold); letter-spacing: 0.16em; }
+
+    .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
+    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 999px;
+      background: linear-gradient(135deg, var(--gold), var(--gold-deep));
+      color: #050504; font-weight: 700; font-size: 13px;
+      text-decoration: none; transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px var(--gold-glow); }
+
+    /* Hero Section */
+    .hero {
+      position: relative; min-height: 92vh; display: flex; align-items: center;
+      padding: 120px clamp(20px, 5vw, 64px) 60px;
+      max-width: 1380px; margin: 0 auto;
+    }
+    .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(32px, 5vw, 64px); align-items: center; width: 100%; }
+    
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 14px; border-radius: 999px;
+      background: rgba(233, 188, 92, 0.1); border: 1px solid var(--border);
+      color: var(--gold); font: 600 11px/1 "IBM Plex Mono", monospace; letter-spacing: 0.1em;
+      margin-bottom: 24px;
+    }
+    .hero-tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+
+    .hero-title {
+      font: 800 clamp(36px, 4.4vw, 64px)/1.15 "Almarai", sans-serif;
+      color: var(--paper); margin-bottom: 20px;
+    }
+    .hero-title .gold-text {
+      background: linear-gradient(135deg, #fff3d6, var(--gold), var(--gold-deep));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .hero-desc {
+      font-size: clamp(15px, 1.2vw, 18px); color: var(--muted);
+      max-width: 580px; margin-bottom: 36px; line-height: 1.7;
+    }
+
+    .hero-actions { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 48px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 15px 28px; border-radius: 12px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold), var(--gold-deep));
+      color: #050504; font-weight: 800; font-size: 15px; text-decoration: none;
+      box-shadow: 0 8px 30px var(--gold-glow); transition: 0.25s var(--ease);
+    }
+    .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(233, 188, 92, 0.45); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 14px 26px; border-radius: 12px;
+      background: rgba(245, 233, 210, 0.04); border: 1px solid var(--border);
+      color: var(--paper); font-weight: 600; font-size: 15px; text-decoration: none;
+      transition: 0.25s var(--ease);
+    }
+    .btn-secondary:hover { background: rgba(233, 188, 92, 0.1); border-color: var(--border-strong); color: var(--gold); }
+
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+      padding-top: 32px; border-top: 1px solid var(--faint);
+    }
+    .stat-item b { font: 800 clamp(22px, 2vw, 32px)/1 "IBM Plex Mono", monospace; color: var(--gold); display: block; margin-bottom: 4px; }
+    .stat-item span { font-size: 12px; color: var(--muted); }
+
+    /* Hero Media Visual */
+    .hero-media { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8); }
+    .hero-media img { width: 100%; height: auto; display: block; object-fit: cover; aspect-ratio: 4/3; transition: transform 0.8s var(--ease); }
+    .hero-media:hover img { transform: scale(1.03); }
+    .hero-media-badge {
+      position: absolute; bottom: 20px; right: 20px; left: 20px;
+      padding: 16px 20px; border-radius: 14px;
+      background: rgba(5, 5, 4, 0.85); backdrop-filter: blur(12px);
+      border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between;
+    }
+    .hero-media-badge h4 { font-size: 14px; color: var(--paper); }
+    .hero-media-badge p { font-size: 11px; color: var(--gold); }
+
+    /* Section Global Styles */
+    section { padding: 90px clamp(20px, 5vw, 64px); max-width: 1380px; margin: 0 auto; }
+    .section-head { text-align: center; max-width: 720px; margin: 0 auto 60px; }
+    .section-eyebrow { font: 700 11px/1 "IBM Plex Mono", monospace; color: var(--gold); letter-spacing: 0.18em; margin-bottom: 12px; }
+    .section-title { font: 800 clamp(28px, 3.2vw, 44px)/1.2 "Almarai", sans-serif; margin-bottom: 16px; color: var(--paper); }
+    .section-lead { font-size: 16px; color: var(--muted); }
+
+    /* Interactive Game Arena Showcase */
+    .arena-banner {
+      position: relative; border-radius: 24px; overflow: hidden;
+      border: 1px solid var(--border); background: var(--surface);
+      display: grid; grid-template-columns: 1.1fr 0.9fr; align-items: center;
+    }
+    .arena-banner-img { position: relative; width: 100%; height: 100%; min-height: 440px; }
+    .arena-banner-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .arena-banner-copy { padding: clamp(32px, 5vw, 56px); }
+    .arena-banner-copy h3 { font: 800 28px/1.3 "Almarai", sans-serif; color: var(--paper); margin-bottom: 16px; }
+    .arena-banner-copy p { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+    .arena-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .arena-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--paper); }
+    .arena-features li span { width: 22px; height: 22px; border-radius: 50%; background: rgba(233, 188, 92, 0.15); color: var(--gold); display: grid; place-items: center; font-size: 11px; }
+
+    /* Visual Artwork Gallery Grid */
+    .gallery-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;
+    }
+    .gallery-card {
+      position: relative; border-radius: 16px; overflow: hidden;
+      border: 1px solid var(--border); background: var(--surface);
+      transition: transform 0.4s var(--ease), border-color 0.4s, box-shadow 0.4s;
+    }
+    .gallery-card:hover { transform: translateY(-6px); border-color: var(--border-strong); box-shadow: 0 16px 40px rgba(0,0,0,0.6); }
+    .gallery-card img { width: 100%; height: 220px; object-fit: cover; display: block; }
+    .gallery-info { padding: 20px; }
+    .gallery-info .badge { display: inline-block; font: 600 9px/1 "IBM Plex Mono", monospace; color: var(--gold); padding: 4px 8px; border-radius: 4px; background: rgba(233, 188, 92, 0.1); margin-bottom: 8px; }
+    .gallery-info h4 { font: 700 16px/1.3 "Almarai", sans-serif; color: var(--paper); margin-bottom: 6px; }
+    .gallery-info p { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+    /* Tournament Features 4 Pillars */
+    .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+    .pillar-card {
+      padding: 32px 28px; border-radius: var(--radius);
+      background: var(--card-bg); border: 1px solid var(--border);
+      backdrop-filter: blur(10px); transition: 0.3s var(--ease);
+    }
+    .pillar-card:hover { border-color: var(--gold); transform: translateY(-4px); }
+    .pillar-card .num { font: 800 28px/1 "IBM Plex Mono", monospace; color: var(--gold); margin-bottom: 16px; display: block; }
+    .pillar-card h3 { font: 700 18px/1.3 "Almarai", sans-serif; color: var(--paper); margin-bottom: 10px; }
+    .pillar-card p { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+
+    /* Interactive Game Simulator Demo Box */
+    .simulator-wrap {
+      background: linear-gradient(180deg, #110f0c, var(--bg));
+      border: 1px solid var(--border-strong); border-radius: 24px;
+      padding: clamp(28px, 4vw, 48px); position: relative; overflow: hidden;
+    }
+    .simulator-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+    .sim-track {
+      background: #090806; border: 1px solid var(--border); border-radius: 16px;
+      padding: 24px; position: relative; min-height: 160px; display: flex; flex-direction: column; justify-content: space-around;
+    }
+    .race-lane {
+      position: relative; height: 36px; border-bottom: 1px dashed rgba(233, 188, 92, 0.2);
+      display: flex; align-items: center;
+    }
+    .runner-horse {
+      position: absolute; right: 0; display: flex; align-items: center; gap: 8px;
+      transition: right 0.2s linear; font-size: 13px; font-weight: 700;
+    }
+    .runner-horse.player { color: var(--gold); }
+    .runner-horse.ai { color: var(--muted); }
+    .runner-horse .horse-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(233, 188, 92, 0.15); display: grid; place-items: center; border: 1px solid var(--gold); }
+    .sim-controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 24px; }
+    .sim-btn {
+      padding: 12px 32px; border-radius: 10px; border: none;
+      background: var(--gold); color: #050504; font-weight: 800; font-size: 14px;
+      cursor: pointer; transition: 0.2s;
+    }
+    .sim-btn:hover { background: var(--gold-light); transform: scale(1.04); }
+
+    /* Sponsorship CTA Section */
+    .deck-cta-banner {
+      background: radial-gradient(ellipse at center, rgba(233, 188, 92, 0.14) 0%, rgba(5, 5, 4, 0.85) 75%), var(--surface);
+      border: 1px solid var(--border-strong); border-radius: 28px;
+      padding: clamp(40px, 6vw, 80px) clamp(24px, 4vw, 56px);
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .deck-cta-banner h3 { font: 800 clamp(26px, 3.4vw, 42px)/1.2 "Almarai", sans-serif; color: var(--paper); margin-bottom: 16px; }
+    .deck-cta-banner p { font-size: 16px; color: var(--muted); max-width: 620px; margin: 0 auto 32px; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border); padding: 48px clamp(20px, 5vw, 64px);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
+      font-size: 13px; color: var(--muted);
+    }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    @media (max-width: 900px) {
+      .hero-grid { grid-template-columns: 1fr; }
+      .arena-banner { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="landing.html" class="brand" aria-label="الصفحة الرئيسية">
+      <div class="brand-icon"><img src="favicon.svg" alt="Horse Logo"></div>
+      <div class="brand-text">
+        <h1>سباقات الخيل الإلكترونية</h1>
+        <span>CHAMPIONSHIP 2026</span>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#about">عن البطولة</a></li>
+      <li><a href="#arena">ميدان السباق التفاعلي</a></li>
+      <li><a href="#gallery">معرض الصور</a></li>
+      <li><a href="#simulator">تجربة السباق</a></li>
+      <li><a href="index.html">ملف الرعاية الرسمي (19 مشهدًا)</a></li>
+    </ul>
+    <a href="index.html" class="nav-cta">
+      <span>عرض ملف الرعاية التفاعلي</span>
+      <span>←</span>
+    </a>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="hero-grid">
+      <div class="hero-content">
+        <div class="hero-tag">RIYADH · CHAMPIONSHIP 2026</div>
+        <h1 class="hero-title">
+          حين يلتقي أصيل التراث<br>
+          <span class="gold-text">بقمة التقنية الرقمية.</span>
+        </h1>
+        <p class="hero-desc">
+          أول منظومة سباقات خيل إلكترونية تفاعلية في المملكة تجمع بين روح المنافسة الرياضية الأصيلة وسرعة المحركات السحابية التفاعلية دون الحاجة لتحميل تطبيقات.
+        </p>
+        <div class="hero-actions">
+          <a href="index.html" class="btn-primary">
+            <span>استكشف ملف الرعاية الرسمي (19 مشهدًا)</span>
+            <span>←</span>
+          </a>
+          <a href="#arena" class="btn-secondary">
+            <span>شاهد ميدان السباق</span>
+          </a>
+        </div>
+        <div class="hero-stats">
+          <div class="stat-item"><b>60s</b><span>مدة شوط الحسم السريع</span></div>
+          <div class="stat-item"><b>8K</b><span>شاشات المضمار التفاعلية</span></div>
+          <div class="stat-item"><b>100%</b><span>لعب سحابي عبر المتصفح</span></div>
+        </div>
+      </div>
+
+      <div class="hero-media">
+        <img src="images/cyber-horse.jpg" alt="خيل سباق إلكتروني عربي أصيل بتقنية الإضاءة الذهبية">
+        <div class="hero-media-badge">
+          <div>
+            <h4>الخيل العربي السيبراني</h4>
+            <p>مجسم ثلاثي الأبعاد فائق الواقعية</p>
+          </div>
+          <span style="font-size:20px;color:var(--gold);">✦</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- About Section -->
+  <section id="about">
+    <div class="section-head">
+      <div class="section-eyebrow">FOUR CORE PILLARS</div>
+      <h2 class="section-title">أربعة محاور تبني تجربة رياضية استثنائية</h2>
+      <p class="section-lead">تم تصميم البطولة لتلبي تطلعات الجيل الجديد من عشاق الرياضات الإلكترونية مع المحافظة على الهوية الفروسية السعودية العريقة.</p>
+    </div>
+
+    <div class="pillars-grid">
+      <article class="pillar-card">
+        <span class="num">01</span>
+        <h3>الفروسية السعودية</h3>
+        <p>استلهام تاريخ سباقات الخيل العربية الأصيلة وتقديمها بهيبة بصرية تليق بمكانتها الوطنية والرياضية.</p>
+      </article>
+
+      <article class="pillar-card">
+        <span class="num">02</span>
+        <h3>محرك ويب سحابي فوري</h3>
+        <p>بنية رقمية حديثة تتيح للمشاركين والجماهير التنافس فورًا عبر مسح QR Code دون أي تنزيل أو تجهيزات معقدة.</p>
+      </article>
+
+      <article class="pillar-card">
+        <span class="num">03</span>
+        <h3>التفاعل الجماهيري الحي</h3>
+        <p>ربط الشاشات الميدانية الكبرى بهواتف الجمهور لإطلاق التحديات التنافسية وبث النتائج في الوقت الحقيقي.</p>
+      </article>
+
+      <article class="pillar-card">
+        <span class="num">04</span>
+        <h3>منظومة القيمة لعام كامل</h3>
+        <p>بناء وتطوير نظام إدارة النادي والمحاسبة والجرد، وتفعيل سباقات مقر الراعي على مدار 12 شهرًا متواصلة.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- Arena Showcase Section -->
+  <section id="arena">
+    <div class="arena-banner">
+      <div class="arena-banner-img">
+        <img src="images/arena-interactive.jpg" alt="ميدان السباق التفاعلي والشاشات الكبرى وتفاعل الجمهور">
+      </div>
+      <div class="arena-banner-copy">
+        <div class="section-eyebrow" style="text-align:right;">IMMERSIVE ARENA EXPERIENCE</div>
+        <h3>الميدان التفاعلي والشاشات الكبرى</h3>
+        <p>تجربة استثنائية تنقل الجمهور من مقاعد المشاهدين إلى قلب المنافسة الحية من خلال ربط الهواتف الذكية بشاشات العرض العملاقة.</p>
+        <ul class="arena-features">
+          <li><span>✓</span> سباق الخيل التفاعلي المباشر (Multiplayer)</li>
+          <li><span>✓</span> تحدي الجمهور مع بطل البطولة (Beat the Champion)</li>
+          <li><span>✓</span> بطاقات الأداء والنتائج الرقمية الفورية للنشر عبر وسائل التواصل</li>
+          <li><span>✓</span> دمج هوية وعلامة الراعي في لحظات السرعة القصوى والتتويج</li>
+        </ul>
+        <a href="index.html" class="btn-secondary">تفاصيل التفعيل الميداني بالملف ←</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Visual Artwork Gallery Section -->
+  <section id="gallery">
+    <div class="section-head">
+      <div class="section-eyebrow">VISUAL UNIVERSE</div>
+      <h2 class="section-title">معرض الهوية البصرية والمشاهد الرقمية</h2>
+      <p class="section-lead">نظرة شاملة على الفن البصري، بيئات السباق، والأصول الرقمية المطورة خصيصًا للبطولة.</p>
+    </div>
+
+    <div class="gallery-grid">
+      <div class="gallery-card">
+        <img src="images/cyber-horse.jpg" alt="خيل السباق السيبراني">
+        <div class="gallery-info">
+          <span class="badge">KEY VISUAL</span>
+          <h4>الخيل العربي السيبراني</h4>
+          <p>الهوية الفاخرة التي تجمع الذهب الملكي مع دروع الخيل المستقبلية.</p>
+        </div>
+      </div>
+
+      <div class="gallery-card">
+        <img src="images/arena-interactive.jpg" alt="ميدان السباق">
+        <div class="gallery-info">
+          <span class="badge">ARENA & AUDIENCE</span>
+          <h4>الميدان التفاعلي والجماهير</h4>
+          <p>تفاعل مباشر بين شاشات الـ 8K وهواتف الحضور في الصالة الرياضية.</p>
+        </div>
+      </div>
+
+      <div class="gallery-card">
+        <img src="images/champion-racing.jpg" alt="لحظة التتويج">
+        <div class="gallery-info">
+          <span class="badge">RACE FINISH</span>
+          <h4>لحظة الحسم وخط النهاية</h4>
+          <p>إثارة الـ 60 ثانية في أمتار السباق الأخيرة والتتويج بالذهب.</p>
+        </div>
+      </div>
+
+      <div class="gallery-card">
+        <img src="images/future-racing.jpg" alt="المضمار المستقبلي">
+        <div class="gallery-info">
+          <span class="badge">TRACK ENVIRONMENT</span>
+          <h4>مضمار السباقات الحديث</h4>
+          <p>بيئة سباق مستوحاة من ميادين المملكة مع خطوط إضاءة رقمية متطورة.</p>
+        </div>
+      </div>
+
+      <div class="gallery-card">
+        <img src="images/digital-horse.jpg" alt="الخيل الرقمي">
+        <div class="gallery-info">
+          <span class="badge">3D ASSET</span>
+          <h4>المحرك ثلاثي الأبعاد</h4>
+          <p>محاكاة دقيقة لحركة وركض الخيل العربي مع جزيئات الطاقة الذهبية.</p>
+        </div>
+      </div>
+
+      <div class="gallery-card">
+        <img src="images/hero-racing.jpg" alt="أبطال السباق">
+        <div class="gallery-info">
+          <span class="badge">CHAMPIONSHIP RIDERS</span>
+          <h4>فرسان السباق الإلكتروني</h4>
+          <p>الزي الرسمي للمتسابقين وشعار الراعي المطبوع بأعلى معايير الجودة.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Mini Simulator -->
+  <section id="simulator">
+    <div class="section-head">
+      <div class="section-eyebrow">INTERACTIVE PREVIEW</div>
+      <h2 class="section-title">محاكاة تفاعلية سريعة لسرعة السباق</h2>
+      <p class="section-lead">اضغط على زر (تعزيز السرعة) لتجربة حماس التقدم نحو خط النهاية.</p>
+    </div>
+
+    <div class="simulator-wrap">
+      <div class="simulator-header">
+        <div>
+          <h3 style="font-size:20px;color:var(--paper);">شوط التحدي التجريبي</h3>
+          <span style="font-size:12px;color:var(--gold);font-family:'IBM Plex Mono',monospace;">LIVE SPEED SIMULATOR</span>
+        </div>
+        <div id="raceStatus" style="font-size:13px;color:var(--gold);font-weight:700;">جاهز للانطلاق</div>
+      </div>
+
+      <div class="sim-track">
+        <div class="race-lane">
+          <div class="runner-horse player" id="playerHorse">
+            <span>فارس التحدي (أنت)</span>
+            <div class="horse-icon">🐎</div>
+          </div>
+        </div>
+        <div class="race-lane">
+          <div class="runner-horse ai" id="aiHorse">
+            <span>المنافس الذكي</span>
+            <div class="horse-icon" style="border-color:rgba(245,233,210,0.3);">🐎</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sim-controls">
+        <button type="button" class="sim-btn" id="boostBtn">⚡ اضغط لتعزيز السرعة (Boost)</button>
+        <button type="button" class="btn-secondary" id="resetBtn" style="padding:10px 20px;font-size:13px;">إعادة السباق</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sponsorship Deck CTA -->
+  <section>
+    <div class="deck-cta-banner">
+      <div class="section-eyebrow">OFFICIAL PROPOSAL DECK</div>
+      <h3>هل ترغب في استكشاف الفرصة الاستثمارية الكاملة؟</h3>
+      <p>اطلع على ملف الرعاية الرسمي التفاعلي المكون من 19 مشهدًا سينمائيًا مع محاكي حركة الخيل بالجزيئات الذهبية ومصفوفة الحقوق الشاملة.</p>
+      <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
+        <a href="index.html" class="btn-primary" style="font-size:16px;padding:16px 36px;">
+          <span>فتح ملف الرعاية الرسمي (19 مشهدًا)</span>
+          <span>←</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div>
+      <b style="color:var(--paper);font-family:'Almarai',sans-serif;">بطولة سباقات الخيل الإلكترونية 2026</b>
+      <p style="font-size:12px;color:var(--muted);margin-top:4px;">الرياض · المملكة العربية السعودية</p>
+    </div>
+    <div style="display:flex;gap:24px;">
+      <a href="landing.html">الرئيسية</a>
+      <a href="index.html">ملف الرعاية التفاعلي</a>
+      <a href="mailto:info@equestrian-esports.sa">تواصل معنا</a>
+    </div>
+  </footer>
+
+  <script>
+    // Simple interactive simulator logic
+    let playerPos = 0;
+    let aiPos = 0;
+    let raceActive = false;
+    let raceInterval = null;
+
+    const playerHorse = document.getElementById('playerHorse');
+    const aiHorse = document.getElementById('aiHorse');
+    const statusText = document.getElementById('raceStatus');
+    const boostBtn = document.getElementById('boostBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    function startRace() {
+      if (raceActive) return;
+      raceActive = true;
+      statusText.textContent = "السباق جارٍ... اضغط بسرعة!";
+      raceInterval = setInterval(() => {
+        aiPos += Math.random() * 4 + 2;
+        if (aiPos >= 85) {
+          aiPos = 85;
+          endRace("فاز المنافس الذكي! حاول ثانية.");
+        }
+        aiHorse.style.right = aiPos + '%';
+      }, 100);
+    }
+
+    boostBtn.addEventListener('click', () => {
+      if (!raceActive && playerPos === 0) startRace();
+      if (!raceActive) return;
+
+      playerPos += 7;
+      if (playerPos >= 85) {
+        playerPos = 85;
+        endRace("🎉 مبروك! حققت المركز الأول في شوط الحسم!");
+      }
+      playerHorse.style.right = playerPos + '%';
+    });
+
+    function endRace(msg) {
+      raceActive = false;
+      clearInterval(raceInterval);
+      statusText.textContent = msg;
+    }
+
+    resetBtn.addEventListener('click', () => {
+      raceActive = false;
+      clearInterval(raceInterval);
+      playerPos = 0;
+      aiPos = 0;
+      playerHorse.style.right = '0%';
+      aiHorse.style.right = '0%';
+      statusText.textContent = "جاهز للانطلاق";
+    });
+  </script>
+</body>
+</html>
