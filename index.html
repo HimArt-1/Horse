@@ -1,0 +1,1023 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#050504">
+  <meta name="description" content="ملف الرعاية الرسمي الرئيسي لبطولة سباقات الخيل الإلكترونية 2026 — منظومة رعاية متكاملة تمتد لعام كامل">
+  <title>ملف الرعاية الرسمي — بطولة سباقات الخيل الإلكترونية 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #050504;
+      --charcoal: #0c0b09;
+      --paper: #f5e9d2;
+      --warm: #fff3d6;
+      --muted: rgba(245,233,210,.62);
+      --faint: rgba(245,233,210,.12);
+      --gold: #e9bc5c;
+      --gold-light: #f2ce76;
+      --gold-deep: #a87321;
+      --line: rgba(233,188,92,.22);
+      --line-strong: rgba(233,188,92,.42);
+      --edge: clamp(22px,5vw,82px);
+      --ease: cubic-bezier(.2,.8,.2,1);
+    }
+
+    * { box-sizing: border-box; }
+    html { background: var(--ink); scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background: var(--ink);
+      color: var(--paper);
+      font-family: "IBM Plex Sans Arabic", "Almarai", system-ui, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+    button, a { font: inherit; }
+    button { -webkit-tap-highlight-color: transparent; }
+    ::selection { background: rgba(233,188,92,.3); color: #fff7e4; }
+
+    .stage { position: fixed; inset: 0; min-height: 100dvh; overflow: hidden; isolation: isolate; }
+    #field { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+    .atmosphere {
+      position: absolute; inset: 0; z-index: 1; pointer-events: none;
+      background:
+        radial-gradient(72% 78% at 34% 52%, rgba(147,96,23,.09), transparent 55%),
+        radial-gradient(120% 95% at 50% 44%, transparent 34%, rgba(0,0,0,.64) 80%, rgba(0,0,0,.94) 100%);
+    }
+    .atmosphere::after {
+      content: ""; position: absolute; inset: 0; opacity: .18;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.12'/%3E%3C/svg%3E");
+      mix-blend-mode: soft-light;
+    }
+    .progress { position: fixed; top: 0; right: 0; left: 0; height: 2px; z-index: 20; background: rgba(255,255,255,.04); }
+    .progress span { display: block; width: 0; height: 100%; background: linear-gradient(90deg,var(--gold-deep),var(--gold-light)); box-shadow: 0 0 14px rgba(233,188,92,.45); }
+
+    .masthead {
+      position: fixed; top: 0; right: 0; left: 0; z-index: 12;
+      display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
+      padding: 20px var(--edge); gap: 24px;
+    }
+    .brand { display: flex; align-items: center; gap: 12px; justify-self: start; direction: rtl; }
+    .brand-ar { font: 800 20px/1 "Almarai",sans-serif; color: var(--warm); letter-spacing: -.02em; }
+    .brand-en, .eyebrow, .mono { font-family: "IBM Plex Mono",monospace; text-transform: uppercase; letter-spacing: .24em; }
+    .brand-en { font-size: 9px; color: rgba(233,188,92,.66); }
+    .mast-title { justify-self: center; font: 500 9px/1.4 "IBM Plex Mono",monospace; letter-spacing: .28em; color: rgba(245,233,210,.42); direction: ltr; }
+    .counter { justify-self: end; direction: ltr; font: 500 10px/1 "IBM Plex Mono",monospace; letter-spacing: .14em; color: rgba(245,233,210,.42); }
+    .counter b { color: var(--gold); font-weight: 600; }
+
+    .rail {
+      position: fixed; right: clamp(10px,2.2vw,32px); top: 50%; transform: translateY(-50%); z-index: 15;
+      display: flex; flex-direction: column; align-items: flex-end; gap: 8px; direction: ltr;
+    }
+    .rail button { display: flex; align-items: center; gap: 8px; padding: 2px 0; border: 0; color: rgba(233,188,92,.36); background: none; cursor: pointer; }
+    .rail .label { opacity: 0; transform: translateX(6px); transition: .28s var(--ease); font: 500 8px/1 "IBM Plex Mono",monospace; letter-spacing: .16em; }
+    .rail .tick { width: 10px; height: 1px; background: currentColor; transition: .35s var(--ease); }
+    .rail button:hover .label, .rail button.active .label { opacity: 1; transform: none; }
+    .rail button.active { color: #f2ce76; }
+    .rail button.active .tick { width: 26px; box-shadow: 0 0 10px rgba(233,188,92,.7); }
+
+    .scenes { position: absolute; inset: 0; z-index: 5; }
+    .scene {
+      position: absolute; inset: 0; min-height: 100dvh; padding: clamp(86px,11vh,120px) var(--edge) clamp(66px,8.5vh,92px);
+      display: flex; opacity: 0; transform: translate3d(0,48px,0); pointer-events: none; will-change: opacity,transform;
+      transition: visibility .1s linear;
+    }
+    .scene.active { pointer-events: auto; }
+    .scene-inner { width: min(1400px,100%); margin: auto; position: relative; }
+    .scene-no { position: absolute; inset-inline-start: 0; top: -38px; color: rgba(233,188,92,.5); font: 600 9px/1 "IBM Plex Mono",monospace; letter-spacing: .28em; direction: ltr; }
+    .eyebrow { margin-bottom: 16px; font-size: 9px; color: rgba(233,188,92,.8); direction: ltr; font-weight: 500; }
+    h1,h2,h3,p { margin-top: 0; }
+    h1,h2 { font-family: "Almarai",sans-serif; color: var(--warm); letter-spacing: -.035em; text-wrap: balance; }
+    h1 { margin-bottom: 22px; font-size: clamp(40px,6.2vw,92px); line-height: 1.04; font-weight: 800; }
+    h2 { margin-bottom: 20px; font-size: clamp(32px,4.8vw,68px); line-height: 1.08; font-weight: 800; }
+    h3 { margin-bottom: 8px; font: 700 clamp(16px,1.45vw,21px)/1.25 "Almarai",sans-serif; color: var(--warm); }
+    p { margin-bottom: 0; font-size: clamp(14px,1.15vw,17px); line-height: 1.8; color: var(--muted); text-wrap: pretty; }
+    .lead { max-width: 48ch; font-size: clamp(15px,1.3vw,19px); }
+    .gold { color: var(--gold); }
+    .dim { color: rgba(245,233,210,.4); }
+    .ltr { direction: ltr; text-align: left; }
+    .rule { width: min(230px,34vw); height: 1px; margin: 24px 0; background: linear-gradient(90deg,var(--gold),transparent); }
+    .subhead { font: 700 clamp(20px,2.2vw,34px)/1.28 "Almarai",sans-serif; color: rgba(255,243,214,.88); }
+
+    /* Layout Patterns */
+    .cover { align-items: center; }
+    .cover .scene-inner { display: grid; grid-template-columns: minmax(340px,.9fr) minmax(460px,1.1fr); align-items: center; min-height: 72vh; direction: ltr; }
+    .cover-copy { grid-column: 2; max-width: 720px; direction: rtl; text-align: right; }
+    .cover-copy .ltr { text-align: right; }
+    .cover h1 { font-size: clamp(42px,5.8vw,88px); }
+    .cover .title-small { display: block; margin-bottom: 12px; font-size: clamp(19px,1.8vw,28px); color: var(--gold); letter-spacing: 0; }
+    .cover .subline { margin-top: 30px; display: flex; gap: 12px; flex-wrap: wrap; font: 500 10px/1.5 "IBM Plex Mono",monospace; letter-spacing: .16em; color: rgba(245,233,210,.58); direction: rtl; }
+    .cover .subline i { font-style: normal; color: rgba(233,188,92,.45); }
+    .scroll-cue { position: absolute; bottom: -32px; right: 0; display: flex; align-items: center; gap: 12px; direction: ltr; font: 500 8px/1 "IBM Plex Mono",monospace; letter-spacing: .22em; color: rgba(233,188,92,.48); }
+    .scroll-cue::before { content:""; width: 44px; height: 1px; background: linear-gradient(90deg,transparent,var(--gold)); animation: breathe 2.2s ease-in-out infinite; }
+
+    .split { display: grid; grid-template-columns: 1.08fr .92fr; gap: clamp(48px,7vw,110px); align-items: center; }
+    .split.reverse { grid-template-columns: .92fr 1.08fr; }
+    .copy { max-width: 660px; }
+    .statement { max-width: 900px; }
+    .statement h2 { font-size: clamp(42px,5.8vw,86px); }
+
+    .axes { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; margin-top: 42px; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .axis { position: relative; min-height: 200px; padding: 26px clamp(14px,1.8vw,26px); border-inline-start: 1px solid var(--line); overflow: hidden; }
+    .axis:last-child { border-inline-end: 1px solid var(--line); }
+    .axis b { display: block; margin-bottom: 42px; font: 600 10px/1 "IBM Plex Mono",monospace; letter-spacing: .16em; color: var(--gold); direction: ltr; }
+    .axis p { font-size: 13.5px; line-height: 1.65; }
+    .axis::after { content:""; position:absolute; width: 100px; height: 100px; inset-inline-end:-45px; bottom:-45px; border:1px solid rgba(233,188,92,.1); border-radius:50%; }
+
+    .touch-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 1px; margin-top: 36px; background: var(--line); border: 1px solid var(--line); direction: rtl; }
+    .touch { min-height: 78px; padding: 16px; display: flex; align-items: flex-end; background: rgba(5,5,4,.78); color: rgba(245,233,210,.72); font-size: 13px; font-weight: 500; }
+    .touch:nth-child(2n) { background: rgba(16,13,8,.76); }
+
+    .sponsor-lockup { display: grid; grid-template-columns: 1fr 70px 1fr; align-items: center; width: min(760px,100%); margin: 32px auto 0; direction: ltr; }
+    .logo-space { height: 190px; display: grid; place-items: center; border-block: 1px solid var(--line); color: var(--warm); text-align: center; }
+    .logo-space strong { display:block; font: 800 clamp(24px,2.8vw,40px)/1 "Almarai",sans-serif; }
+    .logo-space span { display:block; margin-top:10px; font: 500 9px/1 "IBM Plex Mono",monospace; letter-spacing:.2em; color:rgba(233,188,92,.65); }
+    .lock-mark { height: 70px; display:grid; place-items:center; color:rgba(233,188,92,.44); font:300 32px/1 "IBM Plex Sans Arabic",sans-serif; }
+    .hero-center { text-align:center; }
+    .hero-center .lead { margin-inline:auto; }
+
+    .rights-lines { display:grid; grid-template-columns:repeat(3,1fr); gap:clamp(24px,4vw,60px); margin-top:38px; }
+    .rights-group { border-top:1px solid var(--gold); padding-top:18px; }
+    .rights-group .tag { margin-bottom:30px; font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.18em; color:rgba(233,188,92,.65); direction:ltr; }
+    ul.clean { list-style:none; padding:0; margin:0; }
+    ul.clean li { position:relative; padding:9px 16px 9px 0; border-bottom:1px solid rgba(245,233,210,.08); font-size:13.5px; line-height:1.55; color:rgba(245,233,210,.7); }
+    ul.clean li::before { content:""; position:absolute; right:0; top:18px; width:5px; height:1px; background:var(--gold); }
+
+    .game-stage { position:relative; height:min(56vh,480px); min-height:360px; border:1px solid rgba(233,188,92,.18); overflow:hidden; background:linear-gradient(180deg,rgba(4,4,3,.5),rgba(14,10,5,.86)); }
+    .game-stage::before { content:""; position:absolute; inset:44% -8% -30%; background:repeating-linear-gradient(90deg,transparent 0 11%,rgba(233,188,92,.11) 11.1% 11.4%,transparent 11.5% 22%); transform:perspective(500px) rotateX(62deg); transform-origin:top; }
+    .game-stage::after { content:""; position:absolute; left:0; right:0; top:44%; height:1px; background:linear-gradient(90deg,transparent,var(--gold),transparent); box-shadow:0 0 26px rgba(233,188,92,.38); }
+    .hud { position:absolute; z-index:2; border:1px solid rgba(233,188,92,.25); background:rgba(5,5,4,.82); backdrop-filter:blur(8px); padding:13px 16px; }
+    .hud small { display:block; font:600 8px/1.4 "IBM Plex Mono",monospace; letter-spacing:.14em; color:rgba(233,188,92,.75); direction:ltr; }
+    .hud strong { display:block; margin-top:6px; font:600 clamp(12px,1.15vw,16px)/1.35 "IBM Plex Sans Arabic",sans-serif; color:var(--warm); direction:ltr; }
+    .hud-a { top:22px; left:22px; width:calc(50% - 32px); }
+    .hud-b { top:22px; right:22px; width:calc(50% - 32px); }
+    .hud-c { bottom:22px; left:50%; transform:translateX(-50%); min-width:260px; text-align:center; }
+    .game-copy { max-width:540px; }
+    .pill-line { display:flex; gap:8px; flex-wrap:wrap; margin-top:20px; direction:ltr; }
+    .pill-line span { border:1px solid rgba(233,188,92,.25); padding:7px 11px; font:600 8px/1 "IBM Plex Mono",monospace; letter-spacing:.1em; color:rgba(245,233,210,.6); }
+
+    /* Visual Architecture Frames */
+    .visual-box { position:relative; min-height:360px; height:min(54vh,460px); border:1px solid var(--line); background:linear-gradient(180deg,rgba(7,6,4,.6),rgba(15,11,6,.85)); overflow:hidden; }
+    .venue-blueprint { position:relative; width:100%; height:100%; }
+    .venue-core { position:absolute; inset:16% 12%; border:1px solid rgba(233,188,92,.35); transform:skewY(-4deg); background:rgba(233,188,92,.025); }
+    .venue-core::before,.venue-core::after { content:""; position:absolute; border:1px solid rgba(233,188,92,.15); }
+    .venue-core::before { inset:12%; }
+    .venue-core::after { inset:26%; background:radial-gradient(circle,rgba(233,188,92,.13),transparent 60%); }
+    .venue-label { position:absolute; z-index:2; padding-right:16px; font-size:11.5px; color:rgba(245,233,210,.65); font-weight:500; }
+    .venue-label::before { content:""; position:absolute; right:0; top:8px; width:7px; height:1px; background:var(--gold); box-shadow:0 0 8px var(--gold); }
+
+    /* Dual Venue Experience Diagram */
+    .venue-migration { display:grid; grid-template-columns:1fr 60px 1fr; align-items:center; height:100%; padding:24px; direction:ltr; }
+    .migration-hub { border:1px solid var(--line); background:rgba(5,5,4,.8); padding:24px 18px; text-align:center; height:100%; display:flex; flex-direction:column; justify-content:center; gap:8px; }
+    .migration-hub small { font:600 8px/1 "IBM Plex Mono",monospace; letter-spacing:.2em; color:var(--gold); }
+    .migration-hub strong { font:700 16px/1.3 "Almarai",sans-serif; color:var(--warm); }
+    .migration-hub p { font-size:12px; color:rgba(245,233,210,.55); margin-top:4px; line-height:1.45; }
+    .migration-arrow { display:grid; place-items:center; color:var(--gold); font:500 20px/1 "IBM Plex Mono",monospace; }
+
+    /* 12-Month Platform Engine Visual */
+    .platform-visual { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+    .platform-card { padding:22px; background:rgba(5,5,4,.84); }
+    .platform-card:nth-child(2), .platform-card:nth-child(3) { background:rgba(14,11,6,.8); }
+    .platform-card b { display:block; font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; color:var(--gold); margin-bottom:12px; direction:ltr; }
+    .platform-card h4 { margin:0 0 8px; font:700 15px/1.3 "Almarai",sans-serif; color:var(--warm); }
+    .platform-card p { font-size:12.5px; line-height:1.6; color:rgba(245,233,210,.6); }
+
+    /* Apparel & Kit Visual */
+    .apparel-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(16px,3vw,32px); margin-top:34px; }
+    .apparel-card { border-top:1px solid var(--gold); padding-top:20px; }
+    .apparel-card .tag { font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.18em; color:var(--gold); margin-bottom:16px; direction:ltr; }
+
+    /* Media Columns */
+    .media-columns { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:36px; }
+    .media-col { min-height:280px; padding:24px; background:rgba(5,5,4,.84); }
+    .media-col:nth-child(2) { background:rgba(15,12,7,.8); }
+    .media-col h3 { direction:ltr; text-align:left; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.14em; }
+
+    /* Horizontal Connected Timeline */
+    .timeline { display:grid; grid-template-columns:repeat(3,1fr); gap:0; margin-top:48px; position:relative; }
+    .timeline::before { content:""; position:absolute; top:9px; right:0; left:0; height:1px; background:linear-gradient(90deg,rgba(233,188,92,.14),var(--gold),rgba(233,188,92,.14)); }
+    .phase { position:relative; padding:32px clamp(16px,2.8vw,38px) 0; border-inline-start:1px solid rgba(233,188,92,.12); }
+    .phase::before { content:""; position:absolute; top:5px; right:clamp(16px,2.8vw,38px); width:9px; height:9px; border-radius:50%; background:var(--ink); border:1px solid var(--gold); box-shadow:0 0 14px rgba(233,188,92,.5); }
+    .phase .when { margin-bottom:20px; font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.18em; color:var(--gold); direction:ltr; }
+
+    /* 4 Grand Strategic Pillars (One Year of Value) */
+    .pillars-year { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:38px; }
+    .pillar-box { padding:26px 20px; background:rgba(5,5,4,.85); min-height:260px; display:flex; flex-direction:column; justify-content:space-between; }
+    .pillar-box:nth-child(2n) { background:rgba(15,11,6,.82); }
+    .pillar-box .num { font:600 11px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; color:var(--gold); direction:ltr; }
+    .pillar-box h3 { font:700 17px/1.3 "Almarai",sans-serif; color:var(--warm); margin:14px 0 10px; }
+    .pillar-box p { font-size:12.5px; line-height:1.65; color:rgba(245,233,210,.65); }
+    .pillar-box .badge { margin-top:auto; padding-top:14px; font:600 8px/1 "IBM Plex Mono",monospace; letter-spacing:.14em; color:rgba(233,188,92,.65); border-top:1px solid rgba(233,188,92,.15); direction:ltr; }
+
+    /* Categorized Rights Matrix */
+    .matrix-categories { display:grid; grid-template-columns:1fr 1fr; gap:24px 38px; margin-top:28px; direction:rtl; }
+    .matrix-group { border-top:1px solid var(--line-strong); padding-top:14px; }
+    .matrix-group h4 { margin:0 0 10px; font:700 12px/1.3 "Almarai",sans-serif; letter-spacing:.02em; color:var(--gold); direction:rtl; text-align:right; }
+    .matrix-item { display:grid; grid-template-columns:22px 1fr auto; align-items:center; min-height:36px; border-bottom:1px solid rgba(245,233,210,.07); direction:rtl; text-align:right; font-size:12.5px; }
+    .matrix-item .check { color:var(--gold); font:700 12px/1 "IBM Plex Mono",monospace; }
+    .matrix-item .name { color:rgba(245,233,210,.82); font:400 12px/1.4 "IBM Plex Sans Arabic",sans-serif; }
+    .matrix-item .tag { color:rgba(233,188,92,.85); font:600 9.5px/1 "IBM Plex Mono",monospace; letter-spacing:.06em; margin-inline-start:12px; }
+
+    /* Investment Pricing */
+    .investment { text-align:center; }
+    .investment h2 { margin-bottom:8px; }
+    .price-wrap { margin:20px 0 8px; }
+    .price { font:600 clamp(66px,10.5vw,150px)/.88 "IBM Plex Mono",monospace; letter-spacing:-.08em; color:var(--warm); direction:ltr; display:inline-block; }
+    .price small { font-size:.22em; letter-spacing:.1em; color:var(--gold); }
+    .vat { font:600 11px/1 "IBM Plex Mono",monospace; letter-spacing:.25em; color:rgba(233,188,92,.7); direction:ltr; }
+    .investment-scope { width:min(960px,100%); margin:32px auto 0; display:grid; grid-template-columns:1fr 1fr; gap:24px 38px; text-align:right; border-top:1px solid var(--line); padding-top:18px; }
+    .investment-scope h3 { font-size:14px; color:var(--gold); margin-bottom:6px; }
+    .investment-scope p { font-size:12.5px; line-height:1.6; }
+
+    /* Commitments & Finale */
+    .commit-grid { display:grid; grid-template-columns:1fr 1fr; gap:clamp(36px,6vw,96px); margin-top:30px; }
+    .commit { border-top:1px solid var(--gold); padding-top:18px; }
+    .measure { margin-top:28px; display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
+    .measure div { padding:14px 16px; background:rgba(5,5,4,.88); }
+    .measure b { display:block; font:600 8px/1.3 "IBM Plex Mono",monospace; letter-spacing:.1em; color:rgba(233,188,92,.65); direction:ltr; }
+    .measure span { display:block; margin-top:6px; font-size:11.5px; color:rgba(245,233,210,.7); }
+
+    .finale { align-items:center; text-align:center; }
+    .finale .scene-inner { min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:2vh; }
+    .finale h2 { font-size:clamp(48px,7.2vw,108px); margin-bottom:16px; }
+    .finale .sponsor-name { margin-top:36vh; font:800 clamp(20px,2.4vw,34px)/1.2 "Almarai",sans-serif; color:var(--warm); }
+    .finale .sponsor-role { margin-top:8px; font:600 10px/1.5 "IBM Plex Mono",monospace; letter-spacing:.18em; color:var(--gold); direction:ltr; }
+    .contact { position:absolute; right:0; left:0; bottom:-30px; display:flex; justify-content:center; gap:24px; flex-wrap:wrap; font-size:11px; color:rgba(245,233,210,.45); direction:ltr; }
+
+    /* Controls & Footer */
+    .footer-controls { position:fixed; left:var(--edge); bottom:22px; z-index:14; display:flex; align-items:center; gap:8px; direction:ltr; }
+    .footer-controls button { width:36px; height:36px; display:grid; place-items:center; border:1px solid rgba(233,188,92,.26); border-radius:50%; background:rgba(5,5,4,.58); color:rgba(245,233,210,.7); cursor:pointer; backdrop-filter:blur(8px); transition:.25s var(--ease); }
+    .footer-controls button:hover { border-color:rgba(233,188,92,.78); color:var(--gold); transform:translateY(-2px); }
+    .footer-note { position:fixed; bottom:26px; right:var(--edge); z-index:13; font:500 8px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; color:rgba(245,233,210,.32); direction:ltr; }
+    .scroll-space { height:1900vh; min-height:1900dvh; position:relative; z-index:-1; pointer-events:none; }
+
+    @keyframes breathe { 0%,100%{opacity:.28;transform:scaleX(.72)} 50%{opacity:1;transform:scaleX(1)} }
+
+    @media (max-width: 980px) {
+      .mast-title { display:none; }
+      .masthead { grid-template-columns:1fr 1fr; }
+      .cover .scene-inner,.split,.split.reverse { grid-template-columns:1fr; }
+      .cover-copy { grid-column:1; max-width:620px; margin-inline-start:auto; }
+      .axes,.pillars-year { grid-template-columns:repeat(2,1fr); }
+      .axis { min-height:140px; }
+      .axis b { margin-bottom:20px; }
+      .touch-grid { grid-template-columns:repeat(2,1fr); }
+      .rights-lines { gap:20px; }
+      .game-stage,.visual-box { height:38vh; min-height:280px; }
+      .measure { grid-template-columns:repeat(2,1fr); }
+      .matrix-categories,.investment-scope { grid-template-columns:1fr; }
+    }
+
+    @media (max-width: 720px) {
+      :root { --edge:18px; }
+      .rail,.footer-note { display:none; }
+      .masthead { padding-top:14px; }
+      .brand-ar { font-size:17px; }
+      .scene { padding-top:72px; padding-bottom:66px; overflow-y:auto; }
+      .scene-inner { margin:auto 0; }
+      .scene-no { display:none; }
+      h1 { font-size:clamp(36px,12vw,54px); }
+      h2 { font-size:clamp(29px,9.2vw,44px); }
+      .cover h1 { font-size:clamp(35px,11vw,52px); }
+      .cover-copy { margin-top:34vh; }
+      .cover .title-small { font-size:16px; }
+      .cover .subline { gap:6px; font-size:8px; }
+      .scroll-cue { bottom:-20px; }
+      .axes,.rights-lines,.media-columns,.timeline,.pillars-year,.apparel-grid,.commit-grid { grid-template-columns:1fr; }
+      .axes { max-height:48vh; overflow:auto; }
+      .axis { min-height:104px; padding:16px; }
+      .axis b { margin-bottom:10px; }
+      .rights-lines { gap:16px; }
+      .rights-group .tag { margin-bottom:10px; }
+      ul.clean li { padding-block:6px; font-size:12px; }
+      .touch-grid { margin-top:18px; max-height:30vh; overflow:auto; }
+      .touch { min-height:52px; padding:10px; font-size:11.5px; }
+      .sponsor-lockup { grid-template-columns:1fr 34px 1fr; }
+      .logo-space { height:130px; }
+      .logo-space strong { font-size:18px; }
+      .lock-mark { width:34px; font-size:24px; }
+      .game-stage,.visual-box { min-height:240px; height:34vh; }
+      .hud { padding:9px 11px; }
+      .hud-a { top:10px; left:10px; width:calc(50% - 14px); }
+      .hud-b { top:10px; right:10px; width:calc(50% - 14px); }
+      .hud-c { bottom:10px; min-width:200px; }
+      .media-columns { max-height:50vh; overflow:auto; }
+      .media-col { min-height:0; padding:16px; }
+      .timeline { margin-top:22px; }
+      .timeline::before { top:0; right:5px; bottom:0; left:auto; width:1px; height:auto; }
+      .phase { padding:6px 22px 14px 0; border:0; }
+      .phase::before { top:10px; right:1px; }
+      .phase .when { margin-bottom:6px; }
+      .pillars-year { max-height:46vh; overflow:auto; }
+      .pillar-box { min-height:0; padding:16px; }
+      .platform-visual { grid-template-columns:1fr; }
+      .venue-migration { grid-template-columns:1fr; gap:10px; }
+      .migration-arrow { transform:rotate(90deg); }
+      .matrix-categories { gap:16px; margin-top:14px; max-height:46vh; overflow:auto; }
+      .commit-grid { gap:12px; margin-top:14px; }
+      .commit { padding-top:10px; }
+      .measure { margin-top:14px; grid-template-columns:repeat(2,1fr); }
+      .measure div { padding:8px 10px; }
+      .price { font-size:clamp(52px,18vw,80px); }
+      .price small { display:block; margin-top:14px; }
+      .investment-scope { grid-template-columns:1fr; gap:8px; margin-top:22px; max-height:24vh; overflow:auto; }
+      .finale .sponsor-name { margin-top:30vh; }
+      .contact { bottom:-24px; gap:8px; font-size:8.5px; }
+      .footer-controls { bottom:14px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior:auto; }
+      *,*::before,*::after { animation-duration:.001ms!important; animation-iteration-count:1!important; }
+    }
+
+    @media print {
+      @page { size: 16in 9in; margin:0; }
+      body { print-color-adjust:exact; -webkit-print-color-adjust:exact; }
+      .stage { position:static; overflow:visible; }
+      #field,.rail,.progress,.footer-controls,.footer-note,.scroll-space { display:none!important; }
+      .masthead { position:fixed; }
+      .scenes { position:static; }
+      .scene { position:relative; display:flex!important; opacity:1!important; transform:none!important; width:100vw; height:100vh; page-break-after:always; background:var(--ink); }
+    }
+  </style>
+</head>
+<body>
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <main class="stage" id="stage">
+    <canvas id="field" aria-hidden="true"></canvas>
+    <div class="atmosphere" aria-hidden="true"></div>
+
+    <header class="masthead">
+      <div class="brand" aria-label="صهيل">
+        <span class="brand-ar">صَهيل</span>
+        <span class="brand-en">SAHEEL</span>
+      </div>
+      <div class="mast-title">OFFICIAL SPONSORSHIP PROPOSAL · 2026</div>
+      <div class="counter"><b id="pageNow">01</b> / <span id="pageTotal">18</span></div>
+    </header>
+
+    <nav class="rail" id="rail" aria-label="التنقل بين صفحات العرض"></nav>
+
+    <div class="scenes" id="scenes" aria-live="polite">
+      
+      <!-- 01: COVER -->
+      <section class="scene cover" data-label="COVER">
+        <div class="scene-inner">
+          <span class="scene-no">01 — OFFICIAL SPONSORSHIP</span>
+          <div class="cover-copy">
+            <div class="eyebrow">RIYADH · 2026</div>
+            <h1><span class="title-small">ملف الرعاية الرسمي</span>بطولة [اسم البطولة]<br>لسباقات الخيل الإلكترونية</h1>
+            <p class="lead ltr">BEYOND SPONSORSHIP · A YEAR OF STRATEGIC VALUE</p>
+            <div class="subline"><span>الفروسية</span><i>×</i><span>التقنية</span><i>×</i><span>التجربة</span><i>×</i><span>الأثر الممتد</span></div>
+            <div class="scroll-cue">SCROLL TO EXPLORE</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02: THE CHAMPIONSHIP -->
+      <section class="scene" data-label="CHAMPIONSHIP">
+        <div class="scene-inner split">
+          <span class="scene-no">02 — THE CHAMPIONSHIP</span>
+          <div class="copy">
+            <div class="eyebrow">THE CHAMPIONSHIP</div>
+            <h2>سباق مختلف.<br><span class="gold">تجربة تتجاوز المضمار.</span></h2>
+            <p class="lead">بطولة سباقات خيل إلكترونية تفاعلية تجمع المنافسة الرقمية، وحماس الجماهير، والبث الميداني، والأصول التقنية في منظومة متكاملة.</p>
+          </div>
+          <div>
+            <div class="rule"></div>
+            <p class="subhead">حضور يتجاوز الظهور الإعلاني التقليدي ليصبح جزءاً من نسيج السباق والمجتمع الرياضي.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03: WHY SAHEEL -->
+      <section class="scene" data-label="WHY SAHEEL">
+        <div class="scene-inner">
+          <span class="scene-no">03 — WHY THIS CHAMPIONSHIP</span>
+          <div class="eyebrow">FOUR CONNECTED FORCES</div>
+          <h2>أربعة محاور.<br><span class="gold">منظومة واحدة.</span></h2>
+          <div class="axes">
+            <article class="axis"><b>01</b><h3>الفروسية</h3><p>ثقافة راسخة وهوية متجذرة في تراث سباقات الخيل العربية الأصيلة.</p></article>
+            <article class="axis"><b>02</b><h3>التقنية</h3><p>محرك رقمي تفاعلي سريع عبر الويب دون الحاجة لتحميل تطبيقات.</p></article>
+            <article class="axis"><b>03</b><h3>المنافسة</h3><p>سباقات حاسمة وإثارة رياضية مدتها 60 ثانية أمام الجماهير والشاشات.</p></article>
+            <article class="axis"><b>04</b><h3>الأثر المستمر</h3><p>قيمة تمتد لما بعد الفعالية عبر الأصول الرقمية وترخيص المنصة السحابية.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 04: INTEGRATED PRESENCE -->
+      <section class="scene" data-label="INTEGRATED">
+        <div class="scene-inner statement">
+          <span class="scene-no">04 — INTEGRATED PRESENCE</span>
+          <div class="eyebrow">SPONSORSHIP BEYOND PLACEMENT</div>
+          <h2>علامتك لا تقف بجانب السباق.<br><span class="gold">بل تظهر في قلبه.</span></h2>
+          <p class="lead">الرعاية ليست مجرد وضع شعار؛ بل اندماج استراتيجي متعدد نقاط الاتصال يشمل التجربة الرقمية، الميدان، أطقم المتسابقين، والبث المباشر.</p>
+          <div class="touch-grid">
+            <div class="touch">بيئة السباق الرقمية</div><div class="touch">المضمار والشاشات</div><div class="touch">أطقم المتسابقين</div><div class="touch">واجهات اللعبة</div><div class="touch">البث المباشر</div>
+            <div class="touch">لحظات الحسم والتتويج</div><div class="touch">تحديات الجمهور</div><div class="touch">تفعيل مقر الراعي</div><div class="touch">المحتوى والإعلام</div><div class="touch">منصة النادي الرقمية</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 05: MAIN SPONSOR LOCKUP -->
+      <section class="scene hero-center" data-label="MAIN SPONSOR">
+        <div class="scene-inner">
+          <span class="scene-no">05 — OFFICIAL MAIN SPONSOR</span>
+          <div class="eyebrow">THE HIGHEST LEVEL OF COMMERCIAL VISIBILITY</div>
+          <h2>[اسم الراعي]</h2>
+          <p class="subhead">الراعي الرسمي الرئيسي لبطولة [اسم البطولة]</p>
+          <div class="sponsor-lockup" aria-label="موضع شعاري الراعي والبطولة">
+            <div class="logo-space"><div><strong>[شعار الراعي]</strong><span>OFFICIAL MAIN SPONSOR</span></div></div>
+            <div class="lock-mark">×</div>
+            <div class="logo-space"><div><strong>صَهيل</strong><span>[CHAMPIONSHIP LOGO]</span></div></div>
+          </div>
+          <p class="lead" style="margin-top:28px">حيازة الصفة الرسمية وأعلى مستوى من الحضور التجاري، التقني، والإعلامي الحصري طوال فترة الشراكة.</p>
+        </div>
+      </section>
+
+      <!-- 06: CORE RIGHTS -->
+      <section class="scene" data-label="RIGHTS">
+        <div class="scene-inner">
+          <span class="scene-no">06 — SPONSORSHIP RIGHTS</span>
+          <div class="eyebrow">OFFICIAL SPONSORSHIP RIGHTS · LAYER 01</div>
+          <h2>حقوق الرعاية الرسمية</h2>
+          <div class="rights-lines">
+            <article class="rights-group"><div class="tag">OFFICIAL STATUS</div><h3>الصفة الرسمية</h3><ul class="clean"><li>استخدام لقب الراعي الرسمي الرئيسي.</li><li>ظهور الشعار بجوار هوية البطولة في كافة المواد المعتمدة.</li><li dir="ltr">Official Main Sponsor of [Championship]</li></ul></article>
+            <article class="rights-group"><div class="tag">CATEGORY EXCLUSIVITY</div><h3>الحصرية التجارية</h3><ul class="clean"><li>حصرية قطاع النشاط التجاري المتفق عليه.</li><li>عدم منح حقوق مماثلة لأي منافس مباشر في الفئة نفسها خلال مدة العقد.</li><li dir="ltr">Strict Category Exclusivity</li></ul></article>
+            <article class="rights-group"><div class="tag">BRAND PLACEMENT</div><h3>الهوية والظهور</h3><ul class="clean"><li>صدارة المواد الإعلامية والكتيبات والمطبوعات.</li><li>الشاشات الكبرى والمنصات الرقمية للبطولة.</li><li dir="ltr">Premium Co-Branding Framework</li></ul></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 07: IN-GAME INTEGRATION & MOMENTS -->
+      <section class="scene" data-label="IN-GAME">
+        <div class="scene-inner split reverse">
+          <span class="scene-no">07 — IN-GAME INTEGRATION</span>
+          <div class="game-stage" aria-label="نموذج بصري للرعاية داخل اللعبة">
+            <div class="hud hud-a"><small>START SEQUENCE</small><strong>Perfect Start — Presented by [Brand]</strong></div>
+            <div class="hud hud-b"><small>TURBO MOMENT</small><strong>Final Sprint — Powered by [Brand]</strong></div>
+            <div class="hud hud-c"><small>VICTORY CEREMONY</small><strong>Winner Moment — Sponsored by [Brand]</strong></div>
+          </div>
+          <div class="game-copy">
+            <div class="eyebrow">OWNABLE GAME MOMENTS</div>
+            <h2>امتلاك لحظات الحسم في اللعبة</h2>
+            <p>دمج هوية الراعي سياقياً في ذروة الحماس التنافسي: شارات الانطلاقة المثالية، لحظة السرعة القصوى، التتويج، ولوحات المضمار الرقمية بأسلوب راقٍ غير متطفل.</p>
+            <div class="pill-line"><span>INTEGRATED</span><span>CONTEXTUAL</span><span>PREMIUM</span></div>
+            <p class="dim" style="margin-top:20px;font-size:12px" dir="ltr">Perfect Start · Final Sprint · Fastest Lap · Podium Results</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 08: VENUE & AUDIENCE ENGAGEMENT -->
+      <section class="scene" data-label="VENUE">
+        <div class="scene-inner split">
+          <span class="scene-no">08 — VENUE & AUDIENCE</span>
+          <div class="copy">
+            <div class="eyebrow">PHYSICAL & AUDIENCE ACTIVATION</div>
+            <h2>الظهور الميداني وتحديات الجمهور</h2>
+            <p>منظومة حضور بارزة تشمل بوابات الدخول، الشاشات الكبرى بميدان الملك خالد، وخلفيات التصوير الإعلامي، بالإضافة إلى تفعيل تحدي الجمهور <strong>Beat the Champion</strong> في جناح الراعي مع لوحة المتصدرين وبطاقات الأداء الرقمية <strong>Digital Race Cards</strong>.</p>
+            <p class="dim" style="margin-top:16px;font-size:12.5px">Beat the Champion · Photo Backdrop · Audience Leaderboard · VIP Lounge.</p>
+          </div>
+          <div class="visual-box" aria-label="مخطط التموضع الميداني">
+            <div class="venue-blueprint">
+              <div class="venue-core"></div>
+              <span class="venue-label" style="top:10%;right:8%">بوابة الدخول الرئيسية</span>
+              <span class="venue-label" style="top:25%;left:6%">الشاشات الكبرى</span>
+              <span class="venue-label" style="top:50%;right:4%">منطقة المنافسة التفاعلية</span>
+              <span class="venue-label" style="bottom:18%;left:8%">منصة التتويج والجوائز</span>
+              <span class="venue-label" style="bottom:10%;right:18%">جناح VIP</span>
+              <span class="venue-label" style="top:12%;left:32%">جناح تفعيل الراعي</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 09: SPONSOR VENUE / CLUB EXPERIENCE -->
+      <section class="scene" data-label="CLUB VENUE">
+        <div class="scene-inner split reverse">
+          <span class="scene-no">09 — RACING AT SPONSOR VENUE</span>
+          <div class="visual-box" aria-label="مخطط نقل التجربة لمقر الراعي">
+            <div class="venue-migration">
+              <div class="migration-hub">
+                <small>STAGE 01</small>
+                <strong>CHAMPIONSHIP ARENA</strong>
+                <p>ميدان البطولة الرئيسي والمنافسات الرسمية</p>
+              </div>
+              <div class="migration-arrow">→</div>
+              <div class="migration-hub">
+                <small>STAGE 02</small>
+                <strong>SPONSOR VENUE / CLUB</strong>
+                <p>تشغيل التجربة التفاعلية في مقر أو نادي الراعي</p>
+              </div>
+            </div>
+          </div>
+          <div class="copy">
+            <div class="eyebrow">THE RACE COMES TO YOU</div>
+            <h2>تجربة سباقات الخيل في مقر الراعي</h2>
+            <p class="lead">تمتد التجربة التفاعلية إلى مقر الراعي أو ناديه أو فعاليته الخاصة؛ لتوفير بطولة مصغرة وتجربة خاصة للأعضاء أو الموظفين أو كبار الضيوف مع بطولة داخلية <strong>Sponsor Internal Championship</strong>.</p>
+            <div class="rule"></div>
+            <p class="dim" style="font-size:12px">يخضع نطاق التشغيل والموقع والأجهزة المتفق عليها للتفاصيل التشغيلية في العقد النهائي.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10: TECHNOLOGY & CLUB SYSTEM DEVELOPMENT -->
+      <section class="scene" data-label="PLATFORM">
+        <div class="scene-inner">
+          <span class="scene-no">10 — DIGITAL INFRASTRUCTURE</span>
+          <div class="eyebrow">CUSTOM CLUB MANAGEMENT & OPERATIONS SYSTEM</div>
+          <h2>بناء نظام إدارة النادي والمحاسبة والجرد والحجوزات وغيرها وتطويره</h2>
+          <p class="lead">قيمة تقنية واستثمارية استثنائية: تصميم وبناء وتطوير نظام رقمي سحابي متكامل ومخصص للنادي يغطي المحاسبة العامة، الجرد الآلي، إدارة الأعضاء، الحجوزات، والعمليات التشغيلية.</p>
+          <div class="platform-visual" style="margin-top:32px">
+            <article class="platform-card"><b>MODULE 01</b><h4>إدارة النادي والأعضاء</h4><p>قواعد بيانات الأعضاء والفرسان، الاشتراكات، وسجلات الأنشطة والتدريب.</p></article>
+            <article class="platform-card"><b>MODULE 02</b><h4>المحاسبة العامة والفواتير</h4><p>النظام المالي، الفوترة الإلكترونية، القيود، وإدارة الإيرادات والمصروفات.</p></article>
+            <article class="platform-card"><b>MODULE 03</b><h4>إدارة الجرد والمستودعات</h4><p>تتبع الأصول والعتاد، مراقبة المخزون، وإدارة المشتريات ومعدات النادي.</p></article>
+            <article class="platform-card"><b>MODULE 04</b><h4>الحجوزات والفعاليات والتقارير</h4><p>جدولة الميدان والمرافق، حجز الفعاليات، والتقارير التشغيلية والمالية الشاملة.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 11: OFFICIAL APPAREL & RACING KITS -->
+      <section class="scene" data-label="APPAREL">
+        <div class="scene-inner">
+          <span class="scene-no">11 — APPAREL & IDENTITY</span>
+          <div class="eyebrow">YOUR BRAND ON THE RIDERS</div>
+          <h2>الزي الرسمي للمتسابقين وممثلي الراعي</h2>
+          <div class="apparel-grid">
+            <article class="apparel-card">
+              <div class="tag">COMPETITOR OFFICIAL KIT</div>
+              <h3>الزي الرسمي للمتسابقين</h3>
+              <p>تصميم وتنفيذ زي موحد للمتسابقين يحمل هوية البطولة وشعار الراعي الرئيسي في موضع بارز، يظهر في المنافسات، البث، المؤتمرات الصحفية، والتتويج.</p>
+              <ul class="clean" style="margin-top:16px"><li>حضور مستمر خلال كافة أشواط البطولة.</li><li>الظهور في الصور الرسمية واللقطات الحصرية.</li></ul>
+            </article>
+            <article class="apparel-card">
+              <div class="tag">SPONSOR CLUB APPAREL</div>
+              <h3>زي ممثلي الراعي / النادي</h3>
+              <p>تطوير مجموعة أزياء رسمية خاصة بممثلي الراعي أو فريق النادي مخصصة للبطولة والفعاليات المتصلة بها وفق دليل الهوية المعتمد.</p>
+              <ul class="clean" style="margin-top:16px"><li>Official Sponsor Club Collection.</li><li>توزيع رسمي محدد وفق نطاق الاتفاق النهائي.</li></ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12: BROADCAST & MEDIA PACKAGE -->
+      <section class="scene" data-label="MEDIA">
+        <div class="scene-inner">
+          <span class="scene-no">12 — BROADCAST & CONTENT</span>
+          <div class="eyebrow">MEDIA ASSETS & BROADCAST VISIBILITY</div>
+          <h2>البث. المحتوى. حقوق الاستخدام.</h2>
+          <div class="media-columns">
+            <article class="media-col">
+              <h3>BROADCAST</h3>
+              <ul class="clean"><li>فواصل ورسومات البث المباشر.</li><li>رسومات الشوط وتسمية السباق الرسمي.</li><li>لوحة النتائج والهايلايتس.</li><li dir="ltr">Live Race Overlays</li></ul>
+            </article>
+            <article class="media-col">
+              <h3>SPONSOR CONTENT</h3>
+              <ul class="clean"><li>إعلان الرعاية الرسمي والحملة الرقمية.</li><li>فيديو ملخص مخصص للراعي Sponsor Cut.</li><li>الظهور في الفيلم التوثيقي الرسمي Aftermovie.</li><li dir="ltr">Curated Content Package</li></ul>
+            </article>
+            <article class="media-col">
+              <h3>USAGE RIGHTS</h3>
+              <ul class="clean"><li>حقوق استخدام مواد البطولة في قنوات الراعي.</li><li>صور عالية الدقة للمنصات والموقع المؤسسي.</li><li>المحتوى التسويقي والداخلي المتفق عليه.</li><li dir="ltr">Defined Content License</li></ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 13: SPONSORSHIP TIMELINE -->
+      <section class="scene" data-label="TIMELINE">
+        <div class="scene-inner">
+          <span class="scene-no">13 — SPONSORSHIP TIMELINE</span>
+          <div class="eyebrow">BEFORE · LIVE · AFTER</div>
+          <h2>الرعاية لا تبدأ مع صافرة البداية.<br><span class="gold">ولا تنتهي عند خط النهاية.</span></h2>
+          <div class="timeline">
+            <article class="phase"><div class="when">BEFORE</div><h3>قبل البطولة</h3><p>الإعلان الرسمي، الحملة التشويقية، دمج الهوية باللعبة، وإنتاج الأطقم والمواد التعريفية.</p></article>
+            <article class="phase"><div class="when">LIVE</div><h3>أثناء البطولة</h3><p>الظهور الميداني، البث، تفعيل اللعبة والشاشات، سباق الراعي الرسمي، وضيافة VIP.</p></article>
+            <article class="phase"><div class="when">AFTER</div><h3>بعد البطولة والقيمة المستمرة</h3><p>بناء وتطوير نظام إدارة النادي، تفعيل مقر الراعي، تسليم حزمة المحتوى، وتقرير الأداء الشامل.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 14: STRATEGIC VALUE ADDITIONS -->
+      <section class="scene" data-label="STRATEGIC">
+        <div class="scene-inner">
+          <span class="scene-no">14 — STRATEGIC VALUE ADDITIONS</span>
+          <div class="eyebrow">LAYER 02 · HIGH-VALUE ASSETS</div>
+          <h2>القيمة المضافة الاستراتيجية</h2>
+          <div class="axes">
+            <article class="axis"><b>01</b><h3>سباق وجائزة باسم الراعي</h3><p>تسمية شوط رسمي وجائزة أداء خاصة باسم الراعي يقدمها ممثله.</p></article>
+            <article class="axis"><b>02</b><h3>تفعيل المقر والبطولة الداخلية</h3><p>تشغيل التجربة وإقامة بطولة داخلية لموظفي أو أعضاء الراعي.</p></article>
+            <article class="axis"><b>03</b><h3>بناء وتطوير نظام النادي</h3><p>بناء نظام إدارة النادي والمحاسبة والجرد والحجوزات وتطويره.</p></article>
+            <article class="axis"><b>04</b><h3>الأطقم وبطاقات النتائج</h3><p>الزي الرسمي للمتسابقين وبطاقات الأداء الرقمية القابلة للنشر.</p></article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 15: ONE YEAR OF VALUE -->
+      <section class="scene" data-label="YEAR OF VALUE">
+        <div class="scene-inner">
+          <span class="scene-no">15 — BEYOND SPONSORSHIP</span>
+          <div class="eyebrow">A FULL YEAR OF STRATEGIC ROI</div>
+          <h2>البطولة هي البداية.<br><span class="gold">والقيمة تستمر لعام كامل.</span></h2>
+          <div class="pillars-year">
+            <article class="pillar-box">
+              <span class="num">01 — CHAMPIONSHIP</span>
+              <h3>حقوق البطولة</h3>
+              <p>الصفة الرسمية، الحصرية التجارية، التموضع الميداني، الشاشات الكبرى، والبث المباشر.</p>
+              <span class="badge">LIVE EXPOSURE</span>
+            </article>
+            <article class="pillar-box">
+              <span class="num">02 — EXPERIENCE</span>
+              <h3>التجربة والتفاعل</h3>
+              <p>رعاية لحظات اللعبة، سباق الراعي، تحدي الجمهور، ونقل التجربة لمقر ونادي الراعي.</p>
+              <span class="badge">IMMERSIVE ENGAGEMENT</span>
+            </article>
+            <article class="pillar-box">
+              <span class="num">03 — TECHNOLOGY</span>
+              <h3>المنظومة التقنية والنظام</h3>
+              <p>بناء وتطوير نظام إدارة النادي والمحاسبة والجرد والحجوزات المخصص والتشغيل السحابي.</p>
+              <span class="badge">CUSTOM CLUB SYSTEM</span>
+            </article>
+            <article class="pillar-box">
+              <span class="num">04 — LEGACY</span>
+              <h3>الأثر والأصول</h3>
+              <p>حزمة المحتوى، حقوق الاستخدام، الأطقم الرسمية، تقرير الأداء، وأولوية تجديد الرعاية.</p>
+              <span class="badge">LONG-TERM VALUE</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- 16: COMPLETE RIGHTS MATRIX -->
+      <section class="scene" data-label="MATRIX">
+        <div class="scene-inner">
+          <span class="scene-no">16 — RIGHTS MATRIX</span>
+          <div class="eyebrow">حزمة الراعي الرسمي الرئيسي الشاملة</div>
+          <h2>مصفوفة المزايا والحقوق الشاملة</h2>
+          <div class="matrix-categories">
+            <div>
+              <div class="matrix-group">
+                <h4>الحقوق الرسمية والهوية التجارية</h4>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">لقب الراعي الرسمي الرئيسي للبطولة</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">الحصرية التجارية لقطاع النشاط</span><span class="tag">حصري بالكامل</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">الشعار المشترك وصدارة الهوية البصرية</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">تسمية شوط وجائزة أداء رسمية باسم الراعي</span><span class="tag">مشمول</span></div>
+              </div>
+              <div class="matrix-group" style="margin-top:14px">
+                <h4>التجربة والتفعيل التفاعلي</h4>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">رعاية لحظات الحسم والسرعة داخل اللعبة</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">تشغيل تجربة السباق التفاعلي بمقر الراعي</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">إقامة بطولة داخلية خاصة لموظفي وأعضاء الراعي</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">تفعيل تحدي الجمهور (Beat the Champion)</span><span class="tag">مشمول</span></div>
+              </div>
+              <div class="matrix-group" style="margin-top:14px">
+                <h4>المنظومة التقنية والأصول الرقمية</h4>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">بناء وتطوير نظام إدارة النادي والمحاسبة والجرد والحجوزات</span><span class="tag">نظام مخصص</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">بطاقات الأداء الرقمية للمتسابقين للنشر الفوري</span><span class="tag">مشمول</span></div>
+              </div>
+            </div>
+            <div>
+              <div class="matrix-group">
+                <h4>البث المباشر والإعلام والمحتوى</h4>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">رسومات وفواصل البث التلفزيوني والرقمي المباشر</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">الحملة الإعلامية والإعلان الصحفي الرسمي</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">حزمة الإنتاج المرئي والمحتوى المخصص للراعي</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">حقوق استخدام مواد البطولة في قنوات الراعي</span><span class="tag">نطاق معتمد</span></div>
+              </div>
+              <div class="matrix-group" style="margin-top:14px">
+                <h4>الضيافة والأطقم ومراسم التتويج</h4>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">ضيافة كبار الشخصيات وتذاكر الاستقبال VIP</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">الشعار على الزي الرسمي للمتسابقين</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">المجموعة الرسمية لزي ممثلي الراعي / النادي</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">المشاركة الرسمية في تسليم الكؤوس والتتويج</span><span class="tag">مشمول</span></div>
+              </div>
+              <div class="matrix-group" style="margin-top:14px">
+                <h4>التقارير وتحليل الأثر والتجديد</h4>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">تقرير أداء الرعاية وتحليل العائد الاستثماري</span><span class="tag">مشمول</span></div>
+                <div class="matrix-item"><span class="check">✓</span><span class="name">أولوية مناقشة تجديد الرعاية للمواسم القادمة</span><span class="tag">أولوية حصرية</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 17: INVESTMENT -->
+      <section class="scene investment" data-label="INVESTMENT">
+        <div class="scene-inner">
+          <span class="scene-no">17 — SPONSORSHIP INVESTMENT</span>
+          <div class="eyebrow">OFFICIAL MAIN SPONSORSHIP PACKAGE</div>
+          <h2>استثمار الرعاية الشامل</h2>
+          <div class="price-wrap">
+            <div class="price">350,000 <small>SAR</small></div>
+            <div class="vat">+ VAT (ضريبة القيمة المضافة)</div>
+          </div>
+          <p class="lead" style="margin:18px auto 0">تشمل القيمة حقوق البطولة الكاملة، دمج اللعبة، تفعيل المقر، بناء وتطوير نظام إدارة النادي والمحاسبة والجرد والحجوزات، الأطقم الرسمية، وحزمة المحتوى.</p>
+          <div class="investment-scope">
+            <div>
+              <h3>تشمل الحزمة الأساسية</h3>
+              <p>كافة الحقوق التجارية والظهور الميداني، اللعبة، البث، بناء وتطوير نظام النادي والمحاسبة والجرد، الأطقم المتفق عليها، إدارة التفعيل، وتقرير الأداء الختامي.</p>
+            </div>
+            <div>
+              <h3>التوسعات والإنتاجات الإضافية</h3>
+              <p>تخضع التجهيزات المعمارية الخاصة، الأجهزة والمعدات الإضافية، أو أيام التشغيل الزائدة لنطاق عمل واتفاق تفصيلي منفصل بحسب طلب الراعي.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 18: COMMITMENTS -->
+      <section class="scene" data-label="COMMITMENTS">
+        <div class="scene-inner">
+          <span class="scene-no">18 — CLEAR COMMITMENTS</span>
+          <div class="eyebrow">RIGHTS · DELIVERY · PARTNERSHIP</div>
+          <h2>علاقة شراكة واضحة.<br><span class="gold">حقوق محددة. التزامات متبادلة.</span></h2>
+          <div class="commit-grid">
+            <article class="commit">
+              <h3>ما نقدمه نحن للراعي</h3>
+              <ul class="clean">
+                <li>تنفيذ كافة حقوق الظهور الميداني والرقمي والبث.</li>
+                <li>بناء وتطوير نظام إدارة النادي والمحاسبة والجرد والحجوزات.</li>
+                <li>إعداد وتشغيل اللعبة وفعالية المقر المتفق عليها.</li>
+                <li>تنفيذ الأطقم الرسمية وتسليم حزمة المحتوى والتقرير.</li>
+              </ul>
+            </article>
+            <article class="commit">
+              <h3>ما يقدمه الراعي</h3>
+              <ul class="clean">
+                <li>قيمة استثمار الرعاية وفق الجدول المالي المعتمد.</li>
+                <li>أصول وهوية العلامة التجارية ودليل الاستخدام.</li>
+                <li>الاعتمادات في المواعيد المحددة وتجهيز مكان تفعيل المقر.</li>
+                <li>دعم إعلان الشراكة عبر القنوات الرسمية المتفق عليها.</li>
+              </ul>
+            </article>
+          </div>
+          <div class="measure">
+            <div><b>CHAMPIONSHIP RIGHTS</b><span>حقوق حصرية كاملة</span></div>
+            <div><b>CLUB PLATFORM</b><span>بناء وتطوير النظام</span></div>
+            <div><b>SPONSOR ACTIVATION</b><span>تشغيل اللعبة بالمقر</span></div>
+            <div><b>PERFORMANCE REPORT</b><span>تقرير أثر الرعاية</span></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 19: FINALE -->
+      <section class="scene finale" data-label="FINALE">
+        <div class="scene-inner">
+          <span class="scene-no">19 — OFFICIAL MAIN SPONSOR</span>
+          <div class="eyebrow">BE AT THE HEART OF THE RACE</div>
+          <h2>كن في قلب السباق.</h2>
+          <div class="sponsor-name">[اسم الراعي]</div>
+          <div class="sponsor-role">OFFICIAL MAIN SPONSOR · بطولة [اسم البطولة]</div>
+          <div class="contact">
+            <span>[البريد الإلكتروني]</span>
+            <span>[رقم التواصل]</span>
+            <span>RIYADH · SAUDI ARABIA</span>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <div class="footer-controls" aria-label="أزرار التنقل">
+      <button type="button" id="prev" aria-label="الصفحة السابقة">←</button>
+      <button type="button" id="next" aria-label="الصفحة التالية">→</button>
+    </div>
+    <div class="footer-note">SCROLL · ARROW KEYS · SWIPE</div>
+  </main>
+
+  <div class="scroll-space" aria-hidden="true"></div>
+
+  <script>
+  (() => {
+    "use strict";
+    const GOLD = [233,188,92];
+    const scenes = [...document.querySelectorAll(".scene")];
+    const rail = document.getElementById("rail");
+    const pageNow = document.getElementById("pageNow");
+    const pageTotal = document.getElementById("pageTotal");
+    const progressBar = document.getElementById("progressBar");
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const mobile = matchMedia("(max-width: 820px)").matches;
+    const count = reduced ? 480 : (mobile ? 850 : 2300);
+
+    if (pageTotal) pageTotal.textContent = String(scenes.length).padStart(2,"0");
+
+    scenes.forEach((scene, i) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.dataset.index = i;
+      b.innerHTML = `<span class="label">${scene.dataset.label}</span><span class="tick"></span>`;
+      b.setAttribute("aria-label", `الانتقال إلى الصفحة ${i + 1}`);
+      b.addEventListener("click", () => jump(i));
+      rail.appendChild(b);
+    });
+    const dots = [...rail.querySelectorAll("button")];
+
+    let targetProgress = 0;
+    let progress = 0;
+    let active = -1;
+    let touchStart = null;
+
+    function scrollTotal() { return Math.max(1, document.documentElement.scrollHeight - innerHeight); }
+    function jump(index) {
+      const i = Math.max(0, Math.min(scenes.length - 1, index));
+      const y = ((i + .16) / scenes.length) * scrollTotal();
+      scrollTo({ top: y, behavior: reduced ? "auto" : "smooth" });
+    }
+    function syncScroll() {
+      targetProgress = Math.max(0, Math.min(.999999, scrollY / scrollTotal()));
+    }
+    function setActive(index) {
+      if (active === index) return;
+      active = index;
+      scenes.forEach((s,i) => s.classList.toggle("active", i === index));
+      dots.forEach((d,i) => d.classList.toggle("active", i === index));
+      pageNow.textContent = String(index + 1).padStart(2,"0");
+      document.title = `${String(index + 1).padStart(2,"0")} · ${scenes[index].dataset.label} — ملف الرعاية الرسمي`;
+    }
+    addEventListener("scroll", syncScroll, {passive:true});
+    addEventListener("resize", syncScroll);
+    addEventListener("keydown", e => {
+      if (["ArrowDown","ArrowRight","PageDown"," "].includes(e.key)) { e.preventDefault(); jump(active + 1); }
+      if (["ArrowUp","ArrowLeft","PageUp"].includes(e.key)) { e.preventDefault(); jump(active - 1); }
+      if (e.key === "Home") { e.preventDefault(); jump(0); }
+      if (e.key === "End") { e.preventDefault(); jump(scenes.length - 1); }
+    });
+    document.getElementById("prev").addEventListener("click", () => jump(active - 1));
+    document.getElementById("next").addEventListener("click", () => jump(active + 1));
+    addEventListener("touchstart", e => { touchStart = e.touches[0].clientY; }, {passive:true});
+    addEventListener("touchend", e => {
+      if (touchStart == null) return;
+      const delta = touchStart - e.changedTouches[0].clientY;
+      if (Math.abs(delta) > 80) jump(active + (delta > 0 ? 1 : -1));
+      touchStart = null;
+    }, {passive:true});
+
+    class ParticleHorse {
+      constructor(canvas) {
+        this.canvas = canvas;
+        this.ctx = canvas.getContext("2d", {alpha:false});
+        this.dprCap = mobile ? 1.35 : 2;
+        this.t = 0;
+        this.pointer = {x:-9999,y:-9999,active:false};
+        this.seed = 917;
+        this.sprite = this.makeSprite();
+        this.parts = Array.from({length:count}, (_,i) => this.makeParticle(i));
+        this.horsePts = this.buildHorse();
+        this.resize();
+        addEventListener("resize", () => this.resize());
+        addEventListener("pointermove", e => { this.pointer.x=e.clientX; this.pointer.y=e.clientY; this.pointer.active=true; }, {passive:true});
+        addEventListener("pointerleave", () => { this.pointer.active=false; });
+        addEventListener("pointerdown", e => this.burst(e.clientX,e.clientY), {passive:true});
+        this.ripples=[];
+      }
+      random() {
+        this.seed = (this.seed * 16807) % 2147483647;
+        return (this.seed - 1) / 2147483646;
+      }
+      makeParticle(i) {
+        const s=this.random();
+        return {x:this.random()*innerWidth,y:this.random()*innerHeight,px:0,py:0,s,rx:this.random(),ry:this.random(),a:this.random()*Math.PI*2,k:.045+s*.055,size:.55+this.random()*1.8,index:i};
+      }
+      makeSprite() {
+        const c=document.createElement("canvas"); c.width=c.height=32;
+        const x=c.getContext("2d"), g=x.createRadialGradient(16,16,0,16,16,16);
+        g.addColorStop(0,"rgba(255,244,218,1)"); g.addColorStop(.22,"rgba(233,188,92,.9)"); g.addColorStop(.58,"rgba(169,112,30,.2)"); g.addColorStop(1,"rgba(80,48,8,0)");
+        x.fillStyle=g; x.fillRect(0,0,32,32); return c;
+      }
+      resize() {
+        this.W=innerWidth; this.H=innerHeight;
+        const dpr=Math.min(devicePixelRatio||1,this.dprCap);
+        this.canvas.width=Math.floor(this.W*dpr); this.canvas.height=Math.floor(this.H*dpr);
+        this.canvas.style.width=this.W+"px"; this.canvas.style.height=this.H+"px";
+        this.ctx.setTransform(dpr,0,0,dpr,0,0);
+        this.ctx.fillStyle="#050504"; this.ctx.fillRect(0,0,this.W,this.H);
+      }
+      buildHorse() {
+        const w=1000,h=600,c=document.createElement("canvas"); c.width=w;c.height=h;
+        const x=c.getContext("2d"); x.fillStyle="#fff";x.strokeStyle="#fff";x.lineCap="round";x.lineJoin="round";
+        const el=(cx,cy,rx,ry,rot=0)=>{x.beginPath();x.ellipse(cx,cy,rx,ry,rot,0,Math.PI*2);x.fill();};
+        const limb=(pts,widths)=>{for(let i=0;i<pts.length-1;i++){x.lineWidth=widths[i];x.beginPath();x.moveTo(...pts[i]);x.lineTo(...pts[i+1]);x.stroke();}};
+        el(344,302,74,70,-.08); el(618,300,58,60,.06);
+        x.beginPath();x.moveTo(300,254);x.bezierCurveTo(400,232,522,238,600,250);x.bezierCurveTo(642,256,656,286,668,318);x.bezierCurveTo(674,332,660,346,640,354);x.bezierCurveTo(598,382,520,394,450,386);x.bezierCurveTo(400,379,360,368,340,352);x.bezierCurveTo(318,338,298,330,288,306);x.bezierCurveTo(277,284,282,264,300,254);x.closePath();x.fill();
+        x.beginPath();x.moveTo(594,246);x.bezierCurveTo(650,196,716,160,768,134);x.lineTo(800,172);x.bezierCurveTo(748,198,706,244,670,320);x.closePath();x.fill();
+        x.beginPath();x.moveTo(766,130);x.bezierCurveTo(800,130,830,150,856,186);x.bezierCurveTo(878,208,896,224,898,238);x.bezierCurveTo(890,252,872,252,856,244);x.bezierCurveTo(834,232,810,214,788,196);x.bezierCurveTo(772,182,760,156,766,130);x.closePath();x.fill();
+        x.beginPath();x.moveTo(760,130);x.lineTo(752,100);x.lineTo(778,126);x.closePath();x.fill();x.beginPath();x.moveTo(780,128);x.lineTo(784,98);x.lineTo(798,126);x.closePath();x.fill();
+        limb([[298,250],[232,224],[150,230],[86,266]],[24,15,8]);limb([[300,268],[238,258],[166,276],[110,306]],[12,8,5]);
+        limb([[648,332],[688,392],[746,406],[800,430],[822,442]],[27,18,13,9]);el(828,446,12,7,.3);limb([[628,338],[646,404],[606,444],[636,472]],[24,16,11]);el(642,476,11,7,-.5);
+        limb([[346,336],[300,404],[236,446],[176,486],[152,498]],[31,20,13,9]);el(146,502,12,7,.25);limb([[368,344],[352,420],[386,470],[418,512]],[27,17,11]);el(422,518,11,7,-.35);
+        x.beginPath();x.moveTo(556,216);x.bezierCurveTo(586,184,636,166,674,168);x.bezierCurveTo(688,180,690,192,686,198);x.bezierCurveTo(650,208,606,234,578,254);x.closePath();x.fill();el(700,152,30,27);x.beginPath();x.moveTo(722,144);x.lineTo(750,156);x.lineTo(720,166);x.closePath();x.fill();el(694,182,15,12,.2);limb([[676,188],[714,208],[762,216]],[14,9]);limb([[762,216],[820,226],[868,234]],[4,3]);limb([[586,242],[624,270],[622,306]],[17,11]);el(634,312,17,8,.12);
+        const data=x.getImageData(0,0,w,h).data, on=(px,py)=>px>=0&&py>=0&&px<w&&py<h&&data[(py*w+px)*4+3]>120;
+        const edge=[],inside=[]; this.seed=2026;
+        for(let i=0;i<90000&&edge.length<2100;i++){
+          const px=80+Math.floor(this.random()*830),py=90+Math.floor(this.random()*440); if(!on(px,py))continue;
+          const e=!on(px+3,py)||!on(px-3,py)||!on(px,py+3)||!on(px,py-3);
+          const pt=[(px-495)/830,(py-305)/440]; if(e)edge.push(pt);else if(inside.length<820)inside.push(pt);
+        }
+        const pts=[]; edge.forEach((pt,i)=>{pts.push(pt);if(i%3===0&&inside.length)pts.push(inside[(i/3|0)%inside.length]);}); return pts;
+      }
+      horse(q,k,variant=0) {
+        const pt=this.horsePts[k%this.horsePts.length];
+        const final=variant===2, sponsor=variant===1;
+        const scale=Math.min(
+          this.W*(final?(mobile?.68:.38):(mobile?.9:.54)),
+          this.H*(final?(mobile?.52:.55):(mobile?.74:.72))
+        );
+        const cx=mobile?.5:(final?.5:(sponsor?.28:.31));
+        const cy=mobile?(final?.52:.30):(final?.56:.56);
+        const gait=this.t*4.8+pt[0]*2.2;
+        return {x:this.W*cx+pt[0]*scale+Math.sin(this.t*.7+q.s*8)*2.2,y:this.H*cy+pt[1]*scale*.66+Math.sin(gait)*this.H*.006,a:.34+q.s*.62,size:.48+q.s*.45};
+      }
+      target(scene,q,k) {
+        const W=this.W,H=this.H,t=this.t,a=q.a;
+        if(scene===0)return this.horse(q,k,0);
+        if(scene===4)return this.horse(q,k,1);
+        if(scene===18)return this.horse(q,k,2);
+        
+        // Scene 1: Championship circle
+        if(scene===1){const r=Math.min(W,H)*(.15+q.rx*.28);return{x:W*.68+Math.cos(a+t*.09)*r,y:H*.48+Math.sin(a+t*.09)*r*.5,a:.12+q.s*.34,size:.4};}
+        // Scene 2: 4 Pillars
+        if(scene===2){const c=k%4,cx=[.22,.44,.66,.82][c],cy=[.34,.63,.34,.63][c],r=Math.min(W,H)*(.04+q.rx*.1);return{x:W*cx+Math.cos(a+t*(.12+c*.03))*r,y:H*cy+Math.sin(a+t*(.12+c*.03))*r,a:.18+q.s*.42,size:.45};}
+        // Scene 3: Touchpoints grid
+        if(scene===3){const col=k%5,row=Math.floor(k/5)%2;return{x:W*(.1+col*.2)+Math.sin(t+q.s*8)*7,y:H*(.35+row*.28)+Math.cos(t*.7+q.s*9)*7,a:.12+q.s*.35,size:.38};}
+        // Scene 5: Rights columns
+        if(scene===5){const col=k%3,u=(k%230)/230;return{x:W*(.2+col*.3)+Math.sin(u*Math.PI*2+t*.1)*W*.055,y:H*(.18+u*.68),a:.1+q.s*.38,size:.4};}
+        // Scene 6: In-game track
+        if(scene===6){const u=q.rx,v=q.ry;return{x:W*(.08+u*.84),y:H*(.45+Math.pow(u,1.4)*.32)+(v-.5)*H*.1,a:.12+q.s*.4,size:.45};}
+        // Scene 7: Venue map grid
+        if(scene===7){const col=k%6,row=Math.floor(k/6)%7;return{x:W*(.17+col*.13)+(row-3)*5,y:H*(.22+row*.09)+Math.sin(t*.5+q.s*8)*4,a:.1+q.s*.33,size:.38};}
+        // Scene 8: Club Venue Migration (2 connected hubs)
+        if(scene===8){const side=k%2?-.25:.25,r=Math.min(W,H)*(.08+q.rx*.08);return{x:W*(.5+side)+Math.cos(a+t*.15)*r,y:H*.5+Math.sin(a+t*.15)*r*.8,a:.14+q.s*.36,size:.42};}
+        // Scene 9: Platform orbital ring
+        if(scene===9){const r=Math.min(W,H)*(.2+q.ry*.06);return{x:W*.5+Math.cos(a+t*.08)*r,y:H*.5+Math.sin(a+t*.08)*r*.7,a:.12+q.s*.38,size:.4};}
+        // Scene 10: Apparel dual silhouette
+        if(scene===10){const side=k%2?-.2:.2;return{x:W*(.5+side)+(q.rx-.5)*W*.14,y:H*.5+(q.ry-.5)*H*.48,a:.1+q.s*.34,size:.4};}
+        // Scene 11: Broadcast & Media waves
+        if(scene===11){const u=q.rx;return{x:W*u,y:H*.5+Math.sin(u*Math.PI*4+t*1.2+q.ry)*H*(.04+q.s*.06),a:.12+q.s*.4,size:.42};}
+        // Scene 12: Timeline 3 nodes
+        if(scene===12){const c=k%3,base=[.18,.5,.82][c];return{x:W*base+(q.rx-.5)*W*.16,y:H*.52+(q.ry-.5)*H*.12,a:.13+q.s*.4,size:.44};}
+        // Scene 13: Strategic value additions constellation
+        if(scene===13){const c=k%4,cx=[.2,.4,.6,.8][c],cy=[.4,.6,.4,.6][c];return{x:W*cx+(q.rx-.5)*W*.1,y:H*cy+(q.ry-.5)*H*.1,a:.11+q.s*.35,size:.4};}
+        // Scene 14: One Year of Value (4 vertical pillar streams)
+        if(scene===14){const col=k%4,u=(k%200)/200;return{x:W*(.15+col*.24)+Math.sin(u*Math.PI*2+t*.15)*12,y:H*(.2+u*.65),a:.1+q.s*.35,size:.38};}
+        // Scene 15: Rights matrix table grid
+        if(scene===15){const col=k%14,row=Math.floor(k/14)%8;return{x:W*(.12+col*.06)+Math.sin(t+q.s*9)*3,y:H*(.25+row*.07)+Math.cos(t*.8+q.s*7)*3,a:.1+q.s*.32,size:.38};}
+        // Scene 16: Investment golden aura
+        if(scene===16){const r=Math.min(W,H)*(.24+q.ry*.06);return{x:W*.5+Math.cos(a+t*.09)*r,y:H*.48+Math.sin(a+t*.09)*r*.6,a:.1+q.s*.35,size:.42};}
+        // Scene 17: Commitments (subtle ambient flank particles)
+        if(scene===17){const side=k%2?-.38:.38;return{x:W*(.5+side)+(q.rx-.5)*W*.14,y:H*.5+(q.ry-.5)*H*.55,a:.06+q.s*.18,size:.35};}
+        
+        // Default
+        const side=k%2?-.24:.24;return{x:W*(.5+side)+(q.rx-.5)*W*.22,y:H*.5+(q.ry-.5)*H*.56,a:.1+q.s*.3,size:.4};
+      }
+      burst(x,y) { this.ripples.push({x,y,start:performance.now()}); if(this.ripples.length>4)this.ripples.shift(); }
+      draw(dt,scene,blend,nextScene) {
+        this.t+=dt/1000;
+        const ctx=this.ctx; ctx.globalCompositeOperation="source-over";ctx.fillStyle="rgba(5,5,4,.28)";ctx.fillRect(0,0,this.W,this.H);ctx.globalCompositeOperation="lighter";
+        const now=performance.now(); this.ripples=this.ripples.filter(r=>now-r.start<1200);
+        for(let k=0;k<this.parts.length;k++){
+          const q=this.parts[k],A=this.target(scene,q,k),B=this.target(nextScene,q,k);
+          let tx=A.x+(B.x-A.x)*blend,ty=A.y+(B.y-A.y)*blend,alpha=A.a+(B.a-A.a)*blend,size=A.size+(B.size-A.size)*blend;
+          if(this.pointer.active){const dx=q.x-this.pointer.x,dy=q.y-this.pointer.y,d=Math.hypot(dx,dy);if(d<130&&d>1){const f=(1-d/130)*24;tx+=dx/d*f;ty+=dy/d*f;alpha=Math.min(1,alpha+.18);}}
+          for(const r of this.ripples){const age=(now-r.start)/1200,dx=q.x-r.x,dy=q.y-r.y,d=Math.hypot(dx,dy)||1,band=Math.abs(d-age*560);if(band<70){const f=(1-band/70)*26*(1-age);tx+=dx/d*f;ty+=dy/d*f;}}
+          q.px=q.x;q.py=q.y;q.x+=(tx-q.x)*q.k;q.y+=(ty-q.y)*q.k;
+          const s=Math.max(.7,size*q.size)*6;ctx.globalAlpha=Math.min(1,alpha);ctx.drawImage(this.sprite,q.x-s/2,q.y-s/2,s,s);
+          const vx=q.x-q.px,vy=q.y-q.py;if(vx*vx+vy*vy>34){ctx.strokeStyle=`rgba(${GOLD.join(",")},${Math.min(.34,alpha*.45)})`;ctx.lineWidth=.65;ctx.beginPath();ctx.moveTo(q.px,q.py);ctx.lineTo(q.x,q.y);ctx.stroke();}
+        }
+        for(const r of this.ripples){const age=(now-r.start)/1200;ctx.globalAlpha=(1-age)*.28;ctx.strokeStyle="rgb(233,188,92)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(r.x,r.y,age*560,0,Math.PI*2);ctx.stroke();}
+        ctx.globalAlpha=1;ctx.globalCompositeOperation="source-over";
+      }
+    }
+
+    const horse = new ParticleHorse(document.getElementById("field"));
+    let last=performance.now();
+    function frame(now) {
+      const dt=Math.min(40,now-last);last=now;
+      progress += (targetProgress-progress) * (reduced ? 1 : .085);
+      const exact=progress*scenes.length;
+      const index=Math.min(scenes.length-1,Math.floor(exact));
+      const local=exact-index;
+      const blend=Math.max(0,Math.min(1,(local-.62)/.28));
+      scenes.forEach((s,i)=>{
+        let opacity=0,y=0;
+        if(i===index){opacity=1-Math.max(0,(local-.72)/.28);y=-Math.max(0,(local-.56))*52;}
+        else if(i===index+1){opacity=Math.max(0,(local-.58)/.32);y=(1-opacity)*48;}
+        s.style.opacity=opacity.toFixed(3);s.style.transform=`translate3d(0,${y.toFixed(1)}px,0)`;
+      });
+      setActive(index);
+      progressBar.style.width=`${progress*100}%`;
+      horse.draw(dt,index,blend,Math.min(scenes.length-1,index+1));
+      requestAnimationFrame(frame);
+    }
+    syncScroll(); setActive(0); requestAnimationFrame(frame);
+    window.SaheelSponsorship = { jump, scenes, horse };
+  })();
+  </script>
+</body>
+</html>
