@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050504">
   <meta name="description" content="البوابة الرسمية لبطولة سباقات الخيل الإلكترونية 2026 — أول بطولة تفاعلية تجمع أصالة الفروسية مع أحدث التقنيات الرقمية">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="ar_SA">
+  <meta property="og:title" content="بطولة سباقات الخيل الإلكترونية 2026">
+  <meta property="og:description" content="حين يلتقي أصيل الفروسية بقمة التقنية الرقمية — اكتشف البطولة وميدانها التفاعلي.">
+  <meta property="og:image" content="images/cinematic/shot-17.webp">
   <title>بطولة سباقات الخيل الإلكترونية 2026 — البوابة الرسمية</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
@@ -33,26 +38,52 @@
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { background: var(--bg); color: var(--paper); font-family: "IBM Plex Sans Arabic", -apple-system, sans-serif; scroll-behavior: smooth; }
-    body { min-height: 100vh; overflow-x: hidden; line-height: 1.6; background: radial-gradient(circle at 50% 0%, #17140e 0%, var(--bg) 65%); }
+    html { background: var(--bg); color: var(--paper); font-family: "IBM Plex Sans Arabic", -apple-system, sans-serif; scroll-behavior: smooth; scroll-padding-top: 96px; }
+    body { min-height: 100dvh; overflow-x: hidden; line-height: 1.6; background: radial-gradient(ellipse at 82% -10%, #211a0e 0%, transparent 42%), radial-gradient(circle at 50% 0%, #11100c 0%, var(--bg) 68%); }
+    body::before { content:""; position:fixed; inset:0; z-index:90; pointer-events:none; opacity:.16; mix-blend-mode:soft-light; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.92' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.13'/%3E%3C/svg%3E"); }
+    a, button { -webkit-tap-highlight-color: transparent; }
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 4px; }
+    .skip-link { position:fixed; top:10px; right:16px; z-index:200; padding:10px 14px; color:var(--bg); background:var(--gold-light); text-decoration:none; font-weight:800; transform:translateY(-150%); transition:transform .2s; }
+    .skip-link:focus { transform:none; }
 
     /* Navigation */
     .nav {
       position: fixed; top: 0; right: 0; left: 0; z-index: 100;
       height: 72px; display: flex; align-items: center; justify-content: space-between;
       padding: 0 clamp(20px, 5vw, 64px);
-      background: rgba(5, 5, 4, 0.78); backdrop-filter: blur(16px);
+      background: rgba(5, 5, 4, 0.68); backdrop-filter: blur(18px) saturate(120%);
       border-bottom: 1px solid var(--border);
+      transition: height .28s var(--ease), background .28s, box-shadow .28s;
     }
+    .nav.scrolled { height: 64px; background:rgba(5,5,4,.9); box-shadow:0 14px 40px rgba(0,0,0,.28); }
     .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
-    .brand-icon { width: 38px; height: 38px; border-radius: 10px; border: 1px solid var(--border-strong); display: grid; place-items: center; background: rgba(233, 188, 92, 0.08); }
-    .brand-icon img { width: 24px; height: 24px; }
+    .brand-icon {
+      position: relative; width: 46px; height: 38px; display: grid; place-items: center;
+      border: 1px solid rgba(233, 188, 92, 0.28); border-radius: 4px 12px 4px 12px;
+      background: radial-gradient(circle at 50% 50%, rgba(233,188,92,.17), rgba(233,188,92,.025) 68%);
+      box-shadow: inset 0 0 18px rgba(233,188,92,.05), 0 0 20px rgba(233,188,92,.08);
+      overflow: hidden;
+    }
+    .brand-icon::after {
+      content:""; position:absolute; inset:4px; border:1px solid rgba(255,231,170,.09);
+      border-radius:2px 8px 2px 8px; pointer-events:none;
+    }
+    .brand-logo-mark {
+      width: 40px; height: 30px; display:block;
+      background: linear-gradient(135deg, #fff1bd 5%, #e9bc5c 44%, #a96e1f 100%);
+      -webkit-mask: url("images/saheel-network-logo.png") center / cover no-repeat;
+      mask: url("images/saheel-network-logo.png") center / cover no-repeat;
+      filter: drop-shadow(0 0 4px rgba(255,226,153,.95)) drop-shadow(0 0 10px rgba(233,188,92,.58));
+    }
     .brand-text h1 { font: 700 16px/1.2 "Almarai", sans-serif; color: var(--paper); }
     .brand-text span { font: 600 8.5px/1 "IBM Plex Mono", monospace; color: var(--gold); letter-spacing: 0.16em; }
 
     .nav-links { display: flex; align-items: center; gap: 28px; list-style: none; }
-    .nav-links a { color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a { position:relative; color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 500; transition: color 0.2s; }
+    .nav-links a::after { content:""; position:absolute; right:0; left:0; bottom:-9px; height:1px; background:var(--gold); transform:scaleX(0); transform-origin:right; transition:transform .25s var(--ease); }
+    .nav-links a:hover::after, .nav-links a.active::after { transform:scaleX(1); }
     .nav-links a:hover { color: var(--gold); }
+    .nav-toggle { display:none; width:42px; height:42px; border:1px solid var(--border); background:rgba(245,233,210,.035); color:var(--paper); cursor:pointer; border-radius:10px; }
     .nav-cta {
       display: inline-flex; align-items: center; gap: 8px;
       padding: 10px 20px; border-radius: 999px;
@@ -64,11 +95,56 @@
 
     /* Hero Section */
     .hero {
-      position: relative; min-height: 92vh; display: flex; align-items: center;
+      position: relative; min-height: 100dvh; display: flex; align-items: center;
       padding: 120px clamp(20px, 5vw, 64px) 60px;
       max-width: 1380px; margin: 0 auto;
     }
+    .hero::after { content:"01 / 05"; position:absolute; left:clamp(20px,5vw,64px); bottom:32px; font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.2em; color:rgba(233,188,92,.4); direction:ltr; }
     .hero-grid { display: grid; grid-template-columns: 1.15fr 1fr; gap: clamp(32px, 5vw, 64px); align-items: center; width: 100%; }
+
+    .hero-network-logo {
+      position: relative; width: clamp(210px, 23vw, 340px); aspect-ratio: 1.48 / 1;
+      margin: 0 0 4px auto; isolation: isolate; display:grid; place-items:center;
+    }
+    .hero-network-logo::before {
+      content:""; position:absolute; inset:6% -8%; z-index:-2;
+      background:radial-gradient(ellipse at center, rgba(233,188,92,.24), rgba(233,188,92,.07) 38%, transparent 72%);
+      filter:blur(14px); animation:logoAura 4.8s ease-in-out infinite;
+    }
+    .hero-network-logo::after {
+      content:""; position:absolute; right:2%; left:2%; bottom:16%; height:1px;
+      background:linear-gradient(90deg, transparent, rgba(233,188,92,.2), rgba(255,235,184,.78), rgba(233,188,92,.2), transparent);
+      box-shadow:0 0 12px rgba(233,188,92,.5); transform:scaleX(.86);
+    }
+    .hero-network-logo-mark {
+      position:absolute; inset:0;
+      background:linear-gradient(125deg, #9f681d 0%, #e9bc5c 28%, #fff0b4 49%, #d69b35 72%, #7e4c13 100%);
+      -webkit-mask:url("images/saheel-network-logo.png") center / cover no-repeat;
+      mask:url("images/saheel-network-logo.png") center / cover no-repeat;
+      filter:drop-shadow(0 0 3px rgba(255,244,206,.95)) drop-shadow(0 0 12px rgba(233,188,92,.8)) drop-shadow(0 0 32px rgba(196,125,27,.34));
+      animation:logoPulse 4.8s ease-in-out infinite;
+    }
+    .hero-network-logo-scan {
+      position:absolute; z-index:2; top:18%; bottom:18%; width:2px; right:8%;
+      background:linear-gradient(180deg, transparent, rgba(255,242,204,.9), transparent);
+      box-shadow:0 0 14px rgba(233,188,92,.85); opacity:0;
+      animation:logoScan 6s ease-in-out infinite;
+    }
+    .hero-network-logo-code {
+      position:absolute; left:4%; bottom:8%; color:rgba(233,188,92,.55);
+      font:600 7px/1 "IBM Plex Mono",monospace; letter-spacing:.18em; direction:ltr;
+    }
+    @keyframes logoPulse {
+      0%,100% { opacity:.88; transform:scale(.985); filter:drop-shadow(0 0 3px rgba(255,244,206,.8)) drop-shadow(0 0 11px rgba(233,188,92,.62)) drop-shadow(0 0 27px rgba(196,125,27,.26)); }
+      50% { opacity:1; transform:scale(1.012); filter:drop-shadow(0 0 4px rgba(255,248,222,1)) drop-shadow(0 0 18px rgba(233,188,92,.9)) drop-shadow(0 0 42px rgba(196,125,27,.42)); }
+    }
+    @keyframes logoAura { 0%,100% { opacity:.64; transform:scale(.92); } 50% { opacity:1; transform:scale(1.06); } }
+    @keyframes logoScan {
+      0%,18% { right:8%; opacity:0; }
+      23% { opacity:.9; }
+      67% { opacity:.55; }
+      72%,100% { right:92%; opacity:0; }
+    }
     
     .hero-tag {
       display: inline-flex; align-items: center; gap: 8px;
@@ -119,7 +195,8 @@
     .stat-item span { font-size: 12px; color: var(--muted); }
 
     /* Hero Media Visual */
-    .hero-media { position: relative; border-radius: 20px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 24px 60px rgba(0, 0, 0, 0.8); }
+    .hero-media { position: relative; border-radius: 6px 28px 6px 28px; overflow: hidden; border: 1px solid var(--border); box-shadow: -28px 32px 80px rgba(0, 0, 0, 0.68); transform:translateY(24px); }
+    .hero-media::before { content:""; position:absolute; z-index:2; inset:0; pointer-events:none; box-shadow:inset 0 0 0 1px rgba(255,255,255,.04), inset 0 -110px 90px rgba(0,0,0,.38); }
     .hero-media img { width: 100%; height: auto; display: block; object-fit: cover; aspect-ratio: 4/3; transition: transform 0.8s var(--ease); }
     .hero-media:hover img { transform: scale(1.03); }
     .hero-media-badge {
@@ -133,7 +210,7 @@
 
     /* Section Global Styles */
     section { padding: 90px clamp(20px, 5vw, 64px); max-width: 1380px; margin: 0 auto; }
-    .section-head { text-align: center; max-width: 720px; margin: 0 auto 60px; }
+    .section-head { text-align: right; max-width: 760px; margin: 0 0 60px auto; }
     .section-eyebrow { font: 700 11px/1 "IBM Plex Mono", monospace; color: var(--gold); letter-spacing: 0.18em; margin-bottom: 12px; }
     .section-title { font: 800 clamp(28px, 3.2vw, 44px)/1.2 "Almarai", sans-serif; margin-bottom: 16px; color: var(--paper); }
     .section-lead { font-size: 16px; color: var(--muted); }
@@ -153,29 +230,74 @@
     .arena-features li { display: flex; align-items: center; gap: 10px; font-size: 14px; color: var(--paper); }
     .arena-features li span { width: 22px; height: 22px; border-radius: 50%; background: rgba(233, 188, 92, 0.15); color: var(--gold); display: grid; place-items: center; font-size: 11px; }
 
-    /* Visual Artwork Gallery Grid */
-    .gallery-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;
+    /* Cinematic visual journey */
+    .cinema-gallery {
+      position:relative; overflow:hidden; padding:clamp(12px,1.5vw,20px);
+      border:1px solid var(--border-strong); border-radius:6px 30px 6px 30px;
+      background:linear-gradient(145deg,rgba(21,17,11,.98),rgba(5,5,4,.98));
+      box-shadow:0 36px 90px rgba(0,0,0,.58), inset 0 1px rgba(255,255,255,.035);
     }
-    .gallery-card {
-      position: relative; border-radius: 16px; overflow: hidden;
-      border: 1px solid var(--border); background: var(--surface);
-      transition: transform 0.4s var(--ease), border-color 0.4s, box-shadow 0.4s;
-    }
-    .gallery-card:hover { transform: translateY(-6px); border-color: var(--border-strong); box-shadow: 0 16px 40px rgba(0,0,0,0.6); }
-    .gallery-card img { width: 100%; height: 220px; object-fit: cover; display: block; }
-    .gallery-info { padding: 20px; }
-    .gallery-info .badge { display: inline-block; font: 600 9px/1 "IBM Plex Mono", monospace; color: var(--gold); padding: 4px 8px; border-radius: 4px; background: rgba(233, 188, 92, 0.1); margin-bottom: 8px; }
-    .gallery-info h4 { font: 700 16px/1.3 "Almarai", sans-serif; color: var(--paper); margin-bottom: 6px; }
-    .gallery-info p { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+    .cinema-gallery::before { content:"KING KHALID RACECOURSE · CINEMATIC ARCHIVE"; position:absolute; top:26px; left:-46px; z-index:4; transform:rotate(-90deg); transform-origin:center; font:600 7px/1 "IBM Plex Mono",monospace; letter-spacing:.2em; color:rgba(233,188,92,.34); direction:ltr; pointer-events:none; }
+    .cinema-stage { --scan-distance:clamp(420px,42vw,650px); position:relative; overflow:hidden; margin:0; aspect-ratio:16/8.7; min-height:420px; background:#070604; border:1px solid rgba(233,188,92,.16); }
+    .cinema-stage::before,.cinema-stage::after { content:""; position:absolute; right:0; left:0; z-index:3; height:clamp(12px,2vw,26px); background:rgba(3,3,2,.86); pointer-events:none; }
+    .cinema-stage::before { top:0; border-bottom:1px solid rgba(233,188,92,.1); }
+    .cinema-stage::after { bottom:0; border-top:1px solid rgba(233,188,92,.1); }
+    .cinema-image { width:100%; height:100%; display:block; object-fit:cover; transform:scale(1.015); filter:saturate(.88) contrast(1.04); transition:opacity .26s var(--ease), transform .8s var(--ease), filter .4s; }
+    .cinema-stage.is-aerial .cinema-image { object-fit:contain; transform:scale(1); filter:saturate(.8) contrast(1.08) brightness(.84); }
+    .cinema-gallery.switching .cinema-image { opacity:.18; transform:scale(1.045); filter:saturate(.6) contrast(1.12); }
+    .cinema-stage:hover .cinema-image { transform:scale(1.035); filter:saturate(1) contrast(1.04); }
+    .cinema-stage.is-aerial:hover .cinema-image { transform:scale(1.012); filter:saturate(.9) contrast(1.09) brightness(.88); }
+    .cinema-vignette { position:absolute; inset:0; z-index:1; pointer-events:none; background:linear-gradient(90deg,rgba(3,3,2,.1),transparent 48%,rgba(3,3,2,.25)),linear-gradient(0deg,rgba(3,3,2,.96) 0%,rgba(3,3,2,.5) 20%,transparent 52%); }
+    .cinema-tech-layer { position:absolute; inset:clamp(13px,2vw,27px) 0; z-index:2; opacity:0; overflow:hidden; pointer-events:none; transition:opacity .45s var(--ease); color:var(--gold-light); font:600 8px/1.4 "IBM Plex Mono",monospace; letter-spacing:.12em; direction:ltr; }
+    .cinema-stage.is-aerial .cinema-tech-layer { opacity:1; }
+    .cinema-tech-grid { position:absolute; inset:0; opacity:.36; background-image:linear-gradient(rgba(233,188,92,.19) 1px,transparent 1px),linear-gradient(90deg,rgba(233,188,92,.19) 1px,transparent 1px); background-size:clamp(42px,5vw,72px) clamp(42px,5vw,72px); -webkit-mask-image:radial-gradient(ellipse at center,#000 25%,transparent 78%); mask-image:radial-gradient(ellipse at center,#000 25%,transparent 78%); }
+    .cinema-tech-scan { position:absolute; top:0; right:4%; left:4%; height:1px; background:linear-gradient(90deg,transparent,var(--gold-light),transparent); box-shadow:0 0 18px var(--gold),0 0 52px rgba(233,188,92,.22); animation:cinemaScan 5.8s linear infinite; }
+    .cinema-tech-corners { position:absolute; inset:18px; border:1px solid transparent; background:linear-gradient(var(--gold),var(--gold)) top left/34px 1px no-repeat,linear-gradient(var(--gold),var(--gold)) top left/1px 34px no-repeat,linear-gradient(var(--gold),var(--gold)) top right/34px 1px no-repeat,linear-gradient(var(--gold),var(--gold)) top right/1px 34px no-repeat,linear-gradient(var(--gold),var(--gold)) bottom left/34px 1px no-repeat,linear-gradient(var(--gold),var(--gold)) bottom left/1px 34px no-repeat,linear-gradient(var(--gold),var(--gold)) bottom right/34px 1px no-repeat,linear-gradient(var(--gold),var(--gold)) bottom right/1px 34px no-repeat; opacity:.56; }
+    .cinema-telemetry { position:absolute; top:32px; left:34px; display:grid; grid-template-columns:auto auto; gap:5px 16px; padding:11px 13px; border-left:1px solid rgba(233,188,92,.48); background:rgba(5,5,4,.5); color:rgba(245,233,210,.52); backdrop-filter:blur(6px); }
+    .cinema-telemetry b { color:var(--gold-light); font-weight:600; }
+    .tech-marker { position:absolute; display:flex; align-items:center; gap:7px; color:rgba(245,233,210,.74); text-shadow:0 1px 8px #000; white-space:nowrap; }
+    .tech-marker::before { content:""; width:7px; height:7px; border:1px solid var(--gold); transform:rotate(45deg); box-shadow:0 0 0 5px rgba(233,188,92,.08),0 0 16px var(--gold-glow); animation:markerPulse 2.4s ease-in-out infinite; }
+    .tech-marker.track { left:22%; top:58%; }
+    .tech-marker.oasis { left:47%; top:49%; }
+    .tech-marker.stand { left:76%; top:56%; }
+    .tech-marker.finish { left:68%; top:36%; }
+    @keyframes cinemaScan { from { transform:translateY(0); opacity:0; } 8%,88% { opacity:.7; } to { transform:translateY(var(--scan-distance)); opacity:0; } }
+    @keyframes markerPulse { 50% { transform:rotate(45deg) scale(1.35); box-shadow:0 0 0 8px rgba(233,188,92,0),0 0 22px var(--gold-glow); } }
+    .cinema-code { position:absolute; top:clamp(28px,4vw,52px); right:clamp(18px,3vw,38px); z-index:4; display:flex; align-items:center; gap:10px; color:var(--gold); font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; direction:ltr; }
+    .cinema-code::before { content:""; width:38px; height:1px; background:var(--gold); box-shadow:0 0 12px var(--gold-glow); }
+    .cinema-meta { position:absolute; right:clamp(20px,4vw,56px); bottom:clamp(32px,5vw,66px); left:clamp(106px,15vw,210px); z-index:4; display:grid; grid-template-columns:minmax(0,1fr) minmax(220px,.7fr); gap:clamp(18px,5vw,72px); align-items:end; }
+    .cinema-meta-copy { max-width:680px; }
+    .cinema-kicker { display:block; margin-bottom:10px; color:var(--gold); font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.18em; direction:ltr; }
+    .cinema-title { margin:0 0 10px; color:var(--paper); font:800 clamp(24px,3.2vw,46px)/1.16 "Almarai",sans-serif; text-wrap:balance; }
+    .cinema-caption { max-width:58ch; color:rgba(245,233,210,.68); font-size:clamp(12px,1vw,15px); line-height:1.65; }
+    .cinema-credit { align-self:end; padding-top:14px; border-top:1px solid rgba(233,188,92,.3); color:rgba(245,233,210,.5); font:500 9px/1.7 "IBM Plex Mono",monospace; letter-spacing:.1em; direction:ltr; text-align:left; }
+    .cinema-controls { position:absolute; left:clamp(20px,3vw,44px); bottom:clamp(36px,4vw,56px); z-index:4; display:flex; gap:8px; direction:ltr; }
+    .cinema-controls button { width:42px; height:42px; display:grid; place-items:center; border:1px solid rgba(233,188,92,.34); background:rgba(5,5,4,.74); color:var(--paper); cursor:pointer; backdrop-filter:blur(10px); transition:.22s var(--ease); }
+    .cinema-controls button:hover { color:var(--gold); border-color:var(--gold); transform:translateY(-2px); }
+    .cinema-controls button:active { transform:translateY(1px) scale(.96); }
+    .filmstrip-head { display:flex; justify-content:space-between; align-items:center; gap:18px; padding:18px 2px 12px; color:rgba(245,233,210,.46); font-size:11px; }
+    .filmstrip-head strong { color:var(--gold); font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; direction:ltr; }
+    .filmstrip { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(146px,16vw); gap:8px; overflow-x:auto; padding:0 0 10px; scroll-snap-type:x proximity; scrollbar-width:thin; scrollbar-color:rgba(233,188,92,.44) rgba(245,233,210,.05); }
+    .filmstrip-button { position:relative; overflow:hidden; scroll-snap-align:center; aspect-ratio:16/9; padding:0; border:1px solid rgba(233,188,92,.14); background:#080705; cursor:pointer; color:var(--paper); transition:transform .24s var(--ease), border-color .24s, opacity .24s; opacity:.62; }
+    .filmstrip-button:hover { opacity:1; transform:translateY(-3px); border-color:rgba(233,188,92,.5); }
+    .filmstrip-button.active { opacity:1; border-color:var(--gold); box-shadow:inset 0 0 0 1px var(--gold),0 8px 24px rgba(0,0,0,.28); }
+    .filmstrip-button img { width:100%; height:100%; display:block; object-fit:cover; transition:transform .55s var(--ease); }
+    .filmstrip-button:hover img,.filmstrip-button.active img { transform:scale(1.06); }
+    .filmstrip-button::after { content:""; position:absolute; inset:0; background:linear-gradient(0deg,rgba(3,3,2,.88),transparent 58%); pointer-events:none; }
+    .filmstrip-button b { position:absolute; right:10px; bottom:9px; z-index:1; font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.12em; direction:ltr; }
+    .filmstrip-button.active b { color:var(--gold-light); }
 
     /* Tournament Features 4 Pillars */
-    .pillars-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+    .pillars-grid { display:grid; grid-template-columns:repeat(12,1fr); gap:18px; }
     .pillar-card {
       padding: 32px 28px; border-radius: var(--radius);
       background: var(--card-bg); border: 1px solid var(--border);
       backdrop-filter: blur(10px); transition: 0.3s var(--ease);
+      grid-column:span 6; min-height:220px; position:relative; overflow:hidden;
     }
+    .pillar-card:nth-child(2), .pillar-card:nth-child(4) { transform:translateY(36px); }
+    .pillar-card:nth-child(2):hover, .pillar-card:nth-child(4):hover { transform:translateY(30px); }
+    .pillar-card::after { content:attr(data-code); position:absolute; left:20px; bottom:-12px; font:700 48px/1 "IBM Plex Mono",monospace; color:rgba(233,188,92,.045); direction:ltr; }
     .pillar-card:hover { border-color: var(--gold); transform: translateY(-4px); }
     .pillar-card .num { font: 800 28px/1 "IBM Plex Mono", monospace; color: var(--gold); margin-bottom: 16px; display: block; }
     .pillar-card h3 { font: 700 18px/1.3 "Almarai", sans-serif; color: var(--paper); margin-bottom: 10px; }
@@ -192,6 +314,7 @@
       background: #090806; border: 1px solid var(--border); border-radius: 16px;
       padding: 24px; position: relative; min-height: 160px; display: flex; flex-direction: column; justify-content: space-around;
     }
+    .sim-track::after { content:"FINISH"; position:absolute; top:12px; bottom:12px; left:9%; width:2px; border-left:2px dashed rgba(233,188,92,.55); color:rgba(233,188,92,.52); font:600 7px/1 "IBM Plex Mono",monospace; letter-spacing:.15em; writing-mode:vertical-rl; padding-left:7px; }
     .race-lane {
       position: relative; height: 36px; border-bottom: 1px dashed rgba(233, 188, 92, 0.2);
       display: flex; align-items: center;
@@ -210,16 +333,21 @@
       cursor: pointer; transition: 0.2s;
     }
     .sim-btn:hover { background: var(--gold-light); transform: scale(1.04); }
+    .sim-btn:active, .btn-primary:active, .btn-secondary:active, .nav-cta:active { transform:translateY(1px) scale(.985); }
+    .race-meter { display:grid; grid-template-columns:84px 1fr; gap:12px; align-items:center; margin-top:12px; font-size:11px; color:var(--muted); }
+    .race-meter-track { height:3px; background:rgba(245,233,210,.08); overflow:hidden; }
+    .race-meter-track span { display:block; width:0; height:100%; background:var(--gold); box-shadow:0 0 12px var(--gold-glow); transition:width .18s linear; }
+    .race-meter.ai .race-meter-track span { background:rgba(245,233,210,.4); box-shadow:none; }
 
-    /* Sponsorship CTA Section */
-    .deck-cta-banner {
+    /* Closing experience section */
+    .closing-cta-banner {
       background: radial-gradient(ellipse at center, rgba(233, 188, 92, 0.14) 0%, rgba(5, 5, 4, 0.85) 75%), var(--surface);
       border: 1px solid var(--border-strong); border-radius: 28px;
       padding: clamp(40px, 6vw, 80px) clamp(24px, 4vw, 56px);
       text-align: center; position: relative; overflow: hidden;
     }
-    .deck-cta-banner h3 { font: 800 clamp(26px, 3.4vw, 42px)/1.2 "Almarai", sans-serif; color: var(--paper); margin-bottom: 16px; }
-    .deck-cta-banner p { font-size: 16px; color: var(--muted); max-width: 620px; margin: 0 auto 32px; }
+    .closing-cta-banner h3 { font: 800 clamp(26px, 3.4vw, 42px)/1.2 "Almarai", sans-serif; color: var(--paper); margin-bottom: 16px; }
+    .closing-cta-banner p { font-size: 16px; color: var(--muted); max-width: 620px; margin: 0 auto 32px; }
 
     /* Footer */
     footer {
@@ -228,42 +356,116 @@
       font-size: 13px; color: var(--muted);
     }
     footer a { color: var(--gold); text-decoration: none; }
+    .footer-links { display:flex; align-items:center; gap:22px; flex-wrap:wrap; }
+    .footer-contact { display:inline-flex; align-items:center; gap:7px; transition:color .2s var(--ease), transform .2s var(--ease); }
+    .footer-contact:hover { color:var(--gold-light); transform:translateY(-1px); }
+    .footer-contact svg { width:18px; height:18px; flex:0 0 auto; }
+
+    .reveal { opacity:0; transform:translateY(26px); transition:opacity .75s var(--ease), transform .75s var(--ease); }
+    .reveal.is-visible { opacity:1; transform:none; }
 
     @media (max-width: 900px) {
       .hero-grid { grid-template-columns: 1fr; }
       .arena-banner { grid-template-columns: 1fr; }
-      .nav-links { display: none; }
+      .nav { padding-inline:18px; }
+      .nav-toggle { display:grid; place-items:center; order:-1; }
+      .nav-cta { display:none; }
+      .nav-links { position:absolute; top:calc(100% + 1px); right:12px; left:12px; display:grid; gap:0; padding:8px; background:rgba(8,7,5,.97); border:1px solid var(--border); box-shadow:0 24px 60px rgba(0,0,0,.5); opacity:0; visibility:hidden; transform:translateY(-10px); transition:.25s var(--ease); }
+      .nav.open .nav-links { opacity:1; visibility:visible; transform:none; }
+      .nav-links a { display:block; padding:13px 14px; }
+      .hero { padding-top:104px; }
+      .hero-media { transform:none; }
+      .pillar-card { grid-column:span 6; }
+      .cinema-stage { min-height:460px; aspect-ratio:4/3; }
+      .cinema-meta { grid-template-columns:1fr; left:100px; gap:12px; }
+      .cinema-credit { display:none; }
+      .filmstrip { grid-auto-columns:minmax(142px,30vw); }
+    }
+
+    @media (max-width: 620px) {
+      .brand-text h1 { font-size:13px; }
+      .brand-text span { font-size:7px; }
+      .brand-icon { width:42px; height:36px; }
+      .brand-logo-mark { width:36px; height:27px; }
+      .hero { padding-bottom:72px; }
+      .hero-network-logo { width:min(72vw,290px); margin-inline:auto; margin-bottom:2px; }
+      .hero-title { font-size:clamp(34px,11vw,48px); }
+      .hero-actions > * { width:100%; justify-content:center; text-align:center; }
+      .hero-stats { gap:10px; }
+      .stat-item b { font-size:20px; }
+      .stat-item span { font-size:10px; line-height:1.4; display:block; }
+      section { padding-block:70px; }
+      .pillar-card { grid-column:span 12; transform:none; }
+      .pillar-card:nth-child(2):hover, .pillar-card:nth-child(4):hover { transform:translateY(-4px); }
+      .arena-banner-img { min-height:300px; }
+      #gallery { padding-inline:12px; }
+      #gallery .section-head { padding-inline:8px; }
+      .cinema-gallery { padding:7px; border-radius:4px 20px 4px 20px; }
+      .cinema-gallery::before { display:none; }
+      .cinema-stage { min-height:480px; aspect-ratio:3/4; }
+      .cinema-stage { --scan-distance:450px; }
+      .cinema-image { object-position:center; }
+      .cinema-tech-corners { inset:10px; }
+      .cinema-telemetry { top:42px; left:16px; grid-template-columns:1fr; gap:3px; padding:8px 10px; font-size:7px; }
+      .tech-marker { display:none; }
+      .cinema-meta { right:18px; left:18px; bottom:78px; }
+      .cinema-title { font-size:clamp(26px,8.6vw,36px); }
+      .cinema-caption { font-size:12px; line-height:1.6; }
+      .cinema-controls { left:18px; bottom:30px; }
+      .cinema-code { right:18px; }
+      .filmstrip-head { align-items:flex-end; }
+      .filmstrip-head span { max-width:22ch; font-size:10px; }
+      .filmstrip { grid-auto-columns:minmax(132px,46vw); }
+      .sim-track { padding:18px 12px; }
+      .runner-horse { font-size:11px; }
+      .runner-horse .horse-icon { width:24px; height:24px; }
+      .sim-controls { flex-direction:column; }
+      .sim-controls button { width:100%; }
+      footer { align-items:flex-start; }
+      footer > div:last-child { flex-direction:column; gap:10px !important; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,*::before,*::after { animation-duration:.001ms!important; animation-iteration-count:1!important; scroll-behavior:auto!important; transition-duration:.001ms!important; }
+      .reveal { opacity:1; transform:none; }
     }
   </style>
 </head>
 <body>
 
+  <a class="skip-link" href="#main-content">تجاوز إلى المحتوى</a>
+
   <!-- Navigation -->
-  <nav class="nav">
+  <nav class="nav" id="siteNav" aria-label="التنقل الرئيسي">
     <a href="landing.html" class="brand" aria-label="الصفحة الرئيسية">
-      <div class="brand-icon"><img src="favicon.svg" alt="Horse Logo"></div>
+      <div class="brand-icon" aria-hidden="true"><span class="brand-logo-mark"></span></div>
       <div class="brand-text">
         <h1>سباقات الخيل الإلكترونية</h1>
         <span>CHAMPIONSHIP 2026</span>
       </div>
     </a>
-    <ul class="nav-links">
+    <ul class="nav-links" id="navLinks">
       <li><a href="#about">عن البطولة</a></li>
       <li><a href="#arena">ميدان السباق التفاعلي</a></li>
       <li><a href="#gallery">معرض الصور</a></li>
       <li><a href="#simulator">تجربة السباق</a></li>
-      <li><a href="index.html">ملف الرعاية الرسمي (19 مشهدًا)</a></li>
     </ul>
-    <a href="index.html" class="nav-cta">
-      <span>عرض ملف الرعاية التفاعلي</span>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="فتح القائمة" aria-expanded="false" aria-controls="navLinks">☰</button>
+    <a href="#simulator" class="nav-cta">
+      <span>جرّب السباق الآن</span>
       <span>←</span>
     </a>
   </nav>
 
   <!-- Hero Section -->
-  <header class="hero">
+  <header class="hero" id="main-content">
     <div class="hero-grid">
       <div class="hero-content">
+        <div class="hero-network-logo" role="img" aria-label="الشعار الشبكي الذهبي لبطولة سباقات الخيل الإلكترونية">
+          <span class="hero-network-logo-mark" aria-hidden="true"></span>
+          <span class="hero-network-logo-scan" aria-hidden="true"></span>
+          <span class="hero-network-logo-code" aria-hidden="true">EQUESTRIAN // NETWORK ID</span>
+        </div>
         <div class="hero-tag">RIYADH · CHAMPIONSHIP 2026</div>
         <h1 class="hero-title">
           حين يلتقي أصيل التراث<br>
@@ -273,8 +475,8 @@
           أول منظومة سباقات خيل إلكترونية تفاعلية في المملكة تجمع بين روح المنافسة الرياضية الأصيلة وسرعة المحركات السحابية التفاعلية دون الحاجة لتحميل تطبيقات.
         </p>
         <div class="hero-actions">
-          <a href="index.html" class="btn-primary">
-            <span>استكشف ملف الرعاية الرسمي (19 مشهدًا)</span>
+          <a href="#gallery" class="btn-primary">
+            <span>استكشف ميدان الملك خالد</span>
             <span>←</span>
           </a>
           <a href="#arena" class="btn-secondary">
@@ -288,12 +490,12 @@
         </div>
       </div>
 
-      <div class="hero-media">
-        <img src="images/cyber-horse.jpg" alt="خيل سباق إلكتروني عربي أصيل بتقنية الإضاءة الذهبية">
+      <div class="hero-media reveal">
+        <img src="images/cinematic/shot-17.webp" alt="فرس عربي أصيل داخل ميدان الملك خالد وقت الغروب">
         <div class="hero-media-badge">
           <div>
-            <h4>الخيل العربي السيبراني</h4>
-            <p>مجسم ثلاثي الأبعاد فائق الواقعية</p>
+            <h4>فرس أصيل في حضرة الغروب</h4>
+            <p>أصالة الخيل في قلب ميدان الملك خالد</p>
           </div>
           <span style="font-size:20px;color:var(--gold);">✦</span>
         </div>
@@ -302,7 +504,7 @@
   </header>
 
   <!-- About Section -->
-  <section id="about">
+  <section id="about" class="reveal">
     <div class="section-head">
       <div class="section-eyebrow">FOUR CORE PILLARS</div>
       <h2 class="section-title">أربعة محاور تبني تجربة رياضية استثنائية</h2>
@@ -310,34 +512,34 @@
     </div>
 
     <div class="pillars-grid">
-      <article class="pillar-card">
+      <article class="pillar-card" data-code="HERITAGE">
         <span class="num">01</span>
         <h3>الفروسية السعودية</h3>
         <p>استلهام تاريخ سباقات الخيل العربية الأصيلة وتقديمها بهيبة بصرية تليق بمكانتها الوطنية والرياضية.</p>
       </article>
 
-      <article class="pillar-card">
+      <article class="pillar-card" data-code="ENGINE">
         <span class="num">02</span>
         <h3>محرك ويب سحابي فوري</h3>
         <p>بنية رقمية حديثة تتيح للمشاركين والجماهير التنافس فورًا عبر مسح QR Code دون أي تنزيل أو تجهيزات معقدة.</p>
       </article>
 
-      <article class="pillar-card">
+      <article class="pillar-card" data-code="AUDIENCE">
         <span class="num">03</span>
         <h3>التفاعل الجماهيري الحي</h3>
         <p>ربط الشاشات الميدانية الكبرى بهواتف الجمهور لإطلاق التحديات التنافسية وبث النتائج في الوقت الحقيقي.</p>
       </article>
 
-      <article class="pillar-card">
+      <article class="pillar-card" data-code="VALUE">
         <span class="num">04</span>
-        <h3>منظومة القيمة لعام كامل</h3>
-        <p>بناء وتطوير نظام إدارة النادي والمحاسبة والجرد، وتفعيل سباقات مقر الراعي على مدار 12 شهرًا متواصلة.</p>
+        <h3>منظومة تشغيل متكاملة</h3>
+        <p>بنية موحدة لإدارة البطولة والسباقات والنتائج والمحتوى الرقمي، تعمل بكفاءة طوال الموسم الرياضي.</p>
       </article>
     </div>
   </section>
 
   <!-- Arena Showcase Section -->
-  <section id="arena">
+  <section id="arena" class="reveal">
     <div class="arena-banner">
       <div class="arena-banner-img">
         <img src="images/arena-interactive.jpg" alt="ميدان السباق التفاعلي والشاشات الكبرى وتفاعل الجمهور">
@@ -350,80 +552,79 @@
           <li><span>✓</span> سباق الخيل التفاعلي المباشر (Multiplayer)</li>
           <li><span>✓</span> تحدي الجمهور مع بطل البطولة (Beat the Champion)</li>
           <li><span>✓</span> بطاقات الأداء والنتائج الرقمية الفورية للنشر عبر وسائل التواصل</li>
-          <li><span>✓</span> دمج هوية وعلامة الراعي في لحظات السرعة القصوى والتتويج</li>
+          <li><span>✓</span> إعادة لحظات السرعة القصوى والتتويج على الشاشات الميدانية</li>
         </ul>
-        <a href="index.html" class="btn-secondary">تفاصيل التفعيل الميداني بالملف ←</a>
+        <a href="#gallery" class="btn-secondary">استكشف لقطات الميدان ←</a>
       </div>
     </div>
   </section>
 
   <!-- Visual Artwork Gallery Section -->
-  <section id="gallery">
+  <section id="gallery" class="reveal">
     <div class="section-head">
-      <div class="section-eyebrow">VISUAL UNIVERSE</div>
-      <h2 class="section-title">معرض الهوية البصرية والمشاهد الرقمية</h2>
-      <p class="section-lead">نظرة شاملة على الفن البصري، بيئات السباق، والأصول الرقمية المطورة خصيصًا للبطولة.</p>
+      <div class="section-eyebrow">09 · AERIAL MASTERPLAN · 17 CINEMATIC FRAMES</div>
+      <h2 class="section-title">رحلة سينمائية داخل ميدان الملك خالد</h2>
+      <p class="section-lead">سبع عشرة لقطة تأخذك من سكون الفجر إلى بوابة الانطلاق، مرورًا بالمنصة الملكية وخط النهاية وحتى أضواء السباق الليلية.</p>
     </div>
 
-    <div class="gallery-grid">
-      <div class="gallery-card">
-        <img src="images/cyber-horse.jpg" alt="خيل السباق السيبراني">
-        <div class="gallery-info">
-          <span class="badge">KEY VISUAL</span>
-          <h4>الخيل العربي السيبراني</h4>
-          <p>الهوية الفاخرة التي تجمع الذهب الملكي مع دروع الخيل المستقبلية.</p>
+    <div class="cinema-gallery" id="cinemaGallery">
+      <figure class="cinema-stage is-aerial" id="cinemaStage">
+        <img class="cinema-image" id="cinemaFeatured" src="images/cinematic/shot-09.webp" alt="منظر جوي شامل لميدان الملك خالد في الطائف" loading="lazy" decoding="async">
+        <div class="cinema-vignette" aria-hidden="true"></div>
+        <div class="cinema-tech-layer" aria-hidden="true">
+          <div class="cinema-tech-grid"></div>
+          <div class="cinema-tech-scan"></div>
+          <div class="cinema-tech-corners"></div>
+          <div class="cinema-telemetry"><b>AERIAL SYSTEM MAP</b><span>MASTERPLAN · LIVE SCAN</span><b>TAIF · KSA</b><span>FRAME 09 / 17</span></div>
+          <span class="tech-marker track">TRACK LOOP</span>
+          <span class="tech-marker oasis">CENTRAL OASIS</span>
+          <span class="tech-marker stand">GRANDSTAND</span>
+          <span class="tech-marker finish">FINISH SECTOR</span>
         </div>
+        <div class="cinema-code"><span id="cinemaShotCode">SHOT 09</span><span id="cinemaProgress">01 / 17</span></div>
+        <figcaption class="cinema-meta" aria-live="polite">
+          <div class="cinema-meta-copy">
+            <span class="cinema-kicker" id="cinemaKicker">AERIAL · MASTERPLAN</span>
+            <h3 class="cinema-title" id="cinemaTitle">بانوراما ميدان الملك خالد</h3>
+            <p class="cinema-caption" id="cinemaCaption">المخطط الكامل للميدان في لقطة واحدة: المضمار، المنطقة الوسطية، المنصة، والامتداد الجبلي المحيط.</p>
+          </div>
+          <div class="cinema-credit">FORSAN KING KHALID<br>RACECOURSE · TAIF · KSA</div>
+        </figcaption>
+        <div class="cinema-controls" aria-label="التنقل بين اللقطات السينمائية">
+          <button type="button" id="cinemaPrev" aria-label="اللقطة السابقة">←</button>
+          <button type="button" id="cinemaNext" aria-label="اللقطة التالية">→</button>
+        </div>
+      </figure>
+
+      <div class="filmstrip-head">
+        <span>اختر لقطة أو استخدم الأسهم للتنقل عبر الميدان</span>
+        <strong>SELECT A FRAME</strong>
       </div>
 
-      <div class="gallery-card">
-        <img src="images/arena-interactive.jpg" alt="ميدان السباق">
-        <div class="gallery-info">
-          <span class="badge">ARENA & AUDIENCE</span>
-          <h4>الميدان التفاعلي والجماهير</h4>
-          <p>تفاعل مباشر بين شاشات الـ 8K وهواتف الحضور في الصالة الرياضية.</p>
-        </div>
-      </div>
-
-      <div class="gallery-card">
-        <img src="images/champion-racing.jpg" alt="لحظة التتويج">
-        <div class="gallery-info">
-          <span class="badge">RACE FINISH</span>
-          <h4>لحظة الحسم وخط النهاية</h4>
-          <p>إثارة الـ 60 ثانية في أمتار السباق الأخيرة والتتويج بالذهب.</p>
-        </div>
-      </div>
-
-      <div class="gallery-card">
-        <img src="images/future-racing.jpg" alt="المضمار المستقبلي">
-        <div class="gallery-info">
-          <span class="badge">TRACK ENVIRONMENT</span>
-          <h4>مضمار السباقات الحديث</h4>
-          <p>بيئة سباق مستوحاة من ميادين المملكة مع خطوط إضاءة رقمية متطورة.</p>
-        </div>
-      </div>
-
-      <div class="gallery-card">
-        <img src="images/digital-horse.jpg" alt="الخيل الرقمي">
-        <div class="gallery-info">
-          <span class="badge">3D ASSET</span>
-          <h4>المحرك ثلاثي الأبعاد</h4>
-          <p>محاكاة دقيقة لحركة وركض الخيل العربي مع جزيئات الطاقة الذهبية.</p>
-        </div>
-      </div>
-
-      <div class="gallery-card">
-        <img src="images/hero-racing.jpg" alt="أبطال السباق">
-        <div class="gallery-info">
-          <span class="badge">CHAMPIONSHIP RIDERS</span>
-          <h4>فرسان السباق الإلكتروني</h4>
-          <p>الزي الرسمي للمتسابقين وشعار الراعي المطبوع بأعلى معايير الجودة.</p>
-        </div>
+      <div class="filmstrip" id="cinemaFilmstrip" role="list" aria-label="اللقطات السينمائية السبعة عشر">
+        <button class="filmstrip-button active" type="button" role="listitem" aria-pressed="true" aria-label="عرض اللقطة 9: بانوراما ميدان الملك خالد" data-src="images/cinematic/shot-09.webp" data-code="SHOT 09" data-mode="aerial" data-kicker="AERIAL · MASTERPLAN" data-title="بانوراما ميدان الملك خالد" data-alt="منظر جوي شامل لميدان الملك خالد في الطائف" data-caption="المخطط الكامل للميدان في لقطة واحدة: المضمار، المنطقة الوسطية، المنصة، والامتداد الجبلي المحيط."><img src="images/cinematic/shot-09.webp" alt="" loading="lazy" decoding="async"><b>09 · AERIAL MAP</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 1: منفذ النفق إلى الميدان" data-src="images/cinematic/shot-01.webp" data-code="SHOT 01" data-kicker="ARRIVAL · SUNSET" data-title="منفذ النفق إلى الميدان" data-alt="المضمار والأشجار والكشافات عند غروب الشمس" data-caption="المشهد الأول لوصول الزائر إلى قلب الميدان؛ أفق الطائف الجبلي يلتقي بأضواء المضمار في لحظة الغروب."><img src="images/cinematic/shot-01.webp" alt="" loading="lazy" decoding="async"><b>01 · ARRIVAL</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 2: منفذ المدرجات إلى المضمار" data-src="images/cinematic/shot-02.webp" data-code="SHOT 02" data-kicker="GRANDSTAND · TRACK ACCESS" data-title="منفذ المدرجات إلى المضمار" data-alt="منظر خط النهاية من جهة مدرجات المنصة وقت الغروب" data-caption="زاوية تربط منصة الجمهور بخط النهاية مباشرة، وتضع الشاشات والجمهور في قلب لحظة الحسم."><img src="images/cinematic/shot-02.webp" alt="" loading="lazy" decoding="async"><b>02 · ACCESS</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 3: ممر دخول الخيول الملكي" data-src="images/cinematic/shot-03.webp" data-code="SHOT 03" data-kicker="PADDOCK · ROYAL WALK" data-title="ممر دخول الخيول الملكي" data-alt="ممر دخول الخيول إلى المضمار مع الأعلام والكشافات" data-caption="الممر الذي يحوّل انتقال الخيل من البادوك إلى المضمار إلى طقس بصري مهيب يسبق انطلاق المنافسة."><img src="images/cinematic/shot-03.webp" alt="" loading="lazy" decoding="async"><b>03 · PADDOCK</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 4: بوابة الانطلاق عند الشفق" data-src="images/cinematic/shot-04.webp" data-code="SHOT 04" data-kicker="STARTING GATE · DUSK" data-title="بوابة الانطلاق عند الشفق" data-alt="بوابة انطلاق سباق الخيل تحت سماء ليلية" data-caption="ثماني بوابات مضاءة في مواجهة السماء الداكنة؛ اللحظة التي يسبق فيها الصمت اندفاع الخيل."><img src="images/cinematic/shot-04.webp" alt="" loading="lazy" decoding="async"><b>04 · START</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 5: منصة الملك خالد وبرج التحكيم" data-src="images/cinematic/shot-05.webp" data-code="SHOT 05" data-kicker="GRANDSTAND · JUDGING TOWER" data-title="منصة الملك خالد وبرج التحكيم" data-alt="واجهة منصة الملك خالد ومدرجاتها عند الغروب" data-caption="الواجهة المعمارية للميدان، حيث تلتقي المدرجات الرسمية بمركز القرار والتحكيم في تكوين واحد."><img src="images/cinematic/shot-05.webp" alt="" loading="lazy" decoding="async"><b>05 · GRANDSTAND</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 6: المستقيم الرئيسي" data-src="images/cinematic/shot-06.webp" data-code="SHOT 06" data-kicker="MAIN STRAIGHT · LOW ANGLE" data-title="المستقيم الرئيسي من مستوى المضمار" data-alt="المستقيم الرئيسي لمضمار سباق الخيل من زاوية منخفضة" data-caption="زاوية قريبة من سطح المضمار تمنح المشاهد إحساس السرعة والمسافة قبل الوصول إلى خط النهاية."><img src="images/cinematic/shot-06.webp" alt="" loading="lazy" decoding="async"><b>06 · STRAIGHT</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 7: خط النهاية والشاشة العملاقة" data-src="images/cinematic/shot-07.webp" data-code="SHOT 07" data-kicker="FINISH LINE · BIG SCREEN" data-title="خط النهاية والشاشة العملاقة" data-alt="خط النهاية أمام المنصة الملكية وشاشات الميدان" data-caption="النقطة التي تُحسم عندها النتيجة وتُعرض لحظة الفوز مباشرة أمام المنصة والجمهور."><img src="images/cinematic/shot-07.webp" alt="" loading="lazy" decoding="async"><b>07 · FINISH</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 8: المنعطف الأخير" data-src="images/cinematic/shot-08.webp" data-code="SHOT 08" data-kicker="FINAL TURN · FLOW" data-title="المنعطف الأخير الحاسم" data-alt="المنعطف الأخير لمضمار الخيل بجوار المدرجات" data-caption="انسياب المضمار عند النقطة التي يبدأ فيها الاندفاع الأخير؛ مساحة مثالية لبناء التوتر البصري قبل الحسم."><img src="images/cinematic/shot-08.webp" alt="" loading="lazy" decoding="async"><b>08 · FINAL TURN</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 10: الميدان تحت أضواء الليل" data-src="images/cinematic/shot-10.webp" data-code="SHOT 10" data-kicker="NIGHT SESSION · FLOODLIGHTS" data-title="الميدان تحت أضواء الليل" data-alt="مضمار الخيل ليلا تحت الكشافات والسماء المرصعة بالنجوم" data-caption="هوية ليلية هادئة تبرز الكشافات والشاشات وتمنح السباق طابعًا مختلفًا بعد غروب الشمس."><img src="images/cinematic/shot-10.webp" alt="" loading="lazy" decoding="async"><b>10 · NIGHT</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 11: واحة المنطقة الوسطية" data-src="images/cinematic/shot-11.webp" data-code="SHOT 11" data-kicker="CENTRAL OASIS · GARDENS" data-title="واحة المنطقة الوسطية" data-alt="حدائق المنطقة الوسطية مع إطلالة على المنصة الملكية" data-caption="حدائق تمنح الميدان طبقة ضيافة واستراحة، وتفتح مشهدًا ملكيًا على المنصة من قلب الواحة الخضراء."><img src="images/cinematic/shot-11.webp" alt="" loading="lazy" decoding="async"><b>11 · OASIS</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 12: سكون الفجر" data-src="images/cinematic/shot-12.webp" data-code="SHOT 12" data-kicker="DAWN · STILLNESS" data-title="سكون الفجر فوق الميدان" data-alt="ميدان الملك خالد عند شروق الشمس بين الجبال" data-caption="الميدان قبل وصول الجمهور؛ ضوء الصباح يكشف امتداد الطبيعة ويمنح البطولة افتتاحية بصرية هادئة."><img src="images/cinematic/shot-12.webp" alt="" loading="lazy" decoding="async"><b>12 · DAWN</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 13: زاوية السرعة" data-src="images/cinematic/shot-13.webp" data-code="SHOT 13" data-kicker="SPEED LINE · INNER RAIL" data-title="زاوية السرعة والسياج الداخلي" data-alt="المضمار من زاوية منخفضة بمحاذاة السياج الداخلي" data-caption="خط بصري طويل يضاعف الإحساس بالحركة، ويضع المشاهد مباشرة في مسار الخيل نحو المنعطف التالي."><img src="images/cinematic/shot-13.webp" alt="" loading="lazy" decoding="async"><b>13 · SPEED</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 14: بوابة الانطلاق نهارًا" data-src="images/cinematic/shot-14.webp" data-code="SHOT 14" data-kicker="STARTING GATE · DAYLIGHT" data-title="بوابة الانطلاق في وضح النهار" data-alt="بوابة سباق الخيل في وضح النهار" data-caption="تفاصيل البوابة والخيل تظهر بوضوح، لتقديم المشهد التقني للانطلاق بلغة واقعية مباشرة."><img src="images/cinematic/shot-14.webp" alt="" loading="lazy" decoding="async"><b>14 · DAY START</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 15: ساحة الاحتفالات" data-src="images/cinematic/shot-15.webp" data-code="SHOT 15" data-kicker="CELEBRATION PLAZA · GARDENS" data-title="ساحة الاحتفالات والحدائق الخارجية" data-alt="الساحة الخارجية للمنصة ومواقف الزوار" data-caption="الواجهة التشغيلية للضيافة والوصول؛ مساحة قابلة للتفعيل تستقبل الجمهور قبل السباق وبعد التتويج."><img src="images/cinematic/shot-15.webp" alt="" loading="lazy" decoding="async"><b>15 · PLAZA</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 16: المنصة وقت الغروب" data-src="images/cinematic/shot-16.webp" data-code="SHOT 16" data-kicker="GRANDSTAND · SILHOUETTE" data-title="المنصة في آخر ضوء" data-alt="صورة ظلية سينمائية للمنصة الملكية وقت الغروب" data-caption="المنصة تتحول إلى كتلة معمارية مضاءة على حافة المساء، لتختم الرحلة بصورة ذات حضور رسمي هادئ."><img src="images/cinematic/shot-16.webp" alt="" loading="lazy" decoding="async"><b>16 · FINALE</b></button>
+        <button class="filmstrip-button" type="button" role="listitem" aria-pressed="false" aria-label="عرض اللقطة 17: فرس أصيل في حضرة الغروب" data-src="images/cinematic/shot-17.webp" data-code="SHOT 17" data-kicker="PORTRAIT · SUNSET" data-title="فرس أصيل في حضرة الغروب" data-alt="فرس عربي أصيل داخل ميدان الملك خالد وقت الغروب" data-caption="اللقطة البطولية التي تختصر هوية التجربة: أصالة الخيل، هيبة الميدان، وضوء ذهبي يعلن بداية الحكاية."><img src="images/cinematic/shot-17.webp" alt="" loading="lazy" decoding="async"><b>17 · KEY VISUAL</b></button>
       </div>
     </div>
   </section>
 
   <!-- Interactive Mini Simulator -->
-  <section id="simulator">
+  <section id="simulator" class="reveal">
     <div class="section-head">
       <div class="section-eyebrow">INTERACTIVE PREVIEW</div>
       <h2 class="section-title">محاكاة تفاعلية سريعة لسرعة السباق</h2>
@@ -436,8 +637,11 @@
           <h3 style="font-size:20px;color:var(--paper);">شوط التحدي التجريبي</h3>
           <span style="font-size:12px;color:var(--gold);font-family:'IBM Plex Mono',monospace;">LIVE SPEED SIMULATOR</span>
         </div>
-        <div id="raceStatus" style="font-size:13px;color:var(--gold);font-weight:700;">جاهز للانطلاق</div>
+        <div id="raceStatus" style="font-size:13px;color:var(--gold);font-weight:700;" role="status" aria-live="polite">جاهز للانطلاق</div>
       </div>
+
+      <div class="race-meter"><span>فارس التحدي</span><div class="race-meter-track"><span id="playerMeter"></span></div></div>
+      <div class="race-meter ai"><span>المنافس</span><div class="race-meter-track"><span id="aiMeter"></span></div></div>
 
       <div class="sim-track">
         <div class="race-lane">
@@ -461,17 +665,18 @@
     </div>
   </section>
 
-  <!-- Sponsorship Deck CTA -->
-  <section>
-    <div class="deck-cta-banner">
-      <div class="section-eyebrow">OFFICIAL PROPOSAL DECK</div>
-      <h3>هل ترغب في استكشاف الفرصة الاستثمارية الكاملة؟</h3>
-      <p>اطلع على ملف الرعاية الرسمي التفاعلي المكون من 19 مشهدًا سينمائيًا مع محاكي حركة الخيل بالجزيئات الذهبية ومصفوفة الحقوق الشاملة.</p>
+  <!-- Closing experience CTA -->
+  <section class="reveal">
+    <div class="closing-cta-banner">
+      <div class="section-eyebrow">ENTER THE RACECOURSE</div>
+      <h3>اكتشف ميدان الملك خالد من زاوية جديدة</h3>
+      <p>تنقّل بين اللقطات السينمائية، ثم اختبر سرعة الاستجابة في محاكاة السباق التفاعلية.</p>
       <div style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;">
-        <a href="index.html" class="btn-primary" style="font-size:16px;padding:16px 36px;">
-          <span>فتح ملف الرعاية الرسمي (19 مشهدًا)</span>
+        <a href="#gallery" class="btn-primary" style="font-size:16px;padding:16px 36px;">
+          <span>ابدأ الرحلة السينمائية</span>
           <span>←</span>
         </a>
+        <a href="#simulator" class="btn-secondary" style="font-size:16px;padding:16px 36px;">جرّب محاكاة السباق</a>
       </div>
     </div>
   </section>
@@ -480,12 +685,19 @@
   <footer>
     <div>
       <b style="color:var(--paper);font-family:'Almarai',sans-serif;">بطولة سباقات الخيل الإلكترونية 2026</b>
-      <p style="font-size:12px;color:var(--muted);margin-top:4px;">الرياض · المملكة العربية السعودية</p>
+      <p style="font-size:12px;color:var(--muted);margin-top:4px;">صنع بحب في المملكة العربية السعودية</p>
     </div>
-    <div style="display:flex;gap:24px;">
+    <div class="footer-links">
       <a href="landing.html">الرئيسية</a>
-      <a href="index.html">ملف الرعاية التفاعلي</a>
-      <a href="mailto:info@equestrian-esports.sa">تواصل معنا</a>
+      <a href="#gallery">معرض الميدان</a>
+      <a class="footer-contact" href="mailto:himcodeing@gmail.com">تواصل معنا</a>
+      <a class="footer-contact" href="https://wa.me/966541399911" target="_blank" rel="noopener noreferrer" aria-label="تواصل عبر واتساب على الرقم 0541399911">
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20.5 11.8a8.5 8.5 0 0 1-12.7 7.4L3 20.5l1.4-4.7A8.5 8.5 0 1 1 20.5 11.8Z"/>
+          <path d="M8.1 7.7c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.9c.1.3.1.5-.1.7l-.7.8c-.2.2-.1.4 0 .6.8 1.4 1.9 2.5 3.4 3.2.3.1.5.1.7-.1l.9-1.1c.2-.2.4-.3.7-.2l2 .9c.3.1.4.3.4.5 0 .3-.1 1.5-.9 2.1-.7.6-1.7.9-2.7.6-1.2-.3-2.8-1-4.5-2.5-1.3-1.2-2.4-2.6-3-4.1-.6-1.4 0-2.7.3-3.3Z"/>
+        </svg>
+        <span dir="ltr">0541399911</span>
+      </a>
     </div>
   </footer>
 
@@ -501,6 +713,16 @@
     const statusText = document.getElementById('raceStatus');
     const boostBtn = document.getElementById('boostBtn');
     const resetBtn = document.getElementById('resetBtn');
+    const playerMeter = document.getElementById('playerMeter');
+    const aiMeter = document.getElementById('aiMeter');
+    const siteNav = document.getElementById('siteNav');
+    const navToggle = document.getElementById('navToggle');
+    const navLinks = document.querySelector('.nav-links');
+
+    function syncRaceUI() {
+      playerMeter.style.width = Math.min(100, playerPos / 85 * 100) + '%';
+      aiMeter.style.width = Math.min(100, aiPos / 85 * 100) + '%';
+    }
 
     function startRace() {
       if (raceActive) return;
@@ -513,6 +735,7 @@
           endRace("فاز المنافس الذكي! حاول ثانية.");
         }
         aiHorse.style.right = aiPos + '%';
+        syncRaceUI();
       }, 100);
     }
 
@@ -526,6 +749,7 @@
         endRace("🎉 مبروك! حققت المركز الأول في شوط الحسم!");
       }
       playerHorse.style.right = playerPos + '%';
+      syncRaceUI();
     });
 
     function endRace(msg) {
@@ -542,7 +766,111 @@
       playerHorse.style.right = '0%';
       aiHorse.style.right = '0%';
       statusText.textContent = "جاهز للانطلاق";
+      syncRaceUI();
     });
+
+    navToggle.addEventListener('click', () => {
+      const open = siteNav.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', String(open));
+      navToggle.setAttribute('aria-label', open ? 'إغلاق القائمة' : 'فتح القائمة');
+      navToggle.textContent = open ? '×' : '☰';
+    });
+
+    navLinks.addEventListener('click', event => {
+      if (event.target.closest('a')) {
+        siteNav.classList.remove('open');
+        navToggle.setAttribute('aria-expanded', 'false');
+        navToggle.textContent = '☰';
+      }
+    });
+
+    const cinemaGallery = document.getElementById('cinemaGallery');
+    const cinemaStage = document.getElementById('cinemaStage');
+    const cinemaFeatured = document.getElementById('cinemaFeatured');
+    const cinemaShotCode = document.getElementById('cinemaShotCode');
+    const cinemaProgress = document.getElementById('cinemaProgress');
+    const cinemaKicker = document.getElementById('cinemaKicker');
+    const cinemaTitle = document.getElementById('cinemaTitle');
+    const cinemaCaption = document.getElementById('cinemaCaption');
+    const cinemaFilmstrip = document.getElementById('cinemaFilmstrip');
+    const cinemaFrames = [...document.querySelectorAll('.filmstrip-button')];
+    let cinemaIndex = 0;
+    let cinemaSwitchTimer = null;
+    let cinemaSwipeStart = null;
+
+    function showCinemaFrame(nextIndex) {
+      cinemaIndex = (nextIndex + cinemaFrames.length) % cinemaFrames.length;
+      const frame = cinemaFrames[cinemaIndex];
+
+      cinemaFrames.forEach((button, index) => {
+        const active = index === cinemaIndex;
+        button.classList.toggle('active', active);
+        button.setAttribute('aria-pressed', String(active));
+      });
+
+      cinemaGallery.classList.add('switching');
+      clearTimeout(cinemaSwitchTimer);
+      cinemaSwitchTimer = setTimeout(() => {
+        cinemaStage.classList.toggle('is-aerial', frame.dataset.mode === 'aerial');
+        cinemaFeatured.src = frame.dataset.src;
+        cinemaFeatured.alt = frame.dataset.alt;
+        cinemaShotCode.textContent = frame.dataset.code;
+        cinemaProgress.textContent = `${String(cinemaIndex + 1).padStart(2, '0')} / ${String(cinemaFrames.length).padStart(2, '0')}`;
+        cinemaKicker.textContent = frame.dataset.kicker;
+        cinemaTitle.textContent = frame.dataset.title;
+        cinemaCaption.textContent = frame.dataset.caption;
+        cinemaGallery.classList.remove('switching');
+      }, 160);
+
+      const stripBox = cinemaFilmstrip.getBoundingClientRect();
+      const frameBox = frame.getBoundingClientRect();
+      const horizontalOffset = frameBox.left - stripBox.left - (stripBox.width - frameBox.width) / 2;
+      cinemaFilmstrip.scrollBy({ left: horizontalOffset, behavior: 'smooth' });
+    }
+
+    cinemaFrames.forEach((button, index) => button.addEventListener('click', () => showCinemaFrame(index)));
+    document.getElementById('cinemaPrev').addEventListener('click', () => showCinemaFrame(cinemaIndex - 1));
+    document.getElementById('cinemaNext').addEventListener('click', () => showCinemaFrame(cinemaIndex + 1));
+
+    cinemaGallery.addEventListener('keydown', event => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault();
+        showCinemaFrame(cinemaIndex - 1);
+      } else if (event.key === 'ArrowRight') {
+        event.preventDefault();
+        showCinemaFrame(cinemaIndex + 1);
+      }
+    });
+
+    cinemaStage.addEventListener('pointerdown', event => { cinemaSwipeStart = event.clientX; });
+    cinemaStage.addEventListener('pointerup', event => {
+      if (cinemaSwipeStart === null) return;
+      const distance = event.clientX - cinemaSwipeStart;
+      cinemaSwipeStart = null;
+      if (Math.abs(distance) > 46) showCinemaFrame(cinemaIndex + (distance < 0 ? 1 : -1));
+    });
+
+    const sectionLinks = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+    const observedSections = sectionLinks.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
+    const activeObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        sectionLinks.forEach(link => link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id));
+      });
+    }, { rootMargin: '-35% 0px -55%', threshold: 0 });
+    observedSections.forEach(section => activeObserver.observe(section));
+
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .12 });
+    document.querySelectorAll('.reveal').forEach(element => revealObserver.observe(element));
+
+    window.addEventListener('scroll', () => siteNav.classList.toggle('scrolled', scrollY > 24), { passive: true });
   </script>
 </body>
 </html>

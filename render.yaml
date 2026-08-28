@@ -6,8 +6,8 @@ services:
     staticPublishPath: .
     routes:
       - type: rewrite
-        source: /*
-        destination: /index.html
+        source: /
+        destination: /landing.html
     headers:
       - path: /*
         name: Cache-Control
