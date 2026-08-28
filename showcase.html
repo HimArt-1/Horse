@@ -296,7 +296,8 @@
       .mast-title { display:none; }
       .masthead { grid-template-columns:1fr auto; }
       .cover .scene-inner,.split,.split.reverse { grid-template-columns:1fr; }
-      .cover-copy { grid-column:1; max-width:620px; margin-inline-start:auto; }
+      .cover .scene-inner { align-content:start; }
+      .cover-copy { grid-column:1; max-width:620px; margin:min(43vh,420px) 0 0 auto; }
       .axes,.pillars-year { grid-template-columns:repeat(2,1fr); }
       .axis { min-height:140px; }
       .axis b { margin-bottom:20px; }
@@ -308,6 +309,12 @@
       .scene-map-grid { grid-template-columns:repeat(3,1fr); }
     }
 
+    @media (max-width: 820px) {
+      html,body { height:100%; overflow:hidden; overscroll-behavior:none; }
+      .scroll-space { display:none; }
+      .scene { touch-action:pan-y; -webkit-overflow-scrolling:touch; }
+    }
+
     @media (max-width: 720px) {
       :root { --edge:18px; }
       .rail,.footer-note,.scene-readout { display:none; }
@@ -316,13 +323,15 @@
       .brand-en,.home-link span { display:none; }
       .home-link { width:34px; padding:0; }
       .deck-actions { gap:7px; }
-      .scene { padding-top:72px; padding-bottom:66px; overflow-y:auto; }
-      .scene-inner { margin:auto 0; }
+      #field { opacity:.84; }
+      .scene { padding:70px var(--edge) 76px; overflow-y:auto; overscroll-behavior:contain; scrollbar-width:thin; scrollbar-color:rgba(233,188,92,.3) transparent; }
+      .scene-inner { width:100%; margin:auto 0; }
       .scene-no { display:none; }
       h1 { font-size:clamp(36px,12vw,54px); }
       h2 { font-size:clamp(29px,9.2vw,44px); }
       .cover h1 { font-size:clamp(35px,11vw,52px); }
-      .cover-copy { margin-top:34vh; }
+      .cover .scene-inner { min-height:calc(100dvh - 146px); }
+      .cover-copy { margin-top:min(46vh,390px); }
       .cover .title-small { font-size:16px; }
       .cover .subline { gap:6px; font-size:8px; }
       .scroll-cue { bottom:-20px; }
@@ -371,6 +380,15 @@
       .scene-map-panel { max-height:90dvh; padding:18px; }
       .scene-map-grid { grid-template-columns:repeat(2,1fr); }
       .scene-map-grid button { min-height:78px; padding:12px; }
+    }
+
+    @media (max-width: 980px) and (max-height: 600px) and (orientation: landscape) {
+      .scene { padding-top:68px; padding-bottom:54px; }
+      .cover .scene-inner { grid-template-columns:minmax(260px,.9fr) minmax(320px,1.1fr); gap:28px; align-items:center; align-content:center; }
+      .cover-copy { grid-column:2; margin:0; max-width:560px; }
+      .cover h1 { font-size:clamp(34px,6vw,58px); }
+      .cover .subline { margin-top:18px; }
+      .scroll-cue { bottom:-14px; }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -885,25 +903,35 @@
     let mapReturnFocus = null;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const mobile = matchMedia("(max-width: 820px)").matches;
-    const count = reduced ? 140 : (mobile ? 440 : 1320);
+    const count = reduced ? 140 : (mobile ? 680 : 1320);
 
     if (pageTotal) pageTotal.textContent = String(scenes.length).padStart(2,"0");
 
+    let targetProgress = 0, progress = 0, mobileScene = 0, activeSceneIndex = -1;
+
     function syncScroll() {
+      if (mobile) {
+        targetProgress = mobileScene / Math.max(1, scenes.length - 1);
+        return;
+      }
       const H = window.innerHeight;
       const totalH = document.documentElement.scrollHeight - H;
       const targetP = totalH > 0 ? window.scrollY / totalH : 0;
       targetProgress = Math.max(0, Math.min(1, targetP));
     }
 
-    let targetProgress = 0, progress = 0;
     window.addEventListener("scroll", syncScroll, { passive: true });
 
     function jump(target) {
       const maxIdx = Math.max(1, scenes.length - 1);
       const frac = Math.max(0, Math.min(1, target / maxIdx));
       const totalH = document.documentElement.scrollHeight - window.innerHeight;
-      window.scrollTo({ top: frac * totalH, behavior: "smooth" });
+      if (mobile) {
+        mobileScene = Math.round(Math.max(0, Math.min(maxIdx, target)));
+        progress = targetProgress = mobileScene / maxIdx;
+      } else {
+        window.scrollTo({ top: frac * totalH, behavior: "smooth" });
+      }
     }
 
     if (prevBtn) prevBtn.addEventListener("click", () => jump(Math.round(progress * (scenes.length - 1)) - 1));
@@ -952,12 +980,15 @@
       }
     });
 
-    let touchStartY = 0;
-    window.addEventListener("touchstart", e => { touchStartY = e.touches[0].clientY; }, { passive: true });
+    let touchStartY = 0, touchStartX = 0;
+    window.addEventListener("touchstart", e => { touchStartY = e.touches[0].clientY; touchStartX = e.touches[0].clientX; }, { passive: true });
     window.addEventListener("touchend", e => {
       const diff = touchStartY - e.changedTouches[0].clientY;
+      const diffX = touchStartX - e.changedTouches[0].clientX;
       const cur = Math.round(progress * (scenes.length - 1));
-      if (Math.abs(diff) > 40) {
+      if (mobile && Math.abs(diffX) > 52 && Math.abs(diffX) > Math.abs(diff) * 1.15) {
+        jump(diffX > 0 ? cur + 1 : cur - 1);
+      } else if (!mobile && Math.abs(diff) > 40) {
         jump(diff > 0 ? cur + 1 : cur - 1);
       }
     }, { passive: true });
@@ -996,6 +1027,11 @@
     const dots = rail ? [...rail.querySelectorAll(".dot")] : [];
     const mapItems = sceneMapGrid ? [...sceneMapGrid.querySelectorAll("button")] : [];
     function setActive(idx) {
+      if (idx !== activeSceneIndex) {
+        if (mobile && scenes[idx]) scenes[idx].scrollTop = 0;
+        activeSceneIndex = idx;
+      }
+      scenes.forEach((scene, i) => scene.classList.toggle("active", i === idx));
       dots.forEach((d, i) => {
         d.classList.toggle("active", i === idx);
         if (i === idx) d.setAttribute("aria-current", "step"); else d.removeAttribute("aria-current");
@@ -1014,7 +1050,7 @@
         this.safeZones = []; this.safeScene = -1; this.safeStamp = 0;
         this.pointer = { x: -9999, y: -9999, active: false };
         this.horsePts = this.buildHorse();
-        this.horseAssetPts = null; this.horseLinks = [];
+        this.horseAssetPts = null; this.horseLinks = []; this.horseGhost = null; this.horseAspect = .67;
         this.sprite = this.buildSprite();
         this.resize();
         this.loadHorseAsset();
@@ -1151,9 +1187,7 @@
           if (sampled.length > 320) {
             this.horseAssetPts = sampled;
             this.horseLinks = this.buildHorseLinks(sampled);
-            this.c.dataset.horseSource = "reference-logo";
-            this.c.dataset.horsePoints = String(sampled.length);
-            this.c.dataset.horseLinks = String(this.horseLinks.length);
+            this.snapToHorse();
           }
         };
         image.src = "images/saheel-network-logo.png";
@@ -1173,6 +1207,12 @@
           }
         }
         if(right<=left||bottom<=top)return [];
+        const ghost=document.createElement("canvas"),gw=right-left+1,gh=bottom-top+1;
+        ghost.width=gw;ghost.height=gh;
+        const gx=ghost.getContext("2d");
+        gx.drawImage(off,left,top,gw,gh,0,0,gw,gh);
+        gx.globalCompositeOperation="source-in";gx.fillStyle=`rgb(${GOLD.join(",")})`;gx.fillRect(0,0,gw,gh);
+        this.horseGhost=ghost;this.horseAspect=gh/gw;
         const edges=[],inside=[];
         const on=(px,py)=>px>=0&&py>=0&&px<size&&py<size&&pixels[(py*size+px)*4+3]>42;
         for(let py=top;py<=bottom;py+=2){
@@ -1214,7 +1254,7 @@
           if(!grid.has(k))grid.set(k,[]);
           grid.get(k).push(i);
         }
-        for(let i=0;i<used;i+=mobile?4:3){
+        for(let i=0;i<used;i+=mobile?3:3){
           const p=points[i],gx=Math.floor(p.x/cell),gy=Math.floor(p.y/cell);
           let best=-1,bestD=cell*cell*1.8;
           for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){
@@ -1225,9 +1265,19 @@
             }
           }
           if(best>=0)links.push([i,best]);
-          if(links.length>=(mobile?110:260))break;
+          if(links.length>=(mobile?180:260))break;
         }
         return links;
+      }
+      snapToHorse() {
+        const index=Math.min(scenes.length-1,Math.floor(progress*scenes.length));
+        if(index!==0&&index!==4&&index!==18)return;
+        const variant=index===4?1:(index===18?2:0);
+        for(let k=0;k<this.parts.length;k++){
+          const q=this.parts[k],target=this.horse(q,k,variant);
+          q.x=target.x;q.y=target.y;q.px=target.x;q.py=target.y;
+        }
+        this.ctx.save();this.ctx.globalCompositeOperation="source-over";this.ctx.fillStyle="rgb(5,5,4)";this.ctx.fillRect(0,0,this.W,this.H);this.ctx.restore();
       }
       refreshSafeZones(sceneIndex) {
         const scene=scenes[sceneIndex];
@@ -1239,7 +1289,7 @@
           ".pillars-year",".matrix-categories",".price-wrap",".investment-scope",
           ".commit-grid",".measure",".sponsor-name",".sponsor-role",".contact"
         ].join(",");
-        const padding=mobile?10:18;
+        const padding=mobile?15:18;
         const raw=[...scene.querySelectorAll(selectors)].map(node=>{
           const r=node.getBoundingClientRect();
           return {x1:Math.max(0,r.left-padding),y1:Math.max(0,r.top-padding*.7),x2:Math.min(this.W,r.right+padding),y2:Math.min(this.H,r.bottom+padding*.7)};
@@ -1257,7 +1307,6 @@
           if(!merged)zones.push({...rect});
         }
         this.safeZones=zones;
-        this.c.dataset.safeZones=String(zones.length);
         this.safeScene=sceneIndex;
         this.safeStamp=performance.now();
       }
@@ -1279,18 +1328,23 @@
         for(const z of this.safeZones)if(x>z.x1&&x<z.x2&&y>z.y1&&y<z.y2)return false;
         return true;
       }
-      horse(q,k,variant=0) {
-        const points = this.horseAssetPts || this.horsePts;
-        const pt = points[k % points.length];
+      horseLayout(variant=0) {
         const final = variant === 2, sponsor = variant === 1;
-        const widthFactor = final ? (mobile ? .72 : .34) : (sponsor ? (mobile ? .7 : .31) : (mobile ? .9 : .5));
+        const landscape=mobile&&this.W>this.H;
+        const widthFactor = landscape ? (final ? .34 : (sponsor ? .32 : .42)) : (final ? (mobile ? .68 : .34) : (sponsor ? (mobile ? .66 : .31) : (mobile ? .8 : .5)));
         const heightFactor = final ? (mobile ? .48 : .48) : (sponsor ? (mobile ? .45 : .54) : (mobile ? .66 : .68));
         const scale = Math.min(
           this.W * widthFactor,
           this.H * heightFactor
         );
-        const cx = mobile ? (sponsor ? .5 : .5) : (final ? .18 : (sponsor ? .18 : .28));
-        const cy = mobile ? (final ? .27 : (sponsor ? .24 : .27)) : (final ? .62 : (sponsor ? .62 : .53));
+        const cx = landscape ? (final ? .18 : (sponsor ? .18 : .27)) : (mobile ? .5 : (final ? .18 : (sponsor ? .18 : .28)));
+        const cy = landscape ? .5 : (mobile ? (final ? .25 : (sponsor ? .22 : .195)) : (final ? .62 : (sponsor ? .62 : .53)));
+        return {scale,cx,cy};
+      }
+      horse(q,k,variant=0) {
+        const points = this.horseAssetPts || this.horsePts;
+        const pt = points[k % points.length];
+        const {scale,cx,cy}=this.horseLayout(variant);
         const exactMark=pt.zone==="mark";
         const zoneMotion = exactMark ? .08 : (pt.zone === "tail" ? 1 : (pt.zone === "head" ? .35 : .12));
         const drift = Math.sin(this.t * 1.35 + pt.y * 8 + q.s * 2) * zoneMotion;
@@ -1300,6 +1354,19 @@
           a: (pt.accent ? .58 : .34) + q.s * (pt.accent ? .38 : .48),
           size: (pt.accent ? .62 : .46) + q.s * .4
         };
+      }
+      drawHorseGhost(scene,nextScene,blend,horseStrength) {
+        if(!this.horseGhost||horseStrength<=.08)return;
+        const horseA=scene===0||scene===4||scene===18;
+        const activeScene=horseA?scene:nextScene;
+        if(mobile&&activeScene!==0)return;
+        const variant=activeScene===4?1:(activeScene===18?2:0);
+        const {scale,cx,cy}=this.horseLayout(variant),height=scale*this.horseAspect;
+        const visibility=horseA?1-blend:blend;
+        const ctx=this.ctx;
+        ctx.save();ctx.globalCompositeOperation="lighter";ctx.globalAlpha=(mobile?.075:.07)*visibility;
+        ctx.drawImage(this.horseGhost,this.W*cx-scale/2,this.H*cy-height/2,scale,height);
+        ctx.restore();
       }
       target(scene,q,k) {
         const W=this.W,H=this.H,t=this.t,a=q.a;
@@ -1351,20 +1418,24 @@
         const ctx=this.ctx; ctx.globalCompositeOperation="source-over";ctx.fillStyle="rgba(5,5,4,.36)";ctx.fillRect(0,0,this.W,this.H);ctx.globalCompositeOperation="lighter";
         this.ripples=this.ripples.filter(r=>now-r.start<1200);
         const horseA=scene===0||scene===4||scene===18,horseB=nextScene===0||nextScene===4||nextScene===18;
+        const horseStrength=(horseA?1:0)*(1-blend)+(horseB?1:0)*blend;
+        this.drawHorseGhost(scene,nextScene,blend,horseStrength);
         for(let k=0;k<this.parts.length;k++){
           const q=this.parts[k],A=this.target(scene,q,k),B=this.target(nextScene,q,k);
           let tx=A.x+(B.x-A.x)*blend,ty=A.y+(B.y-A.y)*blend,alpha=A.a+(B.a-A.a)*blend,size=A.size+(B.size-A.size)*blend;
-          const emphasis=(horseA?1:.54)*(1-blend)+(horseB?1:.54)*blend;
+          const ambient=mobile?.38:.54;
+          const emphasis=(horseA?1:ambient)*(1-blend)+(horseB?1:ambient)*blend;
           alpha*=emphasis;size*=.9+.1*emphasis;
           const clear=this.keepClear(tx,ty,q);tx=clear.x;ty=clear.y;
           if(this.pointer.active){const dx=q.x-this.pointer.x,dy=q.y-this.pointer.y,d=Math.hypot(dx,dy);if(d<130&&d>1){const f=(1-d/130)*24;tx+=dx/d*f;ty+=dy/d*f;alpha=Math.min(1,alpha+.18);}}
           for(const r of this.ripples){const age=(now-r.start)/1200,dx=q.x-r.x,dy=q.y-r.y,d=Math.hypot(dx,dy)||1,band=Math.abs(d-age*560);if(band<70){const f=(1-band/70)*26*(1-age);tx+=dx/d*f;ty+=dy/d*f;}}
           q.px=q.x;q.py=q.y;q.x+=(tx-q.x)*q.k;q.y+=(ty-q.y)*q.k;
           if(!this.isClear(q.x,q.y))continue;
-          const s=Math.max(.7,size*q.size)*5.4;ctx.globalAlpha=Math.min(1,alpha);ctx.drawImage(this.sprite,q.x-s/2,q.y-s/2,s,s);
-          const vx=q.x-q.px,vy=q.y-q.py;if(vx*vx+vy*vy>38&&this.isClear(q.px,q.py)){ctx.strokeStyle=`rgba(${GOLD.join(",")},${Math.min(.22,alpha*.3)})`;ctx.lineWidth=.55;ctx.beginPath();ctx.moveTo(q.px,q.py);ctx.lineTo(q.x,q.y);ctx.stroke();}
+          if(mobile&&!horseA&&!horseB&&k%2)continue;
+          const dotScale=mobile&&horseStrength>.4?6.15:5.4;
+          const s=Math.max(.7,size*q.size)*dotScale;ctx.globalAlpha=Math.min(1,alpha);ctx.drawImage(this.sprite,q.x-s/2,q.y-s/2,s,s);
+          const vx=q.x-q.px,vy=q.y-q.py;if(!(mobile&&horseStrength>.4)&&vx*vx+vy*vy>38&&this.isClear(q.px,q.py)){ctx.strokeStyle=`rgba(${GOLD.join(",")},${Math.min(.22,alpha*.3)})`;ctx.lineWidth=.55;ctx.beginPath();ctx.moveTo(q.px,q.py);ctx.lineTo(q.x,q.y);ctx.stroke();}
         }
-        const horseStrength=(horseA?1:0)*(1-blend)+(horseB?1:0)*blend;
         if(horseStrength>.12&&this.horseLinks.length){
           ctx.globalCompositeOperation="lighter";ctx.globalAlpha=.11*horseStrength;ctx.strokeStyle=`rgb(${GOLD.join(",")})`;ctx.lineWidth=.55;
           ctx.beginPath();
@@ -1386,14 +1457,15 @@
     function frame(now) {
       const dt=Math.min(40,now-last);last=now;
       progress += (targetProgress-progress) * (reduced ? 1 : .085);
-      const exact=progress*scenes.length;
+      const rawExact=progress*(scenes.length-1),nearest=Math.round(rawExact);
+      const exact=Math.abs(rawExact-nearest)<.025?nearest:rawExact;
       const index=Math.min(scenes.length-1,Math.floor(exact));
       const local=index===scenes.length-1?0:exact-index;
       const blend=Math.max(0,Math.min(1,(local-.62)/.28));
       scenes.forEach((s,i)=>{
         let opacity=0,y=0;
-        if(i===index){opacity=1-Math.max(0,(local-.72)/.28);y=-Math.max(0,(local-.56))*52;}
-        else if(i===index+1){opacity=Math.max(0,(local-.58)/.32);y=(1-opacity)*48;}
+        if(i===index){opacity=Math.max(0,Math.min(1,1-Math.max(0,(local-.72)/.28)));y=-Math.max(0,(local-.56))*52;}
+        else if(i===index+1){opacity=Math.max(0,Math.min(1,(local-.58)/.32));y=(1-opacity)*48;}
         s.style.opacity=opacity.toFixed(3);s.style.transform=`translate3d(0,${y.toFixed(1)}px,0)`;
       });
       setActive(index);
