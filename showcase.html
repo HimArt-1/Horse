@@ -53,7 +53,7 @@
     .skip-link:focus { transform:none; }
 
     .stage { position: fixed; inset: 0; min-height: 100dvh; overflow: hidden; isolation: isolate; }
-    #field { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; }
+    #field { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; opacity:.9; }
     .atmosphere {
       position: absolute; inset: 0; z-index: 1; pointer-events: none;
       background:
@@ -110,7 +110,7 @@
     .scene-no { position: absolute; inset-inline-start: 0; top: -38px; color: rgba(233,188,92,.5); font: 600 9px/1 "IBM Plex Mono",monospace; letter-spacing: .28em; direction: ltr; }
     .eyebrow { margin-bottom: 16px; font-size: 9px; color: rgba(233,188,92,.8); direction: ltr; font-weight: 500; }
     h1,h2,h3,p { margin-top: 0; }
-    h1,h2 { font-family: "Almarai",sans-serif; color: var(--warm); letter-spacing: -.035em; text-wrap: balance; }
+    h1,h2 { font-family: "Almarai",sans-serif; color: var(--warm); letter-spacing: -.035em; text-wrap: balance; text-shadow:0 2px 28px rgba(5,5,4,.9); }
     h1 { margin-bottom: 22px; font-size: clamp(40px,6.2vw,92px); line-height: 1.04; font-weight: 800; }
     h2 { margin-bottom: 20px; font-size: clamp(32px,4.8vw,68px); line-height: 1.08; font-weight: 800; }
     h3 { margin-bottom: 8px; font: 700 clamp(16px,1.45vw,21px)/1.25 "Almarai",sans-serif; color: var(--warm); }
@@ -885,7 +885,7 @@
     let mapReturnFocus = null;
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     const mobile = matchMedia("(max-width: 820px)").matches;
-    const count = reduced ? 180 : (mobile ? 720 : 1900);
+    const count = reduced ? 140 : (mobile ? 440 : 1320);
 
     if (pageTotal) pageTotal.textContent = String(scenes.length).padStart(2,"0");
 
@@ -1011,10 +1011,13 @@
       constructor(canvas) {
         this.c = canvas; this.ctx = canvas.getContext("2d");
         this.parts = []; this.ripples = []; this.seed = 42; this.t = 0;
+        this.safeZones = []; this.safeScene = -1; this.safeStamp = 0;
         this.pointer = { x: -9999, y: -9999, active: false };
         this.horsePts = this.buildHorse();
+        this.horseAssetPts = null; this.horseLinks = [];
         this.sprite = this.buildSprite();
         this.resize();
+        this.loadHorseAsset();
         window.addEventListener("resize", () => this.resize());
         window.addEventListener("pointermove", e => { this.pointer.x = e.clientX; this.pointer.y = e.clientY; this.pointer.active = true; });
         window.addEventListener("pointerleave", () => { this.pointer.active = false; });
@@ -1035,6 +1038,7 @@
       resize() {
         this.W = this.c.width = window.innerWidth;
         this.H = this.c.height = window.innerHeight;
+        this.safeScene = -1;
         this.init();
       }
       init() {
@@ -1139,24 +1143,162 @@
         }
         return pts;
       }
+      loadHorseAsset() {
+        const image = new Image();
+        image.decoding = "async";
+        image.onload = () => {
+          const sampled = this.sampleHorseAsset(image);
+          if (sampled.length > 320) {
+            this.horseAssetPts = sampled;
+            this.horseLinks = this.buildHorseLinks(sampled);
+            this.c.dataset.horseSource = "reference-logo";
+            this.c.dataset.horsePoints = String(sampled.length);
+            this.c.dataset.horseLinks = String(this.horseLinks.length);
+          }
+        };
+        image.src = "images/saheel-network-logo.png";
+      }
+      sampleHorseAsset(image) {
+        const size = 720;
+        const off = document.createElement("canvas");
+        off.width = off.height = size;
+        const x = off.getContext("2d", { willReadFrequently: true });
+        x.clearRect(0,0,size,size);
+        x.drawImage(image,0,0,size,size);
+        const pixels = x.getImageData(0,0,size,size).data;
+        let left=size,top=size,right=0,bottom=0;
+        for(let py=0;py<size;py+=2){
+          for(let px=0;px<size;px+=2){
+            if(pixels[(py*size+px)*4+3]>28){left=Math.min(left,px);right=Math.max(right,px);top=Math.min(top,py);bottom=Math.max(bottom,py);}
+          }
+        }
+        if(right<=left||bottom<=top)return [];
+        const edges=[],inside=[];
+        const on=(px,py)=>px>=0&&py>=0&&px<size&&py<size&&pixels[(py*size+px)*4+3]>42;
+        for(let py=top;py<=bottom;py+=2){
+          for(let px=left;px<=right;px+=2){
+            const alpha=pixels[(py*size+px)*4+3];
+            if(alpha<=42)continue;
+            const boundary=!on(px+4,py)||!on(px-4,py)||!on(px,py+4)||!on(px,py-4);
+            (boundary?edges:inside).push({px,py,alpha,boundary});
+          }
+        }
+        const maxPoints=2700;
+        const edgeCap=Math.round(maxPoints*.7),insideCap=maxPoints-edgeCap;
+        const edgeStride=Math.max(1,Math.ceil(edges.length/edgeCap));
+        const insideStride=Math.max(1,Math.ceil(inside.length/insideCap));
+        const candidates=[...edges.filter((_,i)=>i%edgeStride===0).slice(0,edgeCap),...inside.filter((_,i)=>i%insideStride===0).slice(0,insideCap)];
+        const cx=(left+right)/2,cy=(top+bottom)/2,span=Math.max(1,right-left);
+        const pts=[];
+        for(let i=0;i<candidates.length;i++){
+          const p=candidates[i];
+          pts.push({
+            x:(p.px-cx)/span,
+            y:(p.py-cy)/span,
+            zone:"mark",
+            accent:p.boundary||p.alpha>176&&(i%5===0)
+          });
+        }
+        this.seed=2026;
+        for(let i=pts.length-1;i>0;i--){
+          const j=Math.floor(this.random()*(i+1));
+          [pts[i],pts[j]]=[pts[j],pts[i]];
+        }
+        return pts;
+      }
+      buildHorseLinks(points) {
+        const used=Math.min(count,points.length),cell=.045,grid=new Map(),links=[];
+        const key=(x,y)=>`${x}:${y}`;
+        for(let i=0;i<used;i++){
+          const p=points[i],gx=Math.floor(p.x/cell),gy=Math.floor(p.y/cell),k=key(gx,gy);
+          if(!grid.has(k))grid.set(k,[]);
+          grid.get(k).push(i);
+        }
+        for(let i=0;i<used;i+=mobile?4:3){
+          const p=points[i],gx=Math.floor(p.x/cell),gy=Math.floor(p.y/cell);
+          let best=-1,bestD=cell*cell*1.8;
+          for(let oy=-1;oy<=1;oy++)for(let ox=-1;ox<=1;ox++){
+            for(const j of grid.get(key(gx+ox,gy+oy))||[]){
+              if(j===i)continue;
+              const dx=p.x-points[j].x,dy=p.y-points[j].y,d=dx*dx+dy*dy;
+              if(d<bestD){bestD=d;best=j;}
+            }
+          }
+          if(best>=0)links.push([i,best]);
+          if(links.length>=(mobile?110:260))break;
+        }
+        return links;
+      }
+      refreshSafeZones(sceneIndex) {
+        const scene=scenes[sceneIndex];
+        if(!scene)return;
+        const selectors=[
+          "h1","h2","h3","h4","p","li",".eyebrow",".subline",
+          ".axes",".touch-grid",".rights-lines",".sponsor-lockup",".game-stage",
+          ".visual-box",".platform-grid",".apparel-grid",".media-columns",".timeline",
+          ".pillars-year",".matrix-categories",".price-wrap",".investment-scope",
+          ".commit-grid",".measure",".sponsor-name",".sponsor-role",".contact"
+        ].join(",");
+        const padding=mobile?10:18;
+        const raw=[...scene.querySelectorAll(selectors)].map(node=>{
+          const r=node.getBoundingClientRect();
+          return {x1:Math.max(0,r.left-padding),y1:Math.max(0,r.top-padding*.7),x2:Math.min(this.W,r.right+padding),y2:Math.min(this.H,r.bottom+padding*.7)};
+        }).filter(r=>r.x2-r.x1>3&&r.y2-r.y1>3);
+        const zones=[];
+        for(const rect of raw){
+          let merged=false;
+          for(const zone of zones){
+            if(rect.x1<=zone.x2+10&&rect.x2>=zone.x1-10&&rect.y1<=zone.y2+8&&rect.y2>=zone.y1-8){
+              zone.x1=Math.min(zone.x1,rect.x1);zone.y1=Math.min(zone.y1,rect.y1);
+              zone.x2=Math.max(zone.x2,rect.x2);zone.y2=Math.max(zone.y2,rect.y2);
+              merged=true;break;
+            }
+          }
+          if(!merged)zones.push({...rect});
+        }
+        this.safeZones=zones;
+        this.c.dataset.safeZones=String(zones.length);
+        this.safeScene=sceneIndex;
+        this.safeStamp=performance.now();
+      }
+      keepClear(x,y,q) {
+        let px=x,py=y;
+        for(const z of this.safeZones){
+          if(px<=z.x1||px>=z.x2||py<=z.y1||py>=z.y2)continue;
+          const gap=14+q.s*18;
+          const edges=[px-z.x1,z.x2-px,py-z.y1,z.y2-py];
+          const nearest=Math.min(...edges);
+          if(nearest===edges[0])px=z.x1-gap;
+          else if(nearest===edges[1])px=z.x2+gap;
+          else if(nearest===edges[2])py=z.y1-gap;
+          else py=z.y2+gap;
+        }
+        return {x:px,y:py};
+      }
+      isClear(x,y) {
+        for(const z of this.safeZones)if(x>z.x1&&x<z.x2&&y>z.y1&&y<z.y2)return false;
+        return true;
+      }
       horse(q,k,variant=0) {
-        const pt = this.horsePts[k % this.horsePts.length];
+        const points = this.horseAssetPts || this.horsePts;
+        const pt = points[k % points.length];
         const final = variant === 2, sponsor = variant === 1;
-        const widthFactor = final ? (mobile ? .68 : .38) : (sponsor ? (mobile ? .62 : .34) : (mobile ? .9 : .54));
-        const heightFactor = final ? (mobile ? .52 : .55) : (sponsor ? (mobile ? .44 : .58) : (mobile ? .74 : .72));
+        const widthFactor = final ? (mobile ? .72 : .34) : (sponsor ? (mobile ? .7 : .31) : (mobile ? .9 : .5));
+        const heightFactor = final ? (mobile ? .48 : .48) : (sponsor ? (mobile ? .45 : .54) : (mobile ? .66 : .68));
         const scale = Math.min(
           this.W * widthFactor,
           this.H * heightFactor
         );
-        const cx = mobile ? (sponsor ? .38 : .5) : (final ? .5 : (sponsor ? .23 : .31));
-        const cy = mobile ? (final ? .52 : (sponsor ? .68 : .30)) : (final ? .56 : (sponsor ? .62 : .56));
-        const zoneMotion = pt.zone === "tail" ? 1 : (pt.zone === "head" ? .35 : .12);
-        const drift = Math.sin(this.t * 1.8 + pt.y * 9 + q.s * 2) * zoneMotion;
+        const cx = mobile ? (sponsor ? .5 : .5) : (final ? .18 : (sponsor ? .18 : .28));
+        const cy = mobile ? (final ? .27 : (sponsor ? .24 : .27)) : (final ? .62 : (sponsor ? .62 : .53));
+        const exactMark=pt.zone==="mark";
+        const zoneMotion = exactMark ? .08 : (pt.zone === "tail" ? 1 : (pt.zone === "head" ? .35 : .12));
+        const drift = Math.sin(this.t * 1.35 + pt.y * 8 + q.s * 2) * zoneMotion;
         return {
-          x: this.W * cx + pt.x * scale + drift * (pt.zone === "tail" ? 7 : 2),
-          y: this.H * cy + pt.y * scale * .72 + drift * (pt.zone === "tail" ? 4 : 1.5),
-          a: (pt.accent ? .54 : .30) + q.s * (pt.accent ? .44 : .58),
-          size: (pt.accent ? .58 : .44) + q.s * .46
+          x: this.W * cx + pt.x * scale + drift * (exactMark ? 1.2 : (pt.zone === "tail" ? 7 : 2)),
+          y: this.H * cy + pt.y * scale + drift * (exactMark ? .7 : (pt.zone === "tail" ? 4 : 1.5)),
+          a: (pt.accent ? .58 : .34) + q.s * (pt.accent ? .38 : .48),
+          size: (pt.accent ? .62 : .46) + q.s * .4
         };
       }
       target(scene,q,k) {
@@ -1204,16 +1346,35 @@
       burst(x,y) { this.ripples.push({x,y,start:performance.now()}); if(this.ripples.length>4)this.ripples.shift(); }
       draw(dt,scene,blend,nextScene) {
         this.t+=dt/1000;
-        const ctx=this.ctx; ctx.globalCompositeOperation="source-over";ctx.fillStyle="rgba(5,5,4,.28)";ctx.fillRect(0,0,this.W,this.H);ctx.globalCompositeOperation="lighter";
-        const now=performance.now(); this.ripples=this.ripples.filter(r=>now-r.start<1200);
+        const now=performance.now();
+        if(this.safeScene!==scene||now-this.safeStamp>240)this.refreshSafeZones(scene);
+        const ctx=this.ctx; ctx.globalCompositeOperation="source-over";ctx.fillStyle="rgba(5,5,4,.36)";ctx.fillRect(0,0,this.W,this.H);ctx.globalCompositeOperation="lighter";
+        this.ripples=this.ripples.filter(r=>now-r.start<1200);
+        const horseA=scene===0||scene===4||scene===18,horseB=nextScene===0||nextScene===4||nextScene===18;
         for(let k=0;k<this.parts.length;k++){
           const q=this.parts[k],A=this.target(scene,q,k),B=this.target(nextScene,q,k);
           let tx=A.x+(B.x-A.x)*blend,ty=A.y+(B.y-A.y)*blend,alpha=A.a+(B.a-A.a)*blend,size=A.size+(B.size-A.size)*blend;
+          const emphasis=(horseA?1:.54)*(1-blend)+(horseB?1:.54)*blend;
+          alpha*=emphasis;size*=.9+.1*emphasis;
+          const clear=this.keepClear(tx,ty,q);tx=clear.x;ty=clear.y;
           if(this.pointer.active){const dx=q.x-this.pointer.x,dy=q.y-this.pointer.y,d=Math.hypot(dx,dy);if(d<130&&d>1){const f=(1-d/130)*24;tx+=dx/d*f;ty+=dy/d*f;alpha=Math.min(1,alpha+.18);}}
           for(const r of this.ripples){const age=(now-r.start)/1200,dx=q.x-r.x,dy=q.y-r.y,d=Math.hypot(dx,dy)||1,band=Math.abs(d-age*560);if(band<70){const f=(1-band/70)*26*(1-age);tx+=dx/d*f;ty+=dy/d*f;}}
           q.px=q.x;q.py=q.y;q.x+=(tx-q.x)*q.k;q.y+=(ty-q.y)*q.k;
-          const s=Math.max(.7,size*q.size)*6;ctx.globalAlpha=Math.min(1,alpha);ctx.drawImage(this.sprite,q.x-s/2,q.y-s/2,s,s);
-          const vx=q.x-q.px,vy=q.y-q.py;if(vx*vx+vy*vy>34){ctx.strokeStyle=`rgba(${GOLD.join(",")},${Math.min(.34,alpha*.45)})`;ctx.lineWidth=.65;ctx.beginPath();ctx.moveTo(q.px,q.py);ctx.lineTo(q.x,q.y);ctx.stroke();}
+          if(!this.isClear(q.x,q.y))continue;
+          const s=Math.max(.7,size*q.size)*5.4;ctx.globalAlpha=Math.min(1,alpha);ctx.drawImage(this.sprite,q.x-s/2,q.y-s/2,s,s);
+          const vx=q.x-q.px,vy=q.y-q.py;if(vx*vx+vy*vy>38&&this.isClear(q.px,q.py)){ctx.strokeStyle=`rgba(${GOLD.join(",")},${Math.min(.22,alpha*.3)})`;ctx.lineWidth=.55;ctx.beginPath();ctx.moveTo(q.px,q.py);ctx.lineTo(q.x,q.y);ctx.stroke();}
+        }
+        const horseStrength=(horseA?1:0)*(1-blend)+(horseB?1:0)*blend;
+        if(horseStrength>.12&&this.horseLinks.length){
+          ctx.globalCompositeOperation="lighter";ctx.globalAlpha=.11*horseStrength;ctx.strokeStyle=`rgb(${GOLD.join(",")})`;ctx.lineWidth=.55;
+          ctx.beginPath();
+          for(const [a,b] of this.horseLinks){
+            const A=this.parts[a],B=this.parts[b];if(!A||!B)continue;
+            const mx=(A.x+B.x)/2,my=(A.y+B.y)/2;
+            if(!this.isClear(A.x,A.y)||!this.isClear(B.x,B.y)||!this.isClear(mx,my))continue;
+            ctx.moveTo(A.x,A.y);ctx.lineTo(B.x,B.y);
+          }
+          ctx.stroke();
         }
         for(const r of this.ripples){const age=(now-r.start)/1200;ctx.globalAlpha=(1-age)*.28;ctx.strokeStyle="rgb(233,188,92)";ctx.lineWidth=1;ctx.beginPath();ctx.arc(r.x,r.y,age*560,0,Math.PI*2);ctx.stroke();}
         ctx.globalAlpha=1;ctx.globalCompositeOperation="source-over";
