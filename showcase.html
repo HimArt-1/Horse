@@ -149,7 +149,7 @@
 
     .touch-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 1px; margin-top: 36px; background: var(--line); border: 1px solid var(--line); direction: rtl; }
     .touch { min-height: 78px; padding: 16px; display: flex; align-items: flex-end; background: rgba(5,5,4,.78); color: rgba(245,233,210,.72); font-size: 13px; font-weight: 500; }
-    .touch:nth-child(2n) { background: rgba(16,13,8,.76); }
+    .touch:nth-child(2n) { background-color: rgba(16,13,8,.76); }
 
     .sponsor-lockup { display: grid; grid-template-columns: 1fr 70px 1fr; align-items: center; width: min(760px,100%); margin: 32px auto 0; direction: ltr; }
     .logo-space { height: 190px; display: grid; place-items: center; border-block: 1px solid var(--line); color: var(--warm); text-align: center; }
@@ -200,7 +200,7 @@
     /* 12-Month Platform Engine Visual */
     .platform-visual { display:grid; grid-template-columns:repeat(2,1fr); gap:1px; background:var(--line); border:1px solid var(--line); }
     .platform-card { padding:22px; background:rgba(5,5,4,.84); }
-    .platform-card:nth-child(2), .platform-card:nth-child(3) { background:rgba(14,11,6,.8); }
+    .platform-card:nth-child(2), .platform-card:nth-child(3) { background-color:rgba(14,11,6,.8); }
     .platform-card b { display:block; font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; color:var(--gold); margin-bottom:12px; direction:ltr; }
     .platform-card h4 { margin:0 0 8px; font:700 15px/1.3 "Almarai",sans-serif; color:var(--warm); }
     .platform-card p { font-size:12.5px; line-height:1.6; color:rgba(245,233,210,.6); }
@@ -213,7 +213,7 @@
     /* Media Columns */
     .media-columns { display:grid; grid-template-columns:repeat(3,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:36px; }
     .media-col { min-height:280px; padding:24px; background:rgba(5,5,4,.84); }
-    .media-col:nth-child(2) { background:rgba(15,12,7,.8); }
+    .media-col:nth-child(2) { background-color:rgba(15,12,7,.8); }
     .media-col h3 { direction:ltr; text-align:left; font-family:"IBM Plex Mono",monospace; font-size:12px; letter-spacing:.14em; }
 
     /* Horizontal Connected Timeline */
@@ -226,7 +226,7 @@
     /* 4 Grand Strategic Pillars (One Year of Value) */
     .pillars-year { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:var(--line); border:1px solid var(--line); margin-top:38px; }
     .pillar-box { padding:26px 20px; background:rgba(5,5,4,.85); min-height:260px; display:flex; flex-direction:column; justify-content:space-between; }
-    .pillar-box:nth-child(2n) { background:rgba(15,11,6,.82); }
+    .pillar-box:nth-child(2n) { background-color:rgba(15,11,6,.82); }
     .pillar-box .num { font:600 11px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; color:var(--gold); direction:ltr; }
     .pillar-box h3 { font:700 17px/1.3 "Almarai",sans-serif; color:var(--warm); margin:14px 0 10px; }
     .pillar-box p { font-size:12.5px; line-height:1.65; color:rgba(245,233,210,.65); }
@@ -259,6 +259,136 @@
     .measure div { padding:14px 16px; background:rgba(5,5,4,.88); }
     .measure b { display:block; font:600 8px/1.3 "IBM Plex Mono",monospace; letter-spacing:.1em; color:rgba(233,188,92,.65); direction:ltr; }
     .measure span { display:block; margin-top:6px; font-size:11.5px; color:rgba(245,233,210,.7); }
+
+    /* Cinematic card system */
+    .axes,
+    .touch-grid,
+    .rights-lines,
+    .platform-visual,
+    .apparel-grid,
+    .media-columns,
+    .pillars-year,
+    .commit-grid,
+    .measure {
+      gap:clamp(8px,1vw,14px);
+      background:transparent;
+      border:0;
+    }
+
+    .axis,
+    .touch,
+    .rights-group,
+    .migration-hub,
+    .platform-card,
+    .apparel-card,
+    .media-col,
+    .phase,
+    .pillar-box,
+    .commit,
+    .investment-scope > div {
+      position:relative;
+      isolation:isolate;
+      overflow:hidden;
+      border:1px solid rgba(233,188,92,.2);
+      border-radius:3px 18px 3px 18px;
+      background-color:#080704;
+      background-image:
+        linear-gradient(180deg,rgba(4,4,3,.22) 0%,rgba(4,4,3,.8) 72%,rgba(4,4,3,.96) 100%),
+        linear-gradient(90deg,rgba(4,4,3,.45),rgba(4,4,3,.82)),
+        var(--card-image,linear-gradient(135deg,#151008,#080704));
+      background-size:auto,auto,cover;
+      background-position:center;
+      background-repeat:no-repeat;
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.045),inset 0 0 0 1px rgba(255,255,255,.012),0 18px 48px rgba(0,0,0,.24);
+      transition:border-color .32s var(--ease),box-shadow .32s var(--ease),filter .32s var(--ease);
+    }
+    .axis:hover,
+    .touch:hover,
+    .rights-group:hover,
+    .migration-hub:hover,
+    .platform-card:hover,
+    .apparel-card:hover,
+    .media-col:hover,
+    .phase:hover,
+    .pillar-box:hover,
+    .commit:hover,
+    .investment-scope > div:hover {
+      border-color:rgba(246,216,142,.58);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 0 0 1px rgba(233,188,92,.08),0 22px 54px rgba(0,0,0,.34),0 0 28px rgba(233,188,92,.055);
+      filter:saturate(1.08) brightness(1.04);
+    }
+    .axis > *,
+    .touch > *,
+    .rights-group > *,
+    .migration-hub > *,
+    .platform-card > *,
+    .apparel-card > *,
+    .media-col > *,
+    .phase > *,
+    .pillar-box > *,
+    .commit > *,
+    .investment-scope > div > * { position:relative; z-index:1; }
+    .axis h3,.platform-card h4,.apparel-card h3,.media-col h3,.phase h3,.pillar-box h3,.commit h3,.investment-scope h3 { text-shadow:0 2px 14px rgba(0,0,0,.9); }
+    .axis p,.platform-card p,.apparel-card p,.phase p,.pillar-box p,.investment-scope p { color:rgba(245,233,210,.78); text-shadow:0 2px 12px rgba(0,0,0,.92); }
+
+    .axes { border:0; }
+    .axis { border-inline:1px solid rgba(233,188,92,.2); }
+    .axis:last-child { border-inline-end:1px solid rgba(233,188,92,.2); }
+    .touch { min-height:92px; align-items:flex-end; color:rgba(255,244,220,.9); text-shadow:0 2px 12px rgba(0,0,0,.95); }
+    .rights-group,.apparel-card,.commit,.investment-scope > div { padding:clamp(20px,2.2vw,30px); border-top-color:rgba(246,216,142,.62); }
+    .platform-card { min-height:190px; padding:clamp(20px,2vw,28px); }
+    .media-col { min-height:300px; }
+    .phase { min-height:230px; padding:34px clamp(20px,2.8vw,38px) 24px; }
+    .pillar-box { min-height:280px; }
+    .investment-scope { border-top:0; padding-top:0; }
+    .measure div { border:1px solid rgba(233,188,92,.15); border-radius:2px 10px 2px 10px; background:linear-gradient(135deg,rgba(24,18,10,.94),rgba(5,5,4,.92)); box-shadow:inset 0 1px rgba(255,255,255,.035); }
+
+    .axis:nth-child(1) { --card-image:url("images/cinematic/shot-17.webp"); background-position:62% center; }
+    .axis:nth-child(2) { --card-image:url("images/future-racing.jpg"); }
+    .axis:nth-child(3) { --card-image:url("images/champion-racing.jpg"); }
+    .axis:nth-child(4) { --card-image:url("images/cinematic/shot-09.webp"); }
+
+    .touch:nth-child(1) { --card-image:url("images/cinematic/shot-04.webp"); }
+    .touch:nth-child(2) { --card-image:url("images/cinematic/shot-05.webp"); }
+    .touch:nth-child(3) { --card-image:url("images/champion-racing.jpg"); }
+    .touch:nth-child(4) { --card-image:url("images/future-racing.jpg"); }
+    .touch:nth-child(5) { --card-image:url("images/cinematic/shot-10.webp"); }
+    .touch:nth-child(6) { --card-image:url("images/cinematic/shot-07.webp"); }
+    .touch:nth-child(7) { --card-image:url("images/cinematic/shot-02.webp"); }
+    .touch:nth-child(8) { --card-image:url("images/cinematic/shot-15.webp"); }
+    .touch:nth-child(9) { --card-image:url("images/cinematic/shot-16.webp"); }
+    .touch:nth-child(10) { --card-image:url("images/cinematic/shot-09.webp"); }
+
+    .rights-group:nth-child(1) { --card-image:url("images/cinematic/shot-05.webp"); }
+    .rights-group:nth-child(2) { --card-image:url("images/cinematic/shot-04.webp"); }
+    .rights-group:nth-child(3) { --card-image:url("images/cinematic/shot-17.webp"); }
+    .migration-hub:nth-child(1) { --card-image:url("images/cinematic/shot-05.webp"); }
+    .migration-hub:nth-child(3) { --card-image:url("images/cinematic/shot-15.webp"); }
+
+    .platform-card:nth-child(1) { --card-image:url("images/pillars/pillar-operations.webp"); }
+    .platform-card:nth-child(2) { --card-image:url("images/future-racing.jpg"); }
+    .platform-card:nth-child(3) { --card-image:url("images/cinematic/shot-15.webp"); }
+    .platform-card:nth-child(4) { --card-image:url("images/pillars/pillar-audience.webp"); }
+
+    .apparel-card:nth-child(1) { --card-image:url("images/champion-racing.jpg"); }
+    .apparel-card:nth-child(2) { --card-image:url("images/hero-racing.jpg"); }
+    .media-col:nth-child(1) { --card-image:url("images/cinematic/shot-10.webp"); }
+    .media-col:nth-child(2) { --card-image:url("images/cinematic/shot-17.webp"); }
+    .media-col:nth-child(3) { --card-image:url("images/cinematic/shot-16.webp"); }
+
+    .phase:nth-child(1) { --card-image:url("images/cinematic/shot-12.webp"); }
+    .phase:nth-child(2) { --card-image:url("images/cinematic/shot-10.webp"); }
+    .phase:nth-child(3) { --card-image:url("images/cinematic/shot-16.webp"); }
+
+    .pillar-box:nth-child(1) { --card-image:url("images/pillars/pillar-heritage.webp"); }
+    .pillar-box:nth-child(2) { --card-image:url("images/pillars/pillar-engine.webp"); }
+    .pillar-box:nth-child(3) { --card-image:url("images/pillars/pillar-audience.webp"); }
+    .pillar-box:nth-child(4) { --card-image:url("images/pillars/pillar-operations.webp"); }
+
+    .commit:nth-child(1) { --card-image:url("images/cinematic/shot-05.webp"); }
+    .commit:nth-child(2) { --card-image:url("images/cinematic/shot-15.webp"); }
+    .investment-scope > div:nth-child(1) { --card-image:url("images/cinematic/shot-09.webp"); }
+    .investment-scope > div:nth-child(2) { --card-image:url("images/cinematic/shot-16.webp"); }
 
     .finale { align-items:center; text-align:center; }
     .finale .scene-inner { min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:2vh; }
