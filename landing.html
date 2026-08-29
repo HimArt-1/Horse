@@ -130,10 +130,6 @@
       box-shadow:0 0 14px rgba(233,188,92,.85); opacity:0;
       animation:logoScan 6s ease-in-out infinite;
     }
-    .hero-network-logo-code {
-      position:absolute; left:4%; bottom:8%; color:rgba(233,188,92,.55);
-      font:600 7px/1 "IBM Plex Mono",monospace; letter-spacing:.18em; direction:ltr;
-    }
     @keyframes logoPulse {
       0%,100% { opacity:.88; transform:scale(.985); filter:drop-shadow(0 0 3px rgba(255,244,206,.8)) drop-shadow(0 0 11px rgba(233,188,92,.62)) drop-shadow(0 0 27px rgba(196,125,27,.26)); }
       50% { opacity:1; transform:scale(1.012); filter:drop-shadow(0 0 4px rgba(255,248,222,1)) drop-shadow(0 0 18px rgba(233,188,92,.9)) drop-shadow(0 0 42px rgba(196,125,27,.42)); }
@@ -147,13 +143,20 @@
     }
 
     .hero-tag {
-      display: inline-flex; align-items: center; gap: 8px;
-      padding: 6px 14px; border-radius: 999px;
-      background: rgba(233, 188, 92, 0.1); border: 1px solid var(--border);
-      color: var(--gold); font: 600 11px/1 "IBM Plex Mono", monospace; letter-spacing: 0.1em;
-      margin-bottom: 24px;
+      display: flex; align-items: center; gap: 12px; width: fit-content;
+      margin: -5px 0 25px; color: var(--paper);
     }
-    .hero-tag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+    .hero-tag::before {
+      content: ""; width: 38px; height: 1px; flex: 0 0 auto;
+      background: linear-gradient(90deg, rgba(233,188,92,.18), var(--gold-light));
+      box-shadow: 0 0 10px rgba(233,188,92,.28);
+    }
+    .hero-tag-label { font: 700 clamp(12px, 1vw, 14px)/1.5 "Almarai", sans-serif; }
+    .hero-tag-year {
+      padding-inline-start: 12px; border-inline-start: 1px solid rgba(233,188,92,.28);
+      color: var(--gold); font: 600 11px/1 "IBM Plex Mono", monospace;
+      letter-spacing: .14em; direction: ltr;
+    }
 
     .hero-title {
       font: 800 clamp(36px, 4.4vw, 64px)/1.15 "Almarai", sans-serif;
@@ -395,6 +398,10 @@
       .hero { padding-bottom:72px; }
       .hero-network-logo { width:min(72vw,290px); margin-inline:auto; margin-bottom:2px; }
       .hero-title { font-size:clamp(34px,11vw,48px); }
+      .hero-tag { justify-content:center; width:100%; gap:10px; margin-top:-2px; }
+      .hero-tag::before { width:26px; }
+      .hero-tag-label { font-size:11px; }
+      .hero-tag-year { font-size:10px; }
       .hero-actions > * { width:100%; justify-content:center; text-align:center; }
       .hero-location { width:100%; justify-content:center; font-size:10px; text-align:center; }
       section { padding-block:70px; }
@@ -467,10 +474,12 @@
         <div class="hero-network-logo" role="img" aria-label="الشعار الشبكي الذهبي لبطولة سباقات الخيل الإلكترونية">
           <span class="hero-network-logo-mark" aria-hidden="true"></span>
           <span class="hero-network-logo-scan" aria-hidden="true"></span>
-          <span class="hero-network-logo-code" aria-hidden="true">EQUESTRIAN // NETWORK ID</span>
         </div>
-        <div class="hero-tag">بطولة سباقات الخيل الإلكترونية 2026</div>
         <h1 class="hero-title"><span class="gold-text">الميدان لك.</span></h1>
+        <div class="hero-tag" aria-label="بطولة سباقات الخيل الإلكترونية 2026">
+          <span class="hero-tag-label">بطولة سباقات الخيل الإلكترونية</span>
+          <span class="hero-tag-year">2026</span>
+        </div>
         <p class="hero-desc">
           تجربة سباق تنافسية جديدة تنقل حماس الفروسية إلى عالم اللعب الإلكتروني المباشر.
         </p>
