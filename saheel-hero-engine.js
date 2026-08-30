@@ -216,90 +216,170 @@
     }
 
     buildHorse() {
-      // Galloping horse with jockey — refined geometric wireframe, facing right
-      const w = 560, h = 400, cv = document.createElement('canvas');
+      // A complete racehorse and rider drawn as a refined, open wireframe.
+      // The generous negative space keeps the particle silhouette legible on small screens.
+      const w = 680, h = 440, cv = document.createElement('canvas');
       cv.width = w; cv.height = h;
       const x = cv.getContext('2d');
       x.fillStyle = '#fff'; x.strokeStyle = '#fff'; x.lineCap = 'round'; x.lineJoin = 'round';
-      const el = (cx, cy, rx, ry, rot) => { x.beginPath(); x.ellipse(cx, cy, rx, ry, rot, 0, Math.PI * 2); x.fill(); };
-      const limb = (pts, widths) => {
-        for (let i = 0; i < pts.length - 1; i++) {
-          x.lineWidth = widths[i];
-          x.beginPath(); x.moveTo(pts[i][0], pts[i][1]); x.lineTo(pts[i + 1][0], pts[i + 1][1]); x.stroke();
-        }
+      const stroke = (width, draw) => {
+        x.lineWidth = width; x.beginPath(); draw(x); x.stroke();
       };
-      // body
-      el(268, 232, 118, 50, -0.05); el(352, 222, 52, 46, 0.1); el(182, 228, 60, 52, 0);
-      // neck
-      x.beginPath();
-      x.moveTo(360, 250); x.lineTo(392, 158); x.lineTo(438, 110); x.lineTo(464, 132);
-      x.lineTo(428, 178); x.lineTo(404, 258); x.closePath(); x.fill();
-      // head + muzzle + ear
-      el(468, 116, 32, 14, 0.48); el(492, 132, 12, 9, 0.55);
-      x.beginPath(); x.moveTo(446, 92); x.lineTo(452, 70); x.lineTo(462, 94); x.closePath(); x.fill();
-      // mane
-      el(412, 138, 26, 10, 0.92); el(392, 168, 24, 9, 0.98);
-      // tail
-      limb([[122, 210], [70, 170], [42, 140]], [16, 7]);
-      limb([[122, 218], [64, 196], [30, 182]], [12, 6]);
-      // legs (gallop extension)
-      limb([[372, 262], [440, 300], [506, 318]], [19, 10]);
-      limb([[344, 266], [382, 312], [352, 342]], [17, 9]);
-      limb([[190, 266], [112, 306], [46, 334]], [21, 10]);
-      limb([[214, 270], [176, 326], [206, 362]], [19, 9]);
-      // jockey: torso leaning forward, helmet, arm to reins, leg in stirrup
-      el(300, 152, 34, 19, -0.55);
-      el(336, 112, 13, 13, 0); el(340, 103, 15, 7, -0.2);
-      limb([[318, 140], [364, 158], [392, 172]], [10, 7]);
-      limb([[288, 178], [280, 222], [298, 254]], [11, 8]);
-      el(302, 258, 10, 6, 0.3);
-      this.horsePts = this.samplePts(cv, 2600);
+      const dot = (cx, cy, r) => { x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill(); };
+
+      // The single outer contour gives the animal one elegant, anatomically coherent silhouette.
+      stroke(11, p => {
+        p.moveTo(150, 225);
+        p.bezierCurveTo(184, 190, 242, 184, 305, 191);
+        p.bezierCurveTo(350, 196, 382, 188, 405, 160);
+        p.bezierCurveTo(423, 139, 431, 113, 451, 91);
+        p.bezierCurveTo(468, 72, 497, 73, 516, 88);
+        p.bezierCurveTo(531, 99, 551, 101, 564, 111);
+        p.bezierCurveTo(552, 124, 530, 130, 508, 127);
+        p.bezierCurveTo(487, 124, 473, 132, 463, 151);
+        p.bezierCurveTo(450, 177, 446, 213, 421, 246);
+        p.bezierCurveTo(395, 279, 351, 292, 301, 289);
+        p.bezierCurveTo(248, 286, 199, 294, 165, 271);
+        p.bezierCurveTo(147, 259, 140, 241, 150, 225);
+      });
+
+      // Ears, jaw, eye and mane give the head character without turning it into a solid blob.
+      stroke(7, p => {
+        p.moveTo(458, 85); p.lineTo(458, 59); p.lineTo(472, 78);
+        p.moveTo(478, 79); p.lineTo(487, 55); p.lineTo(493, 82);
+        p.moveTo(507, 127); p.bezierCurveTo(499, 139, 486, 146, 470, 149);
+        p.moveTo(443, 111); p.bezierCurveTo(430, 128, 422, 149, 417, 177);
+      });
+      dot(497, 98, 5); dot(553, 113, 3.5);
+      stroke(4, p => {
+        p.moveTo(454, 104); p.bezierCurveTo(441, 121, 436, 143, 430, 165);
+        p.moveTo(448, 127); p.bezierCurveTo(438, 149, 435, 175, 426, 197);
+        p.moveTo(440, 151); p.bezierCurveTo(431, 176, 427, 201, 416, 220);
+      });
+
+      // Tail: three flowing strands imply speed while keeping the rump unmistakable.
+      stroke(10, p => { p.moveTo(153, 224); p.bezierCurveTo(116, 203, 91, 165, 50, 161); });
+      stroke(6, p => {
+        p.moveTo(151, 235); p.bezierCurveTo(106, 228, 74, 204, 37, 208);
+        p.moveTo(150, 244); p.bezierCurveTo(109, 251, 79, 240, 49, 251);
+      });
+
+      // Four articulated legs in a suspended racing stride.
+      stroke(10, p => {
+        p.moveTo(391, 263); p.bezierCurveTo(415, 286, 454, 307, 493, 323);
+        p.bezierCurveTo(511, 331, 535, 330, 555, 340);
+        p.moveTo(365, 278); p.bezierCurveTo(379, 310, 402, 331, 430, 340);
+        p.bezierCurveTo(448, 346, 455, 359, 469, 372);
+        p.moveTo(206, 279); p.bezierCurveTo(170, 302, 131, 324, 91, 338);
+        p.bezierCurveTo(73, 344, 58, 355, 42, 365);
+        p.moveTo(241, 287); p.bezierCurveTo(225, 315, 221, 340, 235, 359);
+        p.bezierCurveTo(245, 373, 258, 379, 273, 384);
+      });
+      stroke(6, p => {
+        p.moveTo(548, 340); p.lineTo(574, 344);
+        p.moveTo(464, 372); p.lineTo(486, 381);
+        p.moveTo(43, 365); p.lineTo(23, 376);
+        p.moveTo(271, 384); p.lineTo(294, 389);
+      });
+
+      // Lightweight body construction lines make the point cloud feel engineered and dimensional.
+      stroke(3.5, p => {
+        p.moveTo(172, 226); p.bezierCurveTo(235, 215, 310, 215, 381, 228);
+        p.moveTo(177, 251); p.bezierCurveTo(235, 268, 319, 269, 398, 244);
+        p.moveTo(214, 202); p.bezierCurveTo(242, 230, 250, 257, 242, 283);
+        p.moveTo(302, 195); p.bezierCurveTo(325, 220, 326, 257, 305, 287);
+        p.moveTo(384, 188); p.bezierCurveTo(402, 211, 405, 237, 395, 266);
+      });
+
+      // Rider: a compact racing posture, helmet, reins, bent knee and stirrup.
+      stroke(9, p => {
+        p.moveTo(292, 190); p.bezierCurveTo(299, 158, 320, 132, 349, 120);
+        p.bezierCurveTo(366, 113, 384, 119, 397, 136);
+        p.moveTo(315, 162); p.bezierCurveTo(347, 163, 375, 163, 410, 177);
+        p.moveTo(307, 177); p.bezierCurveTo(300, 205, 315, 225, 345, 236);
+        p.bezierCurveTo(362, 242, 376, 251, 385, 263);
+      });
+      stroke(4, p => {
+        p.moveTo(405, 176); p.bezierCurveTo(438, 170, 468, 158, 494, 143);
+        p.moveTo(400, 183); p.bezierCurveTo(438, 183, 468, 168, 498, 146);
+        p.moveTo(286, 191); p.bezierCurveTo(320, 201, 351, 199, 381, 190);
+      });
+      x.lineWidth = 7; x.beginPath(); x.ellipse(365, 96, 17, 18, -0.28, 0, Math.PI * 2); x.stroke();
+      stroke(7, p => { p.moveTo(348, 85); p.bezierCurveTo(363, 76, 380, 78, 392, 88); });
+      dot(385, 264, 5); dot(304, 191, 5);
+
+      this.horsePts = this.samplePts(cv, 2700);
       this.horseAspect = h / w;
     }
 
     buildScan() {
-      // Hand holding a phone scanning a QR code — wireframe figure
-      const w = 560, h = 420, cv = document.createElement('canvas');
+      // A precise instant-entry interface: QR portal, data beam and mobile confirmation.
+      const w = 660, h = 440, cv = document.createElement('canvas');
       cv.width = w; cv.height = h;
       const x = cv.getContext('2d');
       x.fillStyle = '#fff'; x.strokeStyle = '#fff'; x.lineCap = 'round'; x.lineJoin = 'round';
-      const el = (cx, cy, rx, ry, rot) => { x.beginPath(); x.ellipse(cx, cy, rx, ry, rot, 0, Math.PI * 2); x.fill(); };
-      const limb = (pts, widths) => {
-        for (let i = 0; i < pts.length - 1; i++) {
-          x.lineWidth = widths[i];
-          x.beginPath(); x.moveTo(pts[i][0], pts[i][1]); x.lineTo(pts[i + 1][0], pts[i + 1][1]); x.stroke();
-        }
+      const stroke = (width, draw) => { x.lineWidth = width; x.beginPath(); draw(x); x.stroke(); };
+      const rr = (left, top, width, height, radius) => {
+        x.beginPath(); x.roundRect(left, top, width, height, radius); x.stroke();
       };
-      // forearm from bottom-right + hand
-      limb([[500, 430], [448, 344], [412, 300]], [56, 42]);
-      el(398, 278, 32, 26, 0.5); el(368, 258, 11, 17, 0.7); el(384, 246, 12, 9, 0.4);
-      // phone (hollow frame) with mini QR on screen
+      const finder = (cx, cy) => {
+        x.lineWidth = 8; x.strokeRect(cx, cy, 42, 42);
+        x.lineWidth = 5; x.strokeRect(cx + 11, cy + 11, 20, 20);
+      };
+
+      // QR portal — framed, generous and immediately recognisable.
+      x.lineWidth = 6; rr(70, 76, 238, 238, 22);
+      x.lineWidth = 3; rr(83, 89, 212, 212, 14);
+      finder(104, 110); finder(218, 110); finder(104, 224);
+      const modules = [
+        [4,1],[5,1],[4,2],[6,2],[3,3],[4,3],[6,3],[1,4],[2,4],[4,4],[5,4],[7,4],
+        [2,5],[3,5],[5,5],[6,5],[7,5],[1,6],[4,6],[6,6],[7,6],[3,7],[4,7],[6,7],[7,7]
+      ];
+      modules.forEach(m => {
+        const mx = 100 + m[0] * 23, my = 106 + m[1] * 23;
+        x.fillRect(mx, my, 11, 11);
+      });
+
+      // Corner brackets and the travelling scan beam.
+      stroke(11, p => {
+        p.moveTo(54, 136); p.lineTo(54, 60); p.lineTo(130, 60);
+        p.moveTo(248, 60); p.lineTo(324, 60); p.lineTo(324, 136);
+        p.moveTo(324, 254); p.lineTo(324, 330); p.lineTo(248, 330);
+        p.moveTo(130, 330); p.lineTo(54, 330); p.lineTo(54, 254);
+      });
+      stroke(5, p => { p.moveTo(88, 196); p.lineTo(291, 196); });
+      stroke(2.5, p => {
+        p.moveTo(92, 188); p.lineTo(287, 188);
+        p.moveTo(92, 204); p.lineTo(287, 204);
+      });
+
+      // Data stream into a clean mobile interface.
+      stroke(4, p => {
+        p.moveTo(326, 175); p.bezierCurveTo(356, 148, 374, 146, 405, 158);
+        p.moveTo(326, 216); p.bezierCurveTo(360, 238, 377, 241, 405, 230);
+      });
+      for (let i = 0; i < 5; i++) {
+        x.beginPath(); x.arc(345 + i * 13, 196 + Math.sin(i * 1.4) * 14, 4.5, 0, Math.PI * 2); x.fill();
+      }
+
+      // Smartphone in slight perspective, with a positive entry confirmation.
       x.save();
-      x.translate(346, 222); x.rotate(-0.32);
-      x.fillRect(-46, -78, 92, 156);
-      x.clearRect(-34, -64, 68, 128);
-      for (let gx = 0; gx < 5; gx++) for (let gy = 0; gy < 8; gy++) {
-        if ((gx * 7 + gy * 3) % 4 < 2) x.fillRect(-30 + gx * 12, -58 + gy * 12, 9, 9);
-      }
+      x.translate(503, 204); x.rotate(0.075);
+      x.lineWidth = 10; rr(-84, -146, 168, 292, 30);
+      x.lineWidth = 3; rr(-69, -126, 138, 250, 21);
+      stroke(6, p => { p.moveTo(-20, -134); p.lineTo(20, -134); });
+      x.lineWidth = 6; x.beginPath(); x.arc(0, -20, 48, 0, Math.PI * 2); x.stroke();
+      stroke(11, p => { p.moveTo(-24, -18); p.lineTo(-5, 2); p.lineTo(29, -39); });
+      stroke(4, p => {
+        p.moveTo(-38, 60); p.lineTo(38, 60);
+        p.moveTo(-29, 81); p.lineTo(29, 81);
+      });
+      x.beginPath(); x.arc(0, 132, 5, 0, Math.PI * 2); x.fill();
       x.restore();
-      // floating QR target (finder squares + modules)
-      x.fillRect(85, 65, 24, 24); x.fillRect(171, 65, 24, 24); x.fillRect(85, 151, 24, 24);
-      for (let gx = 0; gx < 8; gx++) for (let gy = 0; gy < 8; gy++) {
-        const finder = (gx < 2 && gy < 2) || (gx > 5 && gy < 2) || (gx < 2 && gy > 5);
-        if (!finder && (gx * 5 + gy * 11 + 3) % 3 === 0) x.fillRect(85 + gx * 13, 65 + gy * 13, 9, 9);
-      }
-      // scan frame corners
-      x.lineWidth = 5;
-      x.beginPath();
-      x.moveTo(72, 88); x.lineTo(72, 52); x.lineTo(108, 52);
-      x.moveTo(172, 52); x.lineTo(208, 52); x.lineTo(208, 88);
-      x.moveTo(208, 152); x.lineTo(208, 188); x.lineTo(172, 188);
-      x.moveTo(108, 188); x.lineTo(72, 188); x.lineTo(72, 152);
-      x.stroke();
-      // faint beam lines phone -> QR
-      limb([[310, 162], [212, 118]], [3]);
-      limb([[312, 180], [222, 166]], [3]);
-      this.scanPts = this.samplePts(cv, 2400);
+
+      // A restrained orbit hints at instant network hand-off.
+      stroke(3, p => { p.ellipse(337, 196, 285, 126, -0.04, -0.62, 0.72); });
+      this.scanPts = this.samplePts(cv, 2500);
       this.scanAspect = h / w;
     }
 
@@ -521,12 +601,12 @@
       const pts = this.scanPts || [];
       if (!pts.length) return this.posDust(q);
       const pt = pts[k % pts.length];
-      const scale = Math.min(this.W * 0.5, this.H * 0.78);
+      const scale = Math.min(this.W * (this.mobile ? 0.88 : 0.58), this.H * (this.mobile ? 0.70 : 0.84));
       let a = 0.5 + Math.pow(q.s, 1.4) * 0.5;
       if (pt[0] < -0.12) a += Math.sin(this.t * 3 + pt[1] * 4) * 0.18; // QR side pulses like a live scan
       return {
-        x: this.W * 0.40 + pt[0] * scale + Math.sin(this.t * 0.8 + q.s * 8) * 2.2,
-        y: this.H * 0.42 + pt[1] * scale * (this.scanAspect || 0.75) + Math.cos(this.t * 0.7 + q.s * 6) * 2.2,
+        x: this.W * (this.mobile ? 0.50 : 0.61) + pt[0] * scale + Math.sin(this.t * 0.8 + q.s * 8) * 1.5,
+        y: this.H * (this.mobile ? 0.40 : 0.52) + pt[1] * scale * (this.scanAspect || 0.667) + Math.cos(this.t * 0.7 + q.s * 6) * 1.5,
         a: a, s: 0.4 + q.s * 0.24
       };
     }
@@ -535,12 +615,12 @@
       const pts = this.horsePts || [];
       if (!pts.length) return this.posDust(q);
       const pt = pts[k % pts.length];
-      const scale = Math.min(this.W * (phase ? 0.44 : 0.55), this.H * (phase ? 0.66 : 0.90));
+      const scale = Math.min(this.W * (phase ? 0.44 : (this.mobile ? 1.02 : 0.60)), this.H * (phase ? 0.66 : (this.mobile ? 0.70 : 0.88)));
       const bob = phase ? Math.sin(this.t * 5.4 + pt[0] * 2.4) * this.H * 0.009 : Math.sin(this.t * 2.2 + pt[0] * 2.4) * this.H * 0.004;
       const surge = phase ? Math.sin(this.t * 5.4 + 1.2) * this.W * 0.006 : 0;
       return {
-        x: this.W * (phase ? 0.23 : 0.34) + pt[0] * scale + surge + Math.sin(this.t * 0.8 + q.s * 8) * 2.5,
-        y: this.H * (phase ? 0.76 : 0.53) + pt[1] * scale * (this.horseAspect || 0.714) + bob,
+        x: this.W * (phase ? 0.23 : (this.mobile ? 0.50 : 0.35)) + pt[0] * scale + surge + Math.sin(this.t * 0.8 + q.s * 8) * 1.7,
+        y: this.H * (phase ? 0.76 : (this.mobile ? 0.40 : 0.54)) + pt[1] * scale * (this.horseAspect || 0.647) + bob,
         a: (phase ? 0.62 : 0.5) + Math.pow(q.s, 1.4) * 0.5, s: 0.42 + q.s * 0.26
       };
     }
