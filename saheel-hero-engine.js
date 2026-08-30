@@ -427,13 +427,18 @@
         }
       }
       if (this.logo) {
+        // Keep the mark present through act one, dissolve it across act two,
+        // and leave the scan scene (act three) completely unobstructed.
+        const logoFade = this.smooth((p - seg) / seg);
         const compact = p > 0.075;
-        const scale = compact ? 0.68 : 1;
-        const opacity = compact ? 0.78 : 1;
-        const key = compact ? 'compact' : 'full';
+        const scale = (compact ? 0.68 : 1) - logoFade * 0.06;
+        const opacity = hubOn ? 0 : 1 - logoFade;
+        const hidden = opacity < 0.01;
+        const key = scale.toFixed(3) + '|' + opacity.toFixed(3) + '|' + hidden;
         if (this.logo._mode !== key) {
           this.logo.style.transform = 'translateX(-50%) scale(' + scale + ')';
           this.logo.style.opacity = String(opacity);
+          this.logo.style.visibility = hidden ? 'hidden' : 'visible';
           this.logo._mode = key;
         }
       }
