@@ -246,15 +246,17 @@
       box-shadow:0 36px 90px rgba(0,0,0,.58), inset 0 1px rgba(255,255,255,.035);
     }
     .cinema-gallery::before { content:"KING KHALID RACECOURSE · CINEMATIC ARCHIVE"; position:absolute; top:26px; left:-46px; z-index:4; transform:rotate(-90deg); transform-origin:center; font:600 7px/1 "IBM Plex Mono",monospace; letter-spacing:.2em; color:rgba(233,188,92,.34); direction:ltr; pointer-events:none; }
-    .cinema-stage { --scan-distance:clamp(420px,42vw,650px); position:relative; overflow:hidden; margin:0; aspect-ratio:16/8.7; min-height:420px; background:#070604; border:1px solid rgba(233,188,92,.16); }
+    .cinema-stage { --scan-distance:clamp(420px,42vw,650px); --drag-offset:0px; position:relative; overflow:hidden; margin:0; aspect-ratio:16/8.7; min-height:420px; background:#070604; border:1px solid rgba(233,188,92,.16); cursor:grab; touch-action:pan-y; user-select:none; }
+    .cinema-stage.dragging { cursor:grabbing; }
     .cinema-stage::before,.cinema-stage::after { content:""; position:absolute; right:0; left:0; z-index:3; height:clamp(12px,2vw,26px); background:rgba(3,3,2,.86); pointer-events:none; }
     .cinema-stage::before { top:0; border-bottom:1px solid rgba(233,188,92,.1); }
     .cinema-stage::after { bottom:0; border-top:1px solid rgba(233,188,92,.1); }
-    .cinema-image { width:100%; height:100%; display:block; object-fit:cover; transform:scale(1.015); filter:saturate(.88) contrast(1.04); transition:opacity .26s var(--ease), transform .8s var(--ease), filter .4s; }
-    .cinema-stage.is-aerial .cinema-image { object-fit:contain; transform:scale(1); filter:saturate(.8) contrast(1.08) brightness(.84); }
+    .cinema-image { width:100%; height:100%; display:block; object-fit:cover; transform:translate3d(var(--drag-offset),0,0) scale(1.015); filter:saturate(.88) contrast(1.04); transition:opacity .34s var(--ease), transform .8s var(--ease), filter .4s; will-change:transform,opacity; -webkit-user-drag:none; }
+    .cinema-stage.dragging .cinema-image { transition:opacity .34s var(--ease),filter .4s; }
+    .cinema-stage.is-aerial .cinema-image { object-fit:contain; transform:translate3d(var(--drag-offset),0,0) scale(1); filter:saturate(.8) contrast(1.08) brightness(.84); }
     .cinema-gallery.switching .cinema-image { opacity:.18; transform:scale(1.015); filter:saturate(.6) contrast(1.12); }
-    .cinema-stage:hover .cinema-image { transform:scale(1.015); filter:saturate(1) contrast(1.04); }
-    .cinema-stage.is-aerial:hover .cinema-image { transform:scale(1); filter:saturate(.9) contrast(1.09) brightness(.88); }
+    .cinema-stage:hover .cinema-image { transform:translate3d(var(--drag-offset),0,0) scale(1.015); filter:saturate(1) contrast(1.04); }
+    .cinema-stage.is-aerial:hover .cinema-image { transform:translate3d(var(--drag-offset),0,0) scale(1); filter:saturate(.9) contrast(1.09) brightness(.88); }
     .cinema-vignette { position:absolute; inset:0; z-index:1; pointer-events:none; background:linear-gradient(90deg,rgba(3,3,2,.1),transparent 48%,rgba(3,3,2,.25)),linear-gradient(0deg,rgba(3,3,2,.96) 0%,rgba(3,3,2,.5) 20%,transparent 52%); }
     .cinema-tech-layer { position:absolute; inset:clamp(13px,2vw,27px) 0; z-index:2; opacity:0; overflow:hidden; pointer-events:none; transition:opacity .45s var(--ease); color:var(--gold-light); font:600 8px/1.4 "IBM Plex Mono",monospace; letter-spacing:.12em; direction:ltr; }
     .cinema-stage.is-aerial .cinema-tech-layer { opacity:1; }
@@ -279,10 +281,17 @@
     .cinema-title { margin:0 0 10px; color:var(--paper); font:800 clamp(24px,3.2vw,46px)/1.16 "Almarai",sans-serif; text-wrap:balance; }
     .cinema-caption { max-width:58ch; color:rgba(245,233,210,.68); font-size:clamp(12px,1vw,15px); line-height:1.65; }
     .cinema-credit { align-self:end; padding-top:14px; border-top:1px solid rgba(233,188,92,.3); color:rgba(245,233,210,.5); font:500 9px/1.7 "IBM Plex Mono",monospace; letter-spacing:.1em; direction:ltr; text-align:left; }
-    .cinema-controls { position:absolute; left:clamp(20px,3vw,44px); bottom:clamp(36px,4vw,56px); z-index:4; display:flex; gap:8px; direction:ltr; }
+    .cinema-controls { position:absolute; left:clamp(20px,3vw,44px); bottom:clamp(36px,4vw,56px); z-index:4; display:flex; flex-direction:column; align-items:flex-start; gap:10px; direction:ltr; }
+    .cinema-control-buttons { display:flex; gap:8px; }
     .cinema-controls button { width:42px; height:42px; display:grid; place-items:center; border:1px solid rgba(233,188,92,.34); background:rgba(5,5,4,.74); color:var(--paper); cursor:pointer; backdrop-filter:blur(10px); transition:.22s var(--ease); }
     .cinema-controls button:hover { color:var(--gold); border-color:var(--gold); transform:none; }
     .cinema-controls button:active { transform:none; }
+    .cinema-controls button[aria-pressed="true"] { color:var(--gold-light); border-color:rgba(242,206,118,.72); background:rgba(35,26,13,.82); box-shadow:inset 0 0 0 1px rgba(233,188,92,.08),0 0 20px rgba(233,188,92,.08); }
+    .cinema-auto-status { width:142px; display:flex; align-items:center; gap:9px; color:rgba(245,233,210,.44); font:600 7px/1 "IBM Plex Mono",monospace; letter-spacing:.13em; white-space:nowrap; }
+    .cinema-auto-track { flex:1; height:1px; overflow:hidden; background:rgba(245,233,210,.12); }
+    .cinema-auto-track i { display:block; width:100%; height:100%; background:linear-gradient(90deg,var(--gold-deep),var(--gold-light)); box-shadow:0 0 10px var(--gold-glow); transform:scaleX(0); transform-origin:left center; }
+    .cinema-gallery.auto-cycle .cinema-auto-track i { animation:cinemaAutoProgress 6.8s linear both; }
+    @keyframes cinemaAutoProgress { to { transform:scaleX(1); } }
     .filmstrip-head { display:flex; justify-content:space-between; align-items:center; gap:18px; padding:18px 2px 12px; color:rgba(245,233,210,.46); font-size:11px; }
     .filmstrip-head strong { color:var(--gold); font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; direction:ltr; }
     .filmstrip { display:grid; grid-auto-flow:column; grid-auto-columns:minmax(146px,16vw); gap:8px; overflow-x:auto; padding:0 0 10px; scroll-snap-type:x proximity; scrollbar-width:thin; scrollbar-color:rgba(233,188,92,.44) rgba(245,233,210,.05); }
@@ -604,7 +613,7 @@
 
     <div class="cinema-gallery" id="cinemaGallery">
       <figure class="cinema-stage is-aerial" id="cinemaStage">
-        <img class="cinema-image" id="cinemaFeatured" src="images/cinematic/shot-09.webp" alt="منظر جوي شامل لميدان الملك خالد في الطائف" loading="lazy" decoding="async">
+        <img class="cinema-image" id="cinemaFeatured" src="images/cinematic/shot-09.webp" alt="منظر جوي شامل لميدان الملك خالد في الطائف" loading="lazy" decoding="async" draggable="false">
         <div class="cinema-vignette" aria-hidden="true"></div>
         <div class="cinema-tech-layer" aria-hidden="true">
           <div class="cinema-tech-grid"></div>
@@ -626,14 +635,18 @@
           <div class="cinema-credit">FORSAN KING KHALID<br>RACECOURSE · TAIF · KSA</div>
         </figcaption>
         <div class="cinema-controls" aria-label="التنقل بين اللقطات السينمائية">
-          <button type="button" id="cinemaPrev" aria-label="اللقطة السابقة">←</button>
-          <button type="button" id="cinemaNext" aria-label="اللقطة التالية">→</button>
+          <div class="cinema-control-buttons">
+            <button type="button" id="cinemaPrev" aria-label="اللقطة السابقة">←</button>
+            <button type="button" id="cinemaAutoplay" aria-label="إيقاف العرض التلقائي" aria-pressed="true">Ⅱ</button>
+            <button type="button" id="cinemaNext" aria-label="اللقطة التالية">→</button>
+          </div>
+          <div class="cinema-auto-status" aria-hidden="true"><span class="cinema-auto-track"><i id="cinemaAutoBar"></i></span><b id="cinemaAutoState">AUTO TOUR</b></div>
         </div>
       </figure>
 
       <div class="filmstrip-head">
-        <span>اختر لقطة أو استخدم الأسهم للتنقل عبر الميدان</span>
-        <strong>SELECT A FRAME</strong>
+        <span>عرض تلقائي · اسحب الصورة أو اختر لقطة للتنقل يدويًا</span>
+        <strong>AUTO TOUR · DRAG TO EXPLORE</strong>
       </div>
 
       <div class="filmstrip" id="cinemaFilmstrip" role="list" aria-label="اللقطات السينمائية السبعة عشر">
@@ -849,10 +862,49 @@
     const cinemaTitle = document.getElementById('cinemaTitle');
     const cinemaCaption = document.getElementById('cinemaCaption');
     const cinemaFilmstrip = document.getElementById('cinemaFilmstrip');
+    const cinemaAutoplay = document.getElementById('cinemaAutoplay');
+    const cinemaAutoBar = document.getElementById('cinemaAutoBar');
+    const cinemaAutoState = document.getElementById('cinemaAutoState');
     const cinemaFrames = [...document.querySelectorAll('.filmstrip-button')];
+    const cinemaReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const CINEMA_AUTOPLAY_DELAY = 6800;
     let cinemaIndex = 0;
     let cinemaSwitchTimer = null;
     let cinemaSwipeStart = null;
+    let cinemaAutoTimer = null;
+    let cinemaAutoEnabled = !cinemaReducedMotion.matches;
+    let cinemaInView = false;
+    let cinemaHovering = false;
+    let cinemaPointerActive = false;
+
+    function cinemaCanAutoplay() {
+      return cinemaAutoEnabled && cinemaInView && !cinemaHovering && !cinemaPointerActive && !document.hidden;
+    }
+
+    function updateCinemaAutoplayUI() {
+      const running = cinemaCanAutoplay();
+      cinemaAutoplay.textContent = cinemaAutoEnabled ? 'Ⅱ' : '▶';
+      cinemaAutoplay.setAttribute('aria-pressed', String(cinemaAutoEnabled));
+      cinemaAutoplay.setAttribute('aria-label', cinemaAutoEnabled ? 'إيقاف العرض التلقائي' : 'تشغيل العرض التلقائي');
+      cinemaAutoState.textContent = cinemaAutoEnabled ? (running ? 'AUTO TOUR' : 'AUTO PAUSED') : 'MANUAL';
+    }
+
+    function restartCinemaAutoplay() {
+      clearTimeout(cinemaAutoTimer);
+      cinemaGallery.classList.remove('auto-cycle');
+      updateCinemaAutoplayUI();
+      if (!cinemaCanAutoplay()) return;
+      void cinemaAutoBar.offsetWidth;
+      cinemaGallery.classList.add('auto-cycle');
+      cinemaAutoTimer = setTimeout(() => showCinemaFrame(cinemaIndex + 1), CINEMA_AUTOPLAY_DELAY);
+    }
+
+    function preloadCinemaNeighbor(index) {
+      const frame = cinemaFrames[(index + cinemaFrames.length) % cinemaFrames.length];
+      if (!frame) return;
+      const preload = new Image();
+      preload.src = frame.dataset.src;
+    }
 
     function showCinemaFrame(nextIndex) {
       cinemaIndex = (nextIndex + cinemaFrames.length) % cinemaFrames.length;
@@ -876,17 +928,23 @@
         cinemaTitle.textContent = frame.dataset.title;
         cinemaCaption.textContent = frame.dataset.caption;
         cinemaGallery.classList.remove('switching');
+        preloadCinemaNeighbor(cinemaIndex + 1);
       }, 160);
 
       const stripBox = cinemaFilmstrip.getBoundingClientRect();
       const frameBox = frame.getBoundingClientRect();
       const horizontalOffset = frameBox.left - stripBox.left - (stripBox.width - frameBox.width) / 2;
       cinemaFilmstrip.scrollBy({ left: horizontalOffset, behavior: 'smooth' });
+      restartCinemaAutoplay();
     }
 
     cinemaFrames.forEach((button, index) => button.addEventListener('click', () => showCinemaFrame(index)));
     document.getElementById('cinemaPrev').addEventListener('click', () => showCinemaFrame(cinemaIndex - 1));
     document.getElementById('cinemaNext').addEventListener('click', () => showCinemaFrame(cinemaIndex + 1));
+    cinemaAutoplay.addEventListener('click', () => {
+      cinemaAutoEnabled = !cinemaAutoEnabled;
+      restartCinemaAutoplay();
+    });
 
     cinemaGallery.addEventListener('keydown', event => {
       if (event.key === 'ArrowLeft') {
@@ -898,13 +956,52 @@
       }
     });
 
-    cinemaStage.addEventListener('pointerdown', event => { cinemaSwipeStart = event.clientX; });
+    cinemaGallery.addEventListener('mouseenter', () => { cinemaHovering = true; restartCinemaAutoplay(); });
+    cinemaGallery.addEventListener('mouseleave', () => { cinemaHovering = false; restartCinemaAutoplay(); });
+
+    cinemaStage.addEventListener('pointerdown', event => {
+      cinemaSwipeStart = { x:event.clientX, y:event.clientY, id:event.pointerId };
+      cinemaPointerActive = true;
+      cinemaStage.classList.add('dragging');
+      if (event.pointerType === 'mouse') cinemaStage.setPointerCapture(event.pointerId);
+      restartCinemaAutoplay();
+    });
+    cinemaStage.addEventListener('pointermove', event => {
+      if (!cinemaSwipeStart || cinemaSwipeStart.id !== event.pointerId) return;
+      const distance = event.clientX - cinemaSwipeStart.x;
+      const vertical = event.clientY - cinemaSwipeStart.y;
+      if (Math.abs(distance) > Math.abs(vertical)) cinemaStage.style.setProperty('--drag-offset', `${Math.max(-28, Math.min(28, distance * .12))}px`);
+    });
     cinemaStage.addEventListener('pointerup', event => {
       if (cinemaSwipeStart === null) return;
-      const distance = event.clientX - cinemaSwipeStart;
+      const distance = event.clientX - cinemaSwipeStart.x;
       cinemaSwipeStart = null;
+      cinemaPointerActive = false;
+      cinemaStage.classList.remove('dragging');
+      cinemaStage.style.setProperty('--drag-offset', '0px');
       if (Math.abs(distance) > 46) showCinemaFrame(cinemaIndex + (distance < 0 ? 1 : -1));
+      else restartCinemaAutoplay();
     });
+    cinemaStage.addEventListener('pointercancel', () => {
+      cinemaSwipeStart = null;
+      cinemaPointerActive = false;
+      cinemaStage.classList.remove('dragging');
+      cinemaStage.style.setProperty('--drag-offset', '0px');
+      restartCinemaAutoplay();
+    });
+
+    const cinemaVisibilityObserver = new IntersectionObserver(([entry]) => {
+      cinemaInView = entry.isIntersecting && entry.intersectionRatio >= .32;
+      restartCinemaAutoplay();
+    }, { threshold:[0,.32,.65] });
+    cinemaVisibilityObserver.observe(cinemaGallery);
+    document.addEventListener('visibilitychange', restartCinemaAutoplay);
+    cinemaReducedMotion.addEventListener('change', event => {
+      if (event.matches) cinemaAutoEnabled = false;
+      restartCinemaAutoplay();
+    });
+    preloadCinemaNeighbor(1);
+    updateCinemaAutoplayUI();
 
     const sectionLinks = [...document.querySelectorAll('.nav-links a[href^="#"]')];
     const observedSections = sectionLinks.map(link => document.querySelector(link.getAttribute('href'))).filter(Boolean);
