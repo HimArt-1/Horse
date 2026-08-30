@@ -216,100 +216,24 @@
     }
 
     buildHorse() {
-      // A complete racehorse and rider drawn as a refined, open wireframe.
-      // The generous negative space keeps the particle silhouette legible on small screens.
-      const w = 680, h = 440, cv = document.createElement('canvas');
-      cv.width = w; cv.height = h;
-      const x = cv.getContext('2d');
-      x.fillStyle = '#fff'; x.strokeStyle = '#fff'; x.lineCap = 'round'; x.lineJoin = 'round';
-      const stroke = (width, draw) => {
-        x.lineWidth = width; x.beginPath(); draw(x); x.stroke();
+      // The supplied reference is the source of truth: a portrait of an Arabian
+      // horse built from transparent highlights. It becomes the particle mask
+      // after decoding, preserving the original drawing without approximation.
+      this.horsePts = [];
+      this.horseAspect = 440 / 330;
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => {
+        const cv = document.createElement('canvas');
+        cv.width = img.naturalWidth || 330;
+        cv.height = img.naturalHeight || 440;
+        const x = cv.getContext('2d', { willReadFrequently: true });
+        x.clearRect(0, 0, cv.width, cv.height);
+        x.drawImage(img, 0, 0, cv.width, cv.height);
+        this.horseAspect = cv.height / cv.width;
+        this.horsePts = this.samplePts(cv, this.mobile ? 1800 : 3100);
       };
-      const dot = (cx, cy, r) => { x.beginPath(); x.arc(cx, cy, r, 0, Math.PI * 2); x.fill(); };
-
-      // The single outer contour gives the animal one elegant, anatomically coherent silhouette.
-      stroke(11, p => {
-        p.moveTo(150, 225);
-        p.bezierCurveTo(184, 190, 242, 184, 305, 191);
-        p.bezierCurveTo(350, 196, 382, 188, 405, 160);
-        p.bezierCurveTo(423, 139, 431, 113, 451, 91);
-        p.bezierCurveTo(468, 72, 497, 73, 516, 88);
-        p.bezierCurveTo(531, 99, 551, 101, 564, 111);
-        p.bezierCurveTo(552, 124, 530, 130, 508, 127);
-        p.bezierCurveTo(487, 124, 473, 132, 463, 151);
-        p.bezierCurveTo(450, 177, 446, 213, 421, 246);
-        p.bezierCurveTo(395, 279, 351, 292, 301, 289);
-        p.bezierCurveTo(248, 286, 199, 294, 165, 271);
-        p.bezierCurveTo(147, 259, 140, 241, 150, 225);
-      });
-
-      // Ears, jaw, eye and mane give the head character without turning it into a solid blob.
-      stroke(7, p => {
-        p.moveTo(458, 85); p.lineTo(458, 59); p.lineTo(472, 78);
-        p.moveTo(478, 79); p.lineTo(487, 55); p.lineTo(493, 82);
-        p.moveTo(507, 127); p.bezierCurveTo(499, 139, 486, 146, 470, 149);
-        p.moveTo(443, 111); p.bezierCurveTo(430, 128, 422, 149, 417, 177);
-      });
-      dot(497, 98, 5); dot(553, 113, 3.5);
-      stroke(4, p => {
-        p.moveTo(454, 104); p.bezierCurveTo(441, 121, 436, 143, 430, 165);
-        p.moveTo(448, 127); p.bezierCurveTo(438, 149, 435, 175, 426, 197);
-        p.moveTo(440, 151); p.bezierCurveTo(431, 176, 427, 201, 416, 220);
-      });
-
-      // Tail: three flowing strands imply speed while keeping the rump unmistakable.
-      stroke(10, p => { p.moveTo(153, 224); p.bezierCurveTo(116, 203, 91, 165, 50, 161); });
-      stroke(6, p => {
-        p.moveTo(151, 235); p.bezierCurveTo(106, 228, 74, 204, 37, 208);
-        p.moveTo(150, 244); p.bezierCurveTo(109, 251, 79, 240, 49, 251);
-      });
-
-      // Four articulated legs in a suspended racing stride.
-      stroke(10, p => {
-        p.moveTo(391, 263); p.bezierCurveTo(415, 286, 454, 307, 493, 323);
-        p.bezierCurveTo(511, 331, 535, 330, 555, 340);
-        p.moveTo(365, 278); p.bezierCurveTo(379, 310, 402, 331, 430, 340);
-        p.bezierCurveTo(448, 346, 455, 359, 469, 372);
-        p.moveTo(206, 279); p.bezierCurveTo(170, 302, 131, 324, 91, 338);
-        p.bezierCurveTo(73, 344, 58, 355, 42, 365);
-        p.moveTo(241, 287); p.bezierCurveTo(225, 315, 221, 340, 235, 359);
-        p.bezierCurveTo(245, 373, 258, 379, 273, 384);
-      });
-      stroke(6, p => {
-        p.moveTo(548, 340); p.lineTo(574, 344);
-        p.moveTo(464, 372); p.lineTo(486, 381);
-        p.moveTo(43, 365); p.lineTo(23, 376);
-        p.moveTo(271, 384); p.lineTo(294, 389);
-      });
-
-      // Lightweight body construction lines make the point cloud feel engineered and dimensional.
-      stroke(3.5, p => {
-        p.moveTo(172, 226); p.bezierCurveTo(235, 215, 310, 215, 381, 228);
-        p.moveTo(177, 251); p.bezierCurveTo(235, 268, 319, 269, 398, 244);
-        p.moveTo(214, 202); p.bezierCurveTo(242, 230, 250, 257, 242, 283);
-        p.moveTo(302, 195); p.bezierCurveTo(325, 220, 326, 257, 305, 287);
-        p.moveTo(384, 188); p.bezierCurveTo(402, 211, 405, 237, 395, 266);
-      });
-
-      // Rider: a compact racing posture, helmet, reins, bent knee and stirrup.
-      stroke(9, p => {
-        p.moveTo(292, 190); p.bezierCurveTo(299, 158, 320, 132, 349, 120);
-        p.bezierCurveTo(366, 113, 384, 119, 397, 136);
-        p.moveTo(315, 162); p.bezierCurveTo(347, 163, 375, 163, 410, 177);
-        p.moveTo(307, 177); p.bezierCurveTo(300, 205, 315, 225, 345, 236);
-        p.bezierCurveTo(362, 242, 376, 251, 385, 263);
-      });
-      stroke(4, p => {
-        p.moveTo(405, 176); p.bezierCurveTo(438, 170, 468, 158, 494, 143);
-        p.moveTo(400, 183); p.bezierCurveTo(438, 183, 468, 168, 498, 146);
-        p.moveTo(286, 191); p.bezierCurveTo(320, 201, 351, 199, 381, 190);
-      });
-      x.lineWidth = 7; x.beginPath(); x.ellipse(365, 96, 17, 18, -0.28, 0, Math.PI * 2); x.stroke();
-      stroke(7, p => { p.moveTo(348, 85); p.bezierCurveTo(363, 76, 380, 78, 392, 88); });
-      dot(385, 264, 5); dot(304, 191, 5);
-
-      this.horsePts = this.samplePts(cv, 2700);
-      this.horseAspect = h / w;
+      img.src = 'images/saheel-horse-grid-19.png';
     }
 
     buildScan() {
@@ -520,9 +444,10 @@
       const A = this.pos.bind(this), ctx = this.ctx;
 
       let lineW = Math.max(0, Math.min(1, (storyP - 0.115) / 0.04)) * Math.max(0, Math.min(1, (0.25 - storyP) / 0.04));
+      const horseW = Math.max(0, Math.min(1, (storyP - 0.305) / 0.035)) * Math.max(0, Math.min(1, (0.458 - storyP) / 0.035));
       let trackW = Math.max(0, Math.min(1, (storyP - 0.775) / 0.03)) * (1 - m);
       let globeW = Math.max(0, Math.min(1, (storyP - 0.42) / 0.03)) * Math.max(0, Math.min(1, (0.795 - storyP) / 0.03)) * (1 - m);
-      lineW = Math.max(lineW * (1 - m), m * 0.44);
+      lineW = Math.max(lineW * (1 - m), horseW * 0.72 * (1 - m), m * 0.44);
 
       if (globeW > 0.01) this.drawGlobe(cam, globeW, storyP);
       if (trackW > 0.01) this.drawTrack(trackW, storyP);
@@ -620,13 +545,13 @@
       const pts = this.horsePts || [];
       if (!pts.length) return this.posDust(q);
       const pt = pts[k % pts.length];
-      const scale = Math.min(this.W * (phase ? 0.44 : (this.mobile ? 1.02 : 0.60)), this.H * (phase ? 0.66 : (this.mobile ? 0.70 : 0.88)));
+      const scale = Math.min(this.W * (phase ? 0.28 : (this.mobile ? 0.66 : 0.30)), this.H * (phase ? 0.42 : (this.mobile ? 0.48 : 0.52)));
       const bob = phase ? Math.sin(this.t * 5.4 + pt[0] * 2.4) * this.H * 0.009 : Math.sin(this.t * 2.2 + pt[0] * 2.4) * this.H * 0.004;
       const surge = phase ? Math.sin(this.t * 5.4 + 1.2) * this.W * 0.006 : 0;
       return {
-        x: this.W * (phase ? 0.23 : (this.mobile ? 0.50 : 0.35)) + pt[0] * scale + surge + Math.sin(this.t * 0.8 + q.s * 8) * 1.7,
-        y: this.H * (phase ? 0.76 : (this.mobile ? 0.40 : 0.54)) + pt[1] * scale * (this.horseAspect || 0.647) + bob,
-        a: (phase ? 0.62 : 0.5) + Math.pow(q.s, 1.4) * 0.5, s: 0.42 + q.s * 0.26
+        x: this.W * (phase ? 0.23 : (this.mobile ? 0.50 : 0.27)) + pt[0] * scale + surge + Math.sin(this.t * 0.8 + q.s * 8) * 1.25,
+        y: this.H * (phase ? 0.76 : (this.mobile ? 0.40 : 0.49)) + pt[1] * scale * (this.horseAspect || 1.333) + bob,
+        a: (phase ? 0.62 : 0.58) + Math.pow(q.s, 1.35) * 0.46, s: 0.54 + q.s * 0.28
       };
     }
 
