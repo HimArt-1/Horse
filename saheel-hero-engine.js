@@ -752,12 +752,15 @@
         [0.650, 15.5, RIYADH_TRACK[0], RIYADH_TRACK[1], 0.50, 0.48, 1],
         [0.690, 19.0, RIYADH_TRACK[0], RIYADH_TRACK[1], 0.50, 0.48, 1],
         [0.715, 5.0, RIYADH_TRACK[0], RIYADH_TRACK[1], 0.50, 0.48, 0.9],
+        // One continuous westward orbit. The final longitude is the Saudi
+        // longitude minus 360deg, so the camera returns home without reversing.
         [0.750, 0.50, 46.72, 24.69, 0.50, 0.48, 0.25],
-        [0.785, 0.47, 8.0, 18.0, 0.50, 0.48, 0.1],
-        [0.810, 0.45, -34.0, 15.0, 0.50, 0.48, 0.05],
-        [0.833, 0.43, 46.72, 24.69, 0.50, 0.48, 0.15],
-        [0.860, 0.24, 46.72, 24.69, 0.50, 0.48, 0.0],
-        [0.888, 0.14, 46.72, 24.69, 0.50, 0.48, 0.0]
+        [0.772, 0.48, -10.0, 20.0, 0.50, 0.48, 0.14],
+        [0.795, 0.46, -95.0, 15.0, 0.50, 0.48, 0.08],
+        [0.818, 0.44, -200.0, 18.0, 0.50, 0.48, 0.08],
+        [0.838, 0.43, -313.28, 24.69, 0.50, 0.48, 0.15],
+        [0.860, 0.24, -313.28, 24.69, 0.50, 0.48, 0.0],
+        [0.888, 0.14, -313.28, 24.69, 0.50, 0.48, 0.0]
       ];
       let a = keys[0], b = keys[keys.length - 1];
       for (let i = 0; i < keys.length - 1; i++) {
@@ -771,10 +774,9 @@
       const mx = this.mouse.active ? (this.mouse.x / this.W - 0.5) : 0;
       const my = this.mouse.active ? (this.mouse.y / this.H - 0.5) : 0;
       const R = lp(1) * Math.min(this.W, this.H);
-      const autoSpin = p > 0.755 && p < 0.822 ? this.t * 1.25 : 0;
       return {
         R: R,
-        lon: lp(2) + autoSpin + mx * 6 * (1 - zoom * 0.7),
+        lon: lp(2) + mx * 6 * (1 - zoom * 0.7),
         lat: Math.max(-70, Math.min(70, lp(3) - my * 5 * (1 - zoom * 0.8))),
         cx: this.W * lp(4), cy: this.H * lp(5), zoom: zoom
       };
