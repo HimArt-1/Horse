@@ -1,6 +1,10 @@
-/* Saheel particle + scrolly engine — grid edition v2 (9 acts: net → scan-hand → horse+rider → KSA → Taif→Riyadh → world → track → race) */
+/* Saheel particle + scrolly engine — cinematic grid edition (8 acts: idea → network → scan → horse → KSA → Taif→Riyadh → world → identity) */
 (function () {
   const GOLD = [233, 188, 92];
+  const TAIF_CITY = [40.4167, 21.2703];
+  const TAIF_TRACK = [40.4764623, 21.4085991];
+  const RIYADH_CITY = [46.6753, 24.7136];
+  const RIYADH_TRACK = [46.78593, 24.98410];
 
   class SaheelEngine {
     constructor() {
@@ -9,7 +13,8 @@
       this.hub = document.getElementById('about');
       this.opening = document.querySelector('[data-opening-screens]');
       this.rail = document.querySelector('[data-rail]');
-      this.venue = document.querySelector('[data-venue]');
+      this.venueTaif = document.querySelector('[data-venue="taif"]');
+      this.venueRiyadh = document.querySelector('[data-venue="riyadh"]');
       this.logo = document.querySelector('.hero-network-logo');
       if (!this.canvas) return;
       const CFG = window.SAHEEL_CFG || {};
@@ -28,8 +33,10 @@
       this.buildSprite();
       this.buildParticles();
       this.buildHorse();
+      this.buildLogo();
       this.buildScan();
       this.buildTaif();
+      this.buildRiyadh();
       this.resize();
 
       this.acts = Array.from(document.querySelectorAll('[data-act]'));
@@ -157,6 +164,7 @@
 
     resize() {
       if (!this.canvas) return;
+      this.mobile = window.matchMedia('(max-width: 820px)').matches;
       const dpr = Math.min(window.devicePixelRatio || 1, this.dprCap);
       this.W = window.innerWidth; this.H = window.innerHeight; this.dpr = dpr;
       this.canvas.width = Math.floor(this.W * dpr);
@@ -234,6 +242,24 @@
         this.horsePts = this.samplePts(cv, this.mobile ? 1800 : 3100);
       };
       img.src = 'images/saheel-horse-grid-19.png';
+    }
+
+    buildLogo() {
+      this.logoPts = [];
+      this.logoAspect = 1 / 1.48;
+      const img = new Image();
+      img.decoding = 'async';
+      img.onload = () => {
+        const cv = document.createElement('canvas');
+        cv.width = img.naturalWidth || 740;
+        cv.height = img.naturalHeight || 500;
+        const x = cv.getContext('2d', { willReadFrequently: true });
+        x.clearRect(0, 0, cv.width, cv.height);
+        x.drawImage(img, 0, 0, cv.width, cv.height);
+        this.logoAspect = cv.height / cv.width;
+        this.logoPts = this.samplePts(cv, this.mobile ? 1500 : 2800);
+      };
+      img.src = 'images/saheel-network-logo.png';
     }
 
     buildScan() {
@@ -351,16 +377,20 @@
         }
       }
       if (this.logo) {
-        // Keep the mark present through act one, dissolve it across act two,
-        // and leave the scan scene (act three) completely unobstructed.
-        const logoFade = this.smooth((p - seg) / seg);
-        const compact = p > 0.075;
-        const scale = (compact ? 0.68 : 1) - logoFade * 0.06;
-        const opacity = hubOn ? 0 : 1 - logoFade;
+        // The identity appears only as an opening signature and a large network finale.
+        const opening = 1 - this.smooth((p - seg * 0.72) / (seg * 0.24));
+        const finale = this.smooth((storyP - 0.835) / 0.026);
+        const opacity = hubOn ? 0 : Math.max(opening, finale);
+        const finalMode = finale > 0.01;
+        const scale = finalMode ? (this.mobile ? 1.06 : 1.24) : 1;
         const hidden = opacity < 0.01;
-        const key = scale.toFixed(3) + '|' + opacity.toFixed(3) + '|' + hidden;
+        const key = scale.toFixed(3) + '|' + opacity.toFixed(3) + '|' + hidden + '|' + finalMode;
         if (this.logo._mode !== key) {
-          this.logo.style.transform = 'translateX(-50%) scale(' + scale + ')';
+          this.logo.classList.toggle('is-finale', finalMode);
+          this.logo.style.top = finalMode ? '48%' : '';
+          this.logo.style.transform = finalMode
+            ? 'translate(-50%,-50%) scale(' + scale + ')'
+            : 'translateX(-50%) scale(' + scale + ')';
           this.logo.style.opacity = String(opacity);
           this.logo.style.visibility = hidden ? 'hidden' : 'visible';
           this.logo._mode = key;
@@ -374,15 +404,19 @@
           this.rail._v = want;
         }
       }
-      if (this.venue) {
-        const vv = hubOn ? 0 : Math.max(0, Math.min(1, (storyP - 0.492) / 0.018)) * Math.max(0, Math.min(1, (0.572 - storyP) / 0.018));
-        const key = vv.toFixed(2);
-        if (this.venue._v !== key) {
-          this.venue.style.opacity = vv.toFixed(3);
-          this.venue.style.transform = 'scale(' + (0.92 + 0.08 * vv).toFixed(3) + ')';
-          this.venue._v = key;
+      const setVenue = (el, value) => {
+        if (!el) return;
+        const key = value.toFixed(2);
+        if (el._v !== key) {
+          el.style.opacity = value.toFixed(3);
+          el.style.transform = 'scale(' + (0.92 + 0.08 * value).toFixed(3) + ')';
+          el._v = key;
         }
-      }
+      };
+      const taifVenue = hubOn ? 0 : Math.max(0, Math.min(1, (storyP - 0.490) / 0.012)) * Math.max(0, Math.min(1, (0.582 - storyP) / 0.018));
+      const riyadhVenue = hubOn ? 0 : Math.max(0, Math.min(1, (storyP - 0.622) / 0.013)) * Math.max(0, Math.min(1, (0.675 - storyP) / 0.012));
+      setVenue(this.venueTaif, taifVenue);
+      setVenue(this.venueRiyadh, riyadhVenue);
       if (this.actIndex !== idx) {
         this.actIndex = idx;
         this.dots.forEach((d, i) => {
@@ -398,7 +432,7 @@
         });
       }
       if (this.nodeLayer) {
-        const show = !hubOn && storyP > 0.45 && storyP < 0.69;
+        const show = !hubOn && storyP > 0.45 && storyP < 0.73;
         const want = show ? '1' : '0';
         if (this.nodeLayer._v !== want) {
           this.nodeLayer.style.opacity = want;
@@ -439,18 +473,17 @@
       const fi = Math.min(N - 0.0001, Math.max(0, p / seg));
       const i = Math.floor(fi), f = this.smooth((fi - i - 0.58) / 0.34);
       const cam = this.camera(storyP);
-      this.taifDim = Math.max(0, Math.min(1, (storyP - 0.49) / 0.02)) * Math.max(0, Math.min(1, (0.578 - storyP) / 0.02));
+      this.taifDim = Math.max(0, Math.min(1, (storyP - 0.50) / 0.02)) * Math.max(0, Math.min(1, (0.59 - storyP) / 0.02));
       const n = Math.min(this.count, this.parts.length);
       const A = this.pos.bind(this), ctx = this.ctx;
 
       let lineW = Math.max(0, Math.min(1, (storyP - 0.115) / 0.04)) * Math.max(0, Math.min(1, (0.25 - storyP) / 0.04));
       const horseW = Math.max(0, Math.min(1, (storyP - 0.305) / 0.035)) * Math.max(0, Math.min(1, (0.458 - storyP) / 0.035));
-      let trackW = Math.max(0, Math.min(1, (storyP - 0.775) / 0.03)) * (1 - m);
-      let globeW = Math.max(0, Math.min(1, (storyP - 0.42) / 0.03)) * Math.max(0, Math.min(1, (0.795 - storyP) / 0.03)) * (1 - m);
-      lineW = Math.max(lineW * (1 - m), horseW * 0.72 * (1 - m), m * 0.44);
+      const finaleW = Math.max(0, Math.min(1, (storyP - 0.79) / 0.035)) * (1 - m);
+      let globeW = Math.max(0, Math.min(1, (storyP - 0.42) / 0.03)) * Math.max(0, Math.min(1, (0.855 - storyP) / 0.035)) * (1 - m);
+      lineW = Math.max(lineW * (1 - m), horseW * 0.72 * (1 - m), finaleW * 0.82, m * 0.44);
 
       if (globeW > 0.01) this.drawGlobe(cam, globeW, storyP);
-      if (trackW > 0.01) this.drawTrack(trackW, storyP);
 
       for (let k = 0; k < n; k++) {
         const q = this.parts[k];
@@ -501,8 +534,8 @@
         case 3: return this.posHorse(q, k, 0);
         case 4: case 5: return this.posSphere(q, cam, true);
         case 6: return this.posSphere(q, cam, false);
-        case 7: return this.posTrack(q, 1);
-        default: return this.posRace(q, k);
+        case 7: return this.posFinalLogo(q, k);
+        default: return this.posFinalLogo(q, k);
       }
     }
 
@@ -552,6 +585,20 @@
         x: this.W * (phase ? 0.23 : (this.mobile ? 0.50 : 0.27)) + pt[0] * scale + surge + Math.sin(this.t * 0.8 + q.s * 8) * 1.25,
         y: this.H * (phase ? 0.76 : (this.mobile ? 0.40 : 0.49)) + pt[1] * scale * (this.horseAspect || 1.333) + bob,
         a: (phase ? 0.62 : 0.58) + Math.pow(q.s, 1.35) * 0.46, s: 0.54 + q.s * 0.28
+      };
+    }
+
+    posFinalLogo(q, k) {
+      const pts = this.logoPts || [];
+      if (!pts.length) return this.posNet(q, k);
+      const pt = pts[k % pts.length];
+      const scale = Math.min(this.W * (this.mobile ? 0.82 : 0.58), this.H * (this.mobile ? 0.58 : 0.72));
+      const pulse = 1 + Math.sin(this.t * 1.4 + q.s * 7) * 0.008;
+      return {
+        x: this.W * 0.5 + pt[0] * scale * pulse + Math.sin(this.t * 0.7 + q.s * 10) * 1.4,
+        y: this.H * (this.mobile ? 0.47 : 0.49) + pt[1] * scale * (this.logoAspect || 0.676) * pulse + Math.cos(this.t * 0.6 + q.s * 8) * 1.4,
+        a: 0.34 + Math.pow(q.s, 1.2) * 0.54,
+        s: 0.46 + q.s * 0.24
       };
     }
 
@@ -697,13 +744,20 @@
       const keys = [
         [0.42, 1.05, 45.5, 24.4, 0.50, 0.50, 1],
         [0.455, 1.05, 45.5, 24.4, 0.50, 0.50, 1],
-        [0.512, 10.5, 40.42, 21.30, 0.50, 0.46, 1],
-        [0.556, 10.5, 40.42, 21.30, 0.50, 0.46, 1],
-        [0.585, 8.0, 40.42, 21.30, 0.50, 0.48, 1],
-        [0.625, 7.0, 44.6, 23.2, 0.50, 0.48, 1],
-        [0.655, 2.2, 45.8, 23.9, 0.50, 0.49, 1],
-        [0.70, 0.62, 46.72, 24.69, 0.50, 0.47, 0.5],
-        [0.778, 0.50, 46.72, 24.69, 0.50, 0.47, 0.3]
+        [0.490, 4.8, 40.45, 21.34, 0.50, 0.48, 1],
+        [0.525, 17.5, TAIF_TRACK[0], TAIF_TRACK[1], 0.50, 0.48, 1],
+        [0.565, 20.0, TAIF_TRACK[0], TAIF_TRACK[1], 0.50, 0.48, 1],
+        [0.595, 12.0, TAIF_TRACK[0], TAIF_TRACK[1], 0.50, 0.48, 1],
+        [0.620, 7.5, 43.1, 22.75, 0.50, 0.48, 1],
+        [0.650, 15.5, RIYADH_TRACK[0], RIYADH_TRACK[1], 0.50, 0.48, 1],
+        [0.690, 19.0, RIYADH_TRACK[0], RIYADH_TRACK[1], 0.50, 0.48, 1],
+        [0.715, 5.0, RIYADH_TRACK[0], RIYADH_TRACK[1], 0.50, 0.48, 0.9],
+        [0.750, 0.50, 46.72, 24.69, 0.50, 0.48, 0.25],
+        [0.785, 0.47, 8.0, 18.0, 0.50, 0.48, 0.1],
+        [0.810, 0.45, -34.0, 15.0, 0.50, 0.48, 0.05],
+        [0.833, 0.43, 46.72, 24.69, 0.50, 0.48, 0.15],
+        [0.860, 0.24, 46.72, 24.69, 0.50, 0.48, 0.0],
+        [0.888, 0.14, 46.72, 24.69, 0.50, 0.48, 0.0]
       ];
       let a = keys[0], b = keys[keys.length - 1];
       for (let i = 0; i < keys.length - 1; i++) {
@@ -717,9 +771,10 @@
       const mx = this.mouse.active ? (this.mouse.x / this.W - 0.5) : 0;
       const my = this.mouse.active ? (this.mouse.y / this.H - 0.5) : 0;
       const R = lp(1) * Math.min(this.W, this.H);
+      const autoSpin = p > 0.755 && p < 0.822 ? this.t * 1.25 : 0;
       return {
         R: R,
-        lon: lp(2) + this.t * 2.6 * (1 - zoom) + mx * 6 * (1 - zoom * 0.7),
+        lon: lp(2) + autoSpin + mx * 6 * (1 - zoom * 0.7),
         lat: Math.max(-70, Math.min(70, lp(3) - my * 5 * (1 - zoom * 0.8))),
         cx: this.W * lp(4), cy: this.H * lp(5), zoom: zoom
       };
@@ -801,6 +856,7 @@
         this.strokeRings(this.ksaRings, cam, (0.35 + 0.6 * kw) * w, 1.1 + kw * 0.7);
       }
       this.drawTaif(cam, p, w);
+      this.drawRiyadh(cam, p, w);
       this.drawKsaLine(cam, p, w);
       this.drawArcs(cam, p, w);
       this.updateNodes(cam, p);
@@ -833,12 +889,26 @@
       this.taif = { lights: lights, roads: roads };
     }
 
+    buildRiyadh() {
+      // A denser, orthogonal light field echoes Riyadh's urban fabric.
+      let seed = 19;
+      const rnd = () => (seed = (seed * 48271) % 2147483647) / 2147483647;
+      const lights = [];
+      for (let i = 0; i < 300; i++) {
+        const x = (rnd() - 0.5) * 1.8;
+        const y = (rnd() - 0.5) * 1.25;
+        lights.push({ x: x, y: y, r: 0.8 + rnd() * 2.1, tw: rnd() * Math.PI * 2, b: 0.28 + rnd() * 0.72 });
+      }
+      this.riyadh = { lights: lights };
+    }
+
     drawTaif(cam, p, gw) {
-      const zw = Math.max(0, Math.min(1, (p - 0.488) / 0.02)) * Math.max(0, Math.min(1, (0.60 - p) / 0.03)) * gw;
+      const zw = Math.max(0, Math.min(1, (p - 0.492) / 0.018)) * Math.max(0, Math.min(1, (0.605 - p) / 0.025)) * gw;
       if (zw < 0.01 || !this.taif) return;
-      const c = this.project(40.42, 21.27, cam);
-      if (!c.v) return;
-      const S = Math.max(90, Math.min(Math.min(this.W, this.H) * 0.85, cam.R * 0.075));
+      const c = this.project(TAIF_CITY[0], TAIF_CITY[1], cam);
+      const course = this.project(TAIF_TRACK[0], TAIF_TRACK[1], cam);
+      if (!c.v || !course.v) return;
+      const S = Math.max(82, Math.min(Math.min(this.W, this.H) * 0.68, cam.R * 0.034));
       const ctx = this.ctx, t = this.t;
       // ambient city glow
       const g = ctx.createRadialGradient(c.x, c.y, 0, c.x, c.y, S * 1.1);
@@ -869,9 +939,9 @@
         ctx.drawImage(this.sprite, c.x + L.x * S - s / 2, c.y + L.y * S * 0.8 - s / 2, s, s);
       }
       ctx.globalAlpha = 1;
-      // racecourse oval, offset from the city core
-      const ox = c.x + S * 0.20, oy = c.y - S * 0.10;
-      const rx = S * 0.52, ry = S * 0.30, rot = -0.16;
+      // The oval is anchored to the actual Al Hawiyah racecourse coordinates.
+      const ox = course.x, oy = course.y;
+      const rx = S * 0.21, ry = S * 0.115, rot = -0.16;
       const pt = (k, th) => {
         const cx0 = Math.cos(th) * rx * k, cy0 = Math.sin(th) * ry * k;
         return { x: ox + cx0 * Math.cos(rot) - cy0 * Math.sin(rot), y: oy + cx0 * Math.sin(rot) + cy0 * Math.cos(rot) };
@@ -926,19 +996,90 @@
       ctx.globalAlpha = 1;
     }
 
+    drawRiyadh(cam, p, gw) {
+      const rw = Math.max(0, Math.min(1, (p - 0.632) / 0.018)) * Math.max(0, Math.min(1, (0.728 - p) / 0.026)) * gw;
+      if (rw < 0.01 || !this.riyadh) return;
+      const city = this.project(RIYADH_CITY[0], RIYADH_CITY[1], cam);
+      const course = this.project(RIYADH_TRACK[0], RIYADH_TRACK[1], cam);
+      if (!city.v || !course.v) return;
+      const ctx = this.ctx, t = this.t;
+      const S = Math.max(88, Math.min(Math.min(this.W, this.H) * 0.70, cam.R * 0.032));
+
+      const halo = ctx.createRadialGradient(course.x, course.y, 0, course.x, course.y, S * 0.72);
+      halo.addColorStop(0, 'rgba(255,232,180,' + (0.12 * rw).toFixed(3) + ')');
+      halo.addColorStop(0.46, 'rgba(233,188,92,' + (0.045 * rw).toFixed(3) + ')');
+      halo.addColorStop(1, 'rgba(233,188,92,0)');
+      ctx.fillStyle = halo;
+      ctx.beginPath(); ctx.arc(course.x, course.y, S * 0.72, 0, Math.PI * 2); ctx.fill();
+
+      // Riyadh's rectilinear road rhythm establishes a distinct urban approach.
+      ctx.strokeStyle = 'rgba(233,188,92,' + (0.11 * rw).toFixed(3) + ')';
+      ctx.lineWidth = 0.65;
+      for (let i = -5; i <= 5; i++) {
+        const off = i * S * 0.105;
+        ctx.beginPath(); ctx.moveTo(city.x - S * 0.78, city.y + off * 0.56); ctx.lineTo(city.x + S * 0.78, city.y + off * 0.56); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(city.x + off, city.y - S * 0.48); ctx.lineTo(city.x + off, city.y + S * 0.48); ctx.stroke();
+      }
+      for (let i = 0; i < this.riyadh.lights.length; i++) {
+        const L = this.riyadh.lights[i];
+        const al = (0.34 + 0.66 * Math.abs(Math.sin(t * 1.05 + L.tw))) * L.b * rw;
+        if (al < 0.025) continue;
+        const s = L.r * 2.8;
+        ctx.globalAlpha = Math.min(1, al);
+        ctx.drawImage(this.sprite, city.x + L.x * S - s / 2, city.y + L.y * S * 0.55 - s / 2, s, s);
+      }
+      ctx.globalAlpha = 1;
+
+      // King Abdulaziz Racecourse at its real north-Riyadh coordinates.
+      const rx = S * 0.23, ry = S * 0.125, rot = 0.07;
+      ctx.strokeStyle = 'rgba(255,239,198,' + (0.14 * rw).toFixed(3) + ')';
+      ctx.lineWidth = 7;
+      ctx.beginPath(); ctx.ellipse(course.x, course.y, rx, ry, rot, 0, Math.PI * 2); ctx.stroke();
+      [[1,0.92,1.8],[0.86,0.38,1],[0.70,0.25,0.8]].forEach((v) => {
+        ctx.strokeStyle = 'rgba(255,232,180,' + (v[1] * rw).toFixed(3) + ')';
+        ctx.lineWidth = v[2];
+        ctx.beginPath(); ctx.ellipse(course.x, course.y, rx * v[0], ry * v[0], rot, 0, Math.PI * 2); ctx.stroke();
+      });
+
+      // Grandstand and floodlights identify the venue at a glance.
+      ctx.strokeStyle = 'rgba(255,232,180,' + (0.72 * rw).toFixed(3) + ')';
+      ctx.lineWidth = 1.4;
+      for (let i = -4; i <= 4; i++) {
+        const a = Math.PI / 2 + i * 0.105;
+        const x0 = course.x + Math.cos(a) * rx * 1.06;
+        const y0 = course.y + Math.sin(a) * ry * 1.06;
+        const x1 = course.x + Math.cos(a) * rx * 1.23;
+        const y1 = course.y + Math.sin(a) * ry * 1.23;
+        ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(x1, y1); ctx.stroke();
+      }
+      for (let i = 0; i < 8; i++) {
+        const a = i / 8 * Math.PI * 2;
+        const x = course.x + Math.cos(a) * rx * 1.17;
+        const y = course.y + Math.sin(a) * ry * 1.17;
+        ctx.globalAlpha = rw * (0.65 + 0.35 * Math.sin(t * 1.4 + i));
+        ctx.drawImage(this.sprite, x - 7, y - 7, 14, 14);
+      }
+      ctx.globalAlpha = 1;
+
+      const sweep = t * 0.72;
+      ctx.strokeStyle = 'rgba(255,244,207,' + (0.72 * rw).toFixed(3) + ')';
+      ctx.lineWidth = 2.1;
+      ctx.beginPath(); ctx.ellipse(course.x, course.y, rx, ry, rot, sweep, sweep + 0.72); ctx.stroke();
+    }
+
     drawKsaLine(cam, p, gw) {
       // Glowing fast line: Taif -> Riyadh (act 5)
-      const w = Math.max(0, Math.min(1, (p - 0.578) / 0.02)) * Math.max(0, Math.min(1, (0.74 - p) / 0.04)) * gw;
+      const w = Math.max(0, Math.min(1, (p - 0.572) / 0.018)) * Math.max(0, Math.min(1, (0.735 - p) / 0.03)) * gw;
       if (w < 0.01) return;
-      const prog = Math.max(0, Math.min(1, (p - 0.588) / 0.062));
+      const prog = Math.max(0, Math.min(1, (p - 0.582) / 0.075));
       if (prog <= 0) return;
-      const A = [40.42, 21.27], B = [46.72, 24.69], ctx = this.ctx;
-      const steps = 42, pts = [];
+      const A = TAIF_TRACK, B = RIYADH_TRACK, ctx = this.ctx;
+      const steps = 58, pts = [];
       const maxI = Math.max(1, Math.round(steps * prog));
       for (let i = 0; i <= maxI; i++) {
         const t = i / steps;
         const lon = A[0] + (B[0] - A[0]) * t;
-        const lat = A[1] + (B[1] - A[1]) * t + Math.sin(t * Math.PI) * 0.9;
+        const lat = A[1] + (B[1] - A[1]) * t + Math.sin(t * Math.PI) * 0.78;
         pts.push(this.project(lon, lat, cam));
       }
       const stroke = (lw, col) => {
@@ -952,8 +1093,8 @@
         }
         ctx.stroke();
       };
-      stroke(5, 'rgba(233,188,92,' + (0.12 * w).toFixed(3) + ')');
-      stroke(1.6, 'rgba(255,232,180,' + (0.85 * w).toFixed(3) + ')');
+      stroke(9, 'rgba(233,188,92,' + (0.09 * w).toFixed(3) + ')');
+      stroke(2.1, 'rgba(255,239,198,' + (0.92 * w).toFixed(3) + ')');
       // moving pulse
       const ph = (this.t * 0.9) % 1;
       const pi = Math.floor(ph * (pts.length - 1));
@@ -968,13 +1109,13 @@
     }
 
     drawArcs(cam, p, w) {
-      const aw = Math.max(0, Math.min(1, (p - 0.685) / 0.03)) * Math.max(0, Math.min(1, (0.79 - p) / 0.025));
+      const aw = Math.max(0, Math.min(1, (p - 0.722) / 0.022)) * Math.max(0, Math.min(1, (0.852 - p) / 0.025));
       if (aw < 0.01) return;
-      const ctx = this.ctx, hub = [46.72, 24.69], d = Math.PI / 180;
+      const ctx = this.ctx, hub = RIYADH_TRACK, d = Math.PI / 180;
       const v0 = [Math.cos(hub[1] * d) * Math.cos(hub[0] * d), Math.cos(hub[1] * d) * Math.sin(hub[0] * d), Math.sin(hub[1] * d)];
       for (let c = 0; c < this.world.length; c++) {
         const city = this.world[c];
-        const prog = Math.max(0, Math.min(1, (p - 0.693 - c * 0.003) / 0.04));
+        const prog = Math.max(0, Math.min(1, (p - 0.728 - c * 0.0022) / 0.062));
         if (prog <= 0) continue;
         const v1 = [Math.cos(city[1] * d) * Math.cos(city[0] * d), Math.cos(city[1] * d) * Math.sin(city[0] * d), Math.sin(city[1] * d)];
         const dot = Math.max(-1, Math.min(1, v0[0] * v1[0] + v0[1] * v1[1] + v0[2] * v1[2]));
@@ -991,15 +1132,19 @@
           const pr = this.project(lon, lat, { cx: cam.cx, cy: cam.cy, R: cam.R * bulge, lon: cam.lon, lat: cam.lat });
           pts.push(pr);
         }
-        ctx.lineWidth = 1;
-        let started = false;
-        ctx.strokeStyle = 'rgba(255,225,160,' + (0.34 * aw).toFixed(3) + ')';
-        ctx.beginPath();
-        for (let i = 0; i < pts.length; i++) {
-          if (!pts[i].v) { started = false; continue; }
-          if (!started) { ctx.moveTo(pts[i].x, pts[i].y); started = true; } else ctx.lineTo(pts[i].x, pts[i].y);
-        }
-        ctx.stroke();
+        const paintArc = (width, alpha) => {
+          let started = false;
+          ctx.lineWidth = width;
+          ctx.strokeStyle = 'rgba(255,225,160,' + (alpha * aw).toFixed(3) + ')';
+          ctx.beginPath();
+          for (let i = 0; i < pts.length; i++) {
+            if (!pts[i].v) { started = false; continue; }
+            if (!started) { ctx.moveTo(pts[i].x, pts[i].y); started = true; } else ctx.lineTo(pts[i].x, pts[i].y);
+          }
+          ctx.stroke();
+        };
+        paintArc(7, 0.075);
+        paintArc(1.35, 0.74);
 
         const ph = (this.t * 0.42 + c * 0.17) % 1;
         const pi = Math.floor(ph * (pts.length - 1));
@@ -1019,7 +1164,7 @@
       const h = this.project(hub[0], hub[1], cam);
       if (h.v) {
         ctx.globalAlpha = aw;
-        ctx.drawImage(this.sprite, h.x - 26, h.y - 26, 52, 52);
+        ctx.drawImage(this.sprite, h.x - 34, h.y - 34, 68, 68);
         ctx.globalAlpha = 1;
       }
     }
@@ -1041,18 +1186,21 @@
           el.addEventListener('pointerleave', () => { if (self.tip) self.tip.style.opacity = '0'; });
         });
       }
-      const show = p > 0.45 && p < 0.69;
-      const dz = Math.max(0, Math.min(1, (p - 0.49) / 0.03)) * Math.max(0, Math.min(1, (0.578 - p) / 0.02));
-      const deep = dz > 0.05;
+      const show = p > 0.45 && p < 0.73;
+      const taifZoom = Math.max(0, Math.min(1, (p - 0.495) / 0.025)) * Math.max(0, Math.min(1, (0.60 - p) / 0.022));
+      const riyadhZoom = Math.max(0, Math.min(1, (p - 0.635) / 0.022)) * Math.max(0, Math.min(1, (0.72 - p) / 0.022));
+      const venueFocus = (p > 0.490 && p < 0.582) || (p > 0.622 && p < 0.675);
       for (let i = 0; i < this.nodes.length; i++) {
         const el = this.nodes[i];
         const city = el.getAttribute('data-city');
-        if (!show || (deep && city !== 'الطائف')) { if (el._h !== '0') { el.style.opacity = '0'; el._h = '0'; } continue; }
+        const isolated = (taifZoom > 0.05 && city !== 'الطائف') || (riyadhZoom > 0.05 && city !== 'الرياض');
+        if (!show || isolated || venueFocus) { if (el._h !== '0') { el.style.opacity = '0'; el._h = '0'; } continue; }
         const lon = +el.getAttribute('data-lon'), lat = +el.getAttribute('data-lat');
         const pr = this.project(lon, lat, cam);
         if (!pr.v) { if (el._h !== '0') { el.style.opacity = '0'; el._h = '0'; } continue; }
         if (el._h !== '1') { el.style.opacity = '1'; el._h = '1'; }
-        const sc = city === 'الطائف' ? (1 + dz * 1.6) : 1;
+        const focus = city === 'الطائف' ? taifZoom : (city === 'الرياض' ? riyadhZoom : 0);
+        const sc = 1 + focus * 1.5;
         el.style.transform = 'translate3d(' + pr.x.toFixed(1) + 'px,' + pr.y.toFixed(1) + 'px,0) translate(-50%,-50%) scale(' + sc.toFixed(2) + ')';
       }
     }
