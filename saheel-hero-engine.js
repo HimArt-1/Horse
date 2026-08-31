@@ -377,12 +377,12 @@
         }
       }
       if (this.logo) {
-        // The identity appears only as an opening signature and a large network finale.
+        // Keep the solid identity as an opening signature only. The finale is
+        // drawn exclusively by the particle system so the two marks never stack.
         const opening = 1 - this.smooth((p - seg * 0.72) / (seg * 0.24));
-        const finale = this.smooth((storyP - 0.835) / 0.026);
-        const opacity = hubOn ? 0 : Math.max(opening, finale);
-        const finalMode = finale > 0.01;
-        const scale = finalMode ? (this.mobile ? 1.06 : 1.24) : 1;
+        const opacity = hubOn ? 0 : opening;
+        const finalMode = false;
+        const scale = 1;
         const hidden = opacity < 0.01;
         const key = scale.toFixed(3) + '|' + opacity.toFixed(3) + '|' + hidden + '|' + finalMode;
         if (this.logo._mode !== key) {
