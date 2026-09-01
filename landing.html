@@ -220,6 +220,65 @@
     .section-title { font: 800 clamp(28px, 3.2vw, 44px)/1.2 "Almarai", sans-serif; margin-bottom: 16px; color: var(--paper); }
     .section-lead { font-size: 16px; color: var(--muted); }
 
+    /* Visitor field guide */
+    .visitor-guide { position:relative; padding-top:clamp(104px,10vw,150px); }
+    .visitor-guide::before { content:""; position:absolute; top:72px; right:clamp(20px,5vw,64px); left:clamp(20px,5vw,64px); height:1px; background:linear-gradient(90deg,transparent,rgba(233,188,92,.38),transparent); }
+    .visitor-overview { display:grid; grid-template-columns:minmax(0,1.05fr) minmax(360px,.95fr); gap:clamp(18px,2.5vw,34px); align-items:stretch; }
+    .visitor-intro { position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:center; min-height:520px; padding:clamp(36px,5vw,72px); border:1px solid rgba(233,188,92,.22); background:radial-gradient(circle at 86% 12%,rgba(233,188,92,.12),transparent 33%),linear-gradient(145deg,#12100c,#090806 68%); }
+    .visitor-intro::after { content:"FIELD GUIDE"; position:absolute; left:-12px; bottom:-12px; color:rgba(233,188,92,.045); font:700 clamp(52px,7vw,104px)/.8 "IBM Plex Mono",monospace; direction:ltr; white-space:nowrap; pointer-events:none; }
+    .visitor-intro > * { position:relative; z-index:1; }
+    .visitor-intro .section-eyebrow { margin-bottom:18px; }
+    .visitor-intro h2 { max-width:12ch; margin:0 0 24px; color:#fff2d4; font:800 clamp(36px,5vw,70px)/1.08 "Almarai",sans-serif; letter-spacing:-.035em; text-wrap:balance; }
+    .visitor-intro > p { max-width:62ch; color:rgba(245,233,210,.72); font-size:clamp(14px,1.15vw,17px); line-height:1.95; text-wrap:pretty; }
+    .visitor-signals { display:flex; flex-wrap:wrap; gap:10px 22px; margin-top:34px; padding-top:22px; border-top:1px solid rgba(233,188,92,.16); }
+    .visitor-signals span { display:inline-flex; align-items:center; gap:9px; color:rgba(245,233,210,.76); font-size:12px; font-weight:600; }
+    .visitor-signals span::before { content:""; width:5px; height:5px; border-radius:50%; background:var(--gold-light); box-shadow:0 0 12px var(--gold); }
+    .visitor-visual { position:relative; overflow:hidden; min-height:520px; margin:0; border:1px solid rgba(233,188,92,.22); background:#080705; }
+    .visitor-visual img { width:100%; height:100%; min-height:520px; display:block; object-fit:cover; object-position:57% center; filter:saturate(.78) contrast(1.08) brightness(.68); }
+    .visitor-visual::after { content:""; position:absolute; inset:0; background:linear-gradient(180deg,rgba(5,5,4,.06),rgba(5,5,4,.1) 48%,rgba(5,5,4,.94)); pointer-events:none; }
+    .visitor-visual figcaption { position:absolute; z-index:1; right:clamp(24px,3vw,42px); bottom:clamp(25px,3vw,40px); left:clamp(24px,3vw,42px); display:flex; align-items:flex-end; justify-content:space-between; gap:20px; }
+    .visitor-visual figcaption b { display:block; max-width:15ch; color:#fff2d4; font:800 clamp(22px,2.3vw,34px)/1.25 "Almarai",sans-serif; }
+    .visitor-visual figcaption span { color:var(--gold); font:600 9px/1.5 "IBM Plex Mono",monospace; letter-spacing:.13em; direction:ltr; white-space:nowrap; }
+
+    .visitor-flow { margin-top:clamp(18px,2.5vw,34px); padding:clamp(34px,4vw,58px); border:1px solid rgba(233,188,92,.2); background:rgba(10,9,7,.72); }
+    .visitor-flow-head { display:flex; align-items:flex-end; justify-content:space-between; gap:30px; margin-bottom:38px; }
+    .visitor-flow-head h3 { margin:0; color:var(--paper); font:800 clamp(25px,3vw,40px)/1.2 "Almarai",sans-serif; }
+    .visitor-flow-head p { max-width:44ch; color:var(--muted); font-size:14px; line-height:1.8; }
+    .visitor-steps { position:relative; display:grid; grid-template-columns:repeat(3,1fr); gap:0; list-style:none; counter-reset:visitor-step; }
+    .visitor-steps::before { content:""; position:absolute; top:21px; right:8%; left:8%; height:1px; background:linear-gradient(90deg,rgba(233,188,92,.12),rgba(233,188,92,.52),rgba(233,188,92,.12)); }
+    .visitor-step { position:relative; padding:0 clamp(16px,2.4vw,34px); counter-increment:visitor-step; }
+    .visitor-step:first-child { padding-right:0; }
+    .visitor-step:last-child { padding-left:0; }
+    .visitor-step-num { position:relative; z-index:1; width:44px; height:44px; display:grid; place-items:center; margin-bottom:26px; border:1px solid rgba(233,188,92,.56); background:#0b0907; color:var(--gold-light); font:600 10px/1 "IBM Plex Mono",monospace; box-shadow:0 0 28px rgba(233,188,92,.08); }
+    .visitor-step h4 { margin:0 0 10px; color:#fff2d4; font:700 18px/1.4 "Almarai",sans-serif; }
+    .visitor-step p { max-width:34ch; color:rgba(245,233,210,.62); font-size:13px; line-height:1.75; }
+
+    .visitor-capabilities { display:grid; grid-template-columns:minmax(250px,.72fr) minmax(0,1.45fr); gap:clamp(34px,5vw,76px); margin-top:clamp(70px,8vw,112px); align-items:start; }
+    .visitor-capabilities-head { position:sticky; top:108px; }
+    .visitor-capabilities-head h3 { max-width:11ch; margin:0 0 18px; color:var(--paper); font:800 clamp(28px,3.4vw,46px)/1.2 "Almarai",sans-serif; text-wrap:balance; }
+    .visitor-capabilities-head p { max-width:36ch; color:var(--muted); font-size:14px; line-height:1.85; }
+    .visitor-capability-list { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); border-top:1px solid rgba(233,188,92,.32); }
+    .visitor-capability { min-height:250px; padding:30px clamp(18px,2.5vw,34px) 34px; border-bottom:1px solid rgba(233,188,92,.2); }
+    .visitor-capability:nth-child(odd) { border-left:1px solid rgba(233,188,92,.2); }
+    .visitor-capability code { display:block; margin-bottom:44px; color:var(--gold); font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; direction:ltr; }
+    .visitor-capability h4 { margin:0 0 16px; color:#fff2d4; font:700 18px/1.4 "Almarai",sans-serif; }
+    .visitor-capability ul { list-style:none; display:grid; gap:9px; }
+    .visitor-capability li { position:relative; padding-right:17px; color:rgba(245,233,210,.64); font-size:13px; line-height:1.72; }
+    .visitor-capability li::before { content:""; position:absolute; right:0; top:.72em; width:6px; height:1px; background:var(--gold); }
+
+    .visitor-route { margin-top:clamp(70px,8vw,112px); border-top:1px solid rgba(233,188,92,.32); border-bottom:1px solid rgba(233,188,92,.22); }
+    .visitor-route-head { display:flex; align-items:flex-end; justify-content:space-between; gap:24px; padding:26px 0 24px; }
+    .visitor-route-head h3 { margin:0; color:var(--paper); font:800 clamp(25px,3vw,40px)/1.2 "Almarai",sans-serif; }
+    .visitor-route-head span { color:var(--gold); font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; direction:ltr; }
+    .visitor-route-links { display:grid; grid-template-columns:repeat(4,1fr); border-top:1px solid rgba(233,188,92,.15); }
+    .visitor-route-link { position:relative; min-height:150px; display:flex; flex-direction:column; justify-content:space-between; gap:26px; padding:24px; border-left:1px solid rgba(233,188,92,.15); color:var(--paper); text-decoration:none; transition:background .25s var(--ease),color .25s var(--ease); }
+    .visitor-route-link:last-child { border-left:0; }
+    .visitor-route-link span { color:rgba(233,188,92,.5); font:600 9px/1 "IBM Plex Mono",monospace; letter-spacing:.12em; direction:ltr; }
+    .visitor-route-link b { max-width:15ch; font:700 15px/1.55 "Almarai",sans-serif; }
+    .visitor-route-link::after { content:"←"; position:absolute; left:22px; bottom:22px; color:var(--gold); transition:transform .25s var(--ease); }
+    .visitor-route-link:hover { color:var(--gold-light); background:rgba(233,188,92,.055); }
+    .visitor-route-link:hover::after { transform:translateX(-5px); }
+
     /* Interactive Game Arena Showcase */
     .arena-banner {
       position: relative; border-radius: 24px; overflow: hidden;
@@ -393,6 +452,10 @@
       .cinema-stage { min-height:0; aspect-ratio:auto; }
       .cinema-meta { grid-template-columns:1fr; gap:18px; }
       .filmstrip { grid-auto-columns:minmax(142px,30vw); }
+      .visitor-overview { grid-template-columns:1fr; }
+      .visitor-intro,.visitor-visual,.visitor-visual img { min-height:460px; }
+      .visitor-capabilities { grid-template-columns:1fr; }
+      .visitor-capabilities-head { position:static; }
     }
 
     @media (max-width: 620px) {
@@ -421,6 +484,31 @@
       .story-node > b { font-size:10px; }
       .story-venue > div { transform:translateY(-6vh); }
       section { padding-block:70px; }
+      .visitor-guide { padding-top:94px; }
+      .visitor-guide::before { top:48px; }
+      .visitor-intro { min-height:0; padding:34px 24px 40px; }
+      .visitor-intro h2 { max-width:10ch; font-size:clamp(34px,10vw,48px); }
+      .visitor-intro > p { font-size:13px; line-height:1.85; }
+      .visitor-signals { display:grid; gap:11px; margin-top:26px; }
+      .visitor-visual,.visitor-visual img { min-height:390px; }
+      .visitor-visual figcaption { align-items:flex-start; flex-direction:column; }
+      .visitor-flow { padding:28px 22px 32px; }
+      .visitor-flow-head { align-items:flex-start; flex-direction:column; margin-bottom:30px; }
+      .visitor-steps { grid-template-columns:1fr; gap:26px; }
+      .visitor-steps::before { top:8px; bottom:8px; right:21px; left:auto; width:1px; height:auto; background:linear-gradient(180deg,rgba(233,188,92,.1),rgba(233,188,92,.52),rgba(233,188,92,.1)); }
+      .visitor-step,.visitor-step:first-child,.visitor-step:last-child { padding:0 68px 0 0; }
+      .visitor-step-num { position:absolute; right:0; top:0; margin:0; }
+      .visitor-capabilities { margin-top:72px; gap:28px; }
+      .visitor-capability-list { grid-template-columns:1fr; }
+      .visitor-capability { min-height:0; padding:26px 0 30px; }
+      .visitor-capability:nth-child(odd) { border-left:0; }
+      .visitor-capability code { margin-bottom:28px; }
+      .visitor-route { margin-top:72px; }
+      .visitor-route-head { align-items:flex-start; flex-direction:column; }
+      .visitor-route-links { grid-template-columns:repeat(2,1fr); }
+      .visitor-route-link { min-height:148px; padding:20px; border-bottom:1px solid rgba(233,188,92,.15); }
+      .visitor-route-link:nth-child(2) { border-left:0; }
+      .visitor-route-link::after { left:18px; bottom:18px; }
       .pillar-card { grid-column:span 12; transform:none; }
       .pillar-card:nth-child(2), .pillar-card:nth-child(4) { transform:none; }
       .pillar-card:nth-child(2):hover, .pillar-card:nth-child(4):hover { transform:none; }
@@ -614,6 +702,110 @@
       <div class="story-hud" aria-hidden="true"><span>08 ACTS · LIVE PARTICLE SYSTEM</span><span>SAUDI ARABIA · 2026</span></div>
     </div>
   </header>
+
+  <!-- Visitor field guide, adapted from the official visitor brief -->
+  <section id="visitor-guide" class="visitor-guide reveal" aria-labelledby="visitor-guide-title">
+    <div class="visitor-overview">
+      <div class="visitor-intro">
+        <div class="section-eyebrow">KING KHALID RACECOURSE · VISITOR FIELD GUIDE</div>
+        <h2 id="visitor-guide-title">الميدان كما لم تعشه من قبل</h2>
+        <p>في ميدان الملك خالد يلتقي السباق الحقيقي بتجربة رقمية تتزامن مع حماس المضمار لحظة بلحظة. صُممت اللعبة بأيدٍ سعودية لتحوّل كل زائر من متلقٍ إلى فارس، وتجمع الحضور الميداني والجمهور الرقمي في تجربة رياضية وتقنية وترفيهية واحدة.</p>
+        <div class="visitor-signals" aria-label="أهم خصائص تجربة الزائر">
+          <span>دخول فوري بلا تطبيق</span>
+          <span>سباق مباشر من الجوال</span>
+          <span>نتائج تظهر على الشاشة الكبرى</span>
+        </div>
+      </div>
+
+      <figure class="visitor-visual">
+        <img src="images/cinematic/shot-17.webp" alt="فرس أصيل داخل النسخة الرقمية من ميدان الملك خالد في الطائف" loading="lazy" decoding="async">
+        <figcaption>
+          <b>من أرض المضمار إلى يد كل زائر</b>
+          <span>REAL RACE · DIGITAL EXPERIENCE</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="visitor-flow" aria-labelledby="visitor-flow-title">
+      <div class="visitor-flow-head">
+        <h3 id="visitor-flow-title">ثلاث خطوات وتبدأ المنافسة</h3>
+        <p>مسار دخول خفيف وواضح، صُمم ليضع الزائر داخل السباق خلال لحظات ومن دون تنزيلات أو تجهيزات مسبقة.</p>
+      </div>
+      <ol class="visitor-steps">
+        <li class="visitor-step">
+          <span class="visitor-step-num">01</span>
+          <h4>امسح رمز الدخول</h4>
+          <p>افتح بوابة التحدي مباشرة من هاتفك عبر رمز QR الظاهر في الميدان أو على الشاشة الكبرى.</p>
+        </li>
+        <li class="visitor-step">
+          <span class="visitor-step-num">02</span>
+          <h4>حدّد هوية خيلك</h4>
+          <p>اكتب اسمك واختر خيلك وهويتك البصرية لتظهر بصمتك أمام جمهور الميدان.</p>
+        </li>
+        <li class="visitor-step">
+          <span class="visitor-step-num">03</span>
+          <h4>تسابق على الهواء</h4>
+          <p>تحكّم بالسرعة والحواجز والطاقة، وتابع مركزك ونتيجتك حيًا على الشاشة العملاقة.</p>
+        </li>
+      </ol>
+    </div>
+
+    <div class="visitor-capabilities" aria-labelledby="visitor-capabilities-title">
+      <div class="visitor-capabilities-head">
+        <div class="section-eyebrow">A COMPLETE LIVE EXPERIENCE</div>
+        <h3 id="visitor-capabilities-title">تجربة صُممت لتُرى وتُعاش</h3>
+        <p>تقنية سحابية وتشغيل حي وهوية فروسية سعودية؛ منظومة واحدة تجعل المنافسة واضحة وممتعة للجمهور داخل الميدان وخارجه.</p>
+      </div>
+
+      <div class="visitor-capability-list">
+        <article class="visitor-capability">
+          <code>01 / LIVE RACING</code>
+          <h4>السباق على الشاشة الكبرى</h4>
+          <ul>
+            <li>عرض السباقات والنتائج ولحظات التتويج مباشرة.</li>
+            <li>تحكم كامل من المتصفح في السرعة والحواجز وطاقة الخيل.</li>
+          </ul>
+        </article>
+        <article class="visitor-capability">
+          <code>02 / CLOUD ENGINE</code>
+          <h4>تشغيل سحابي دقيق</h4>
+          <ul>
+            <li>محرك ويب حديث ينظم المشاركة ويقيس الأداء لحظيًا.</li>
+            <li>إعادة لحظات السرعة القصوى لرفع حماس الجمهور.</li>
+          </ul>
+        </article>
+        <article class="visitor-capability">
+          <code>03 / AUDIENCE</code>
+          <h4>الجمهور جزء من الحدث</h4>
+          <ul>
+            <li>تحويل الحاضرين من مشاهدين إلى منافسين فاعلين.</li>
+            <li>بطاقات أداء ونتائج رقمية فورية جاهزة للمشاركة.</li>
+          </ul>
+        </article>
+        <article class="visitor-capability">
+          <code>04 / SAUDI HERITAGE</code>
+          <h4>فروسية سعودية برؤية جديدة</h4>
+          <ul>
+            <li>فتح الباب أمام مواهب ورياضيين جدد عبر تجربة سهلة.</li>
+            <li>تقديم الهوية الفروسية السعودية بمشهد بصري عالمي.</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+
+    <nav class="visitor-route" aria-labelledby="visitor-route-title">
+      <div class="visitor-route-head">
+        <h3 id="visitor-route-title">رحلتك داخل الميدان</h3>
+        <span>CHOOSE YOUR NEXT STOP</span>
+      </div>
+      <div class="visitor-route-links">
+        <a class="visitor-route-link" href="#gallery"><span>01 / DISCOVER</span><b>اكتشف ميدان الملك خالد من زاوية جديدة</b></a>
+        <a class="visitor-route-link" href="#gallery"><span>02 / CINEMA</span><b>ادخل الرحلة السينمائية داخل التوأم الرقمي</b></a>
+        <a class="visitor-route-link" href="#simulator"><span>03 / CHALLENGE</span><b>جرّب شوط التحدي ومحاكاة سرعة السباق</b></a>
+        <a class="visitor-route-link" href="#arena"><span>04 / LIVE ARENA</span><b>شاهد الميدان التفاعلي والشاشات الكبرى</b></a>
+      </div>
+    </nav>
+  </section>
 
   <!-- About Section -->
   <section id="about" class="reveal">
