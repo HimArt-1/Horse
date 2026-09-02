@@ -5,6 +5,294 @@
   const TAIF_TRACK = [40.4764623, 21.4085991];
   const RIYADH_CITY = [46.6753, 24.7136];
   const RIYADH_TRACK = [46.78593, 24.98410];
+  const SCAN_TAU = Math.PI * 2;
+  const SCAN_C = {
+    gold: '233,188,92', hi: '242,206,118', lo: '201,146,43',
+    cream: '255,243,214', soft: '255,239,198'
+  };
+  const scanClamp = (v, a, b) => v < a ? a : v > b ? b : v;
+  const scanLerp = (a, b, t) => a + (b - a) * t;
+  const scanSmooth = (t) => t * t * (3 - 2 * t);
+  const scanFrac = (t) => t - Math.floor(t);
+  const scanRgba = (c, a) => 'rgba(' + c + ',' + a + ')';
+  let scanQrCache = null;
+
+  function scanRng(seed) {
+    let s = (seed >>> 0) || 1;
+    return function () {
+      s ^= s << 13; s >>>= 0;
+      s ^= s >> 17;
+      s ^= s << 5; s >>>= 0;
+      return s / 4294967296;
+    };
+  }
+
+  function scanGlow(ctx, color, blur, draw) {
+    ctx.save();
+    ctx.shadowColor = color;
+    ctx.shadowBlur = blur;
+    draw();
+    ctx.restore();
+  }
+
+  function scanRoundRect(ctx, x, y, w, h, r) {
+    r = Math.min(r, Math.abs(w) / 2, Math.abs(h) / 2);
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
+  }
+
+  function scanQrMatrix() {
+    if (scanQrCache) return scanQrCache;
+    const N = 25;
+    const matrix = Array.from({ length: N }, () => new Array(N).fill(0));
+    const reserved = Array.from({ length: N }, () => new Array(N).fill(0));
+    const finder = (r0, c0) => {
+      for (let i = -1; i <= 7; i++) {
+        for (let j = -1; j <= 7; j++) {
+          const r = r0 + i, c = c0 + j;
+          if (r < 0 || c < 0 || r >= N || c >= N) continue;
+          reserved[r][c] = 1;
+          const inside = i >= 0 && i <= 6 && j >= 0 && j <= 6;
+          const ring = i === 0 || i === 6 || j === 0 || j === 6;
+          const core = i >= 2 && i <= 4 && j >= 2 && j <= 4;
+          matrix[r][c] = inside && (ring || core) ? 1 : 0;
+        }
+      }
+    };
+    finder(0, 0); finder(0, N - 7); finder(N - 7, 0);
+    for (let i = -2; i <= 2; i++) {
+      for (let j = -2; j <= 2; j++) {
+        const r = 18 + i, c = 18 + j;
+        reserved[r][c] = 1;
+        matrix[r][c] = Math.max(Math.abs(i), Math.abs(j)) !== 1 ? 1 : 0;
+      }
+    }
+    for (let i = 8; i < N - 8; i++) {
+      matrix[6][i] = i % 2 === 0 ? 1 : 0; reserved[6][i] = 1;
+      matrix[i][6] = i % 2 === 0 ? 1 : 0; reserved[i][6] = 1;
+    }
+    matrix[N - 8][8] = 1; reserved[N - 8][8] = 1;
+    const a0 = Math.floor(N / 2) - 3, a1 = a0 + 6;
+    const rand = scanRng(0x5A4EE1);
+    for (let r = 0; r < N; r++) {
+      for (let c = 0; c < N; c++) {
+        if (reserved[r][c]) continue;
+        if (r >= a0 && r <= a1 && c >= a0 && c <= a1) {
+          reserved[r][c] = 2; matrix[r][c] = 0; continue;
+        }
+        matrix[r][c] = rand() < 0.46 ? 1 : 0;
+      }
+    }
+    scanQrCache = { N, matrix, reserved };
+    return scanQrCache;
+  }
+
+  function drawScanMark(ctx, cx, cy, size, alpha) {
+    const radius = size * 0.30;
+    ctx.save();
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.strokeStyle = scanRgba(SCAN_C.hi, alpha);
+    ctx.lineWidth = Math.max(2, size * 0.115);
+    ctx.beginPath();
+    ctx.arc(cx, cy - size * 0.03, radius, Math.PI * 0.90, Math.PI * 0.10, true);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(cx - radius * 0.985, cy + size * 0.06);
+    ctx.lineTo(cx - radius * 0.92, cy + size * 0.28);
+    ctx.moveTo(cx + radius * 0.985, cy + size * 0.06);
+    ctx.lineTo(cx + radius * 0.92, cy + size * 0.28);
+    ctx.stroke();
+    ctx.fillStyle = scanRgba(SCAN_C.lo, alpha * 0.9);
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.PI * (0.82 - i * 0.128);
+      ctx.beginPath();
+      ctx.arc(cx + Math.cos(angle) * radius, cy - size * 0.03 - Math.sin(angle) * radius, size * 0.026, 0, SCAN_TAU);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  function drawScanVisual(ctx, opts) {
+    const cx = opts.cx, cy = opts.cy, size = opts.size, t = opts.t;
+    const progress = scanClamp(opts.progress, 0, 1);
+    const showPhone = opts.phone !== false;
+    if (progress <= 0.001) return;
+    const qr = scanQrMatrix(), N = qr.N;
+    const cardX = cx + size * 0.30, cardY = cy;
+    const left = cardX - size / 2, top = cardY - size / 2;
+    const phoneX = cx - size * 1.05, phoneY = cy + size * 0.15;
+    const phoneW = size * 0.46, phoneH = size * 0.94;
+
+    ctx.save();
+    ctx.globalAlpha = scanSmooth(scanClamp(progress * 1.15, 0, 1));
+
+    const pulse = scanFrac(t * 0.30);
+    ctx.lineWidth = 1;
+    for (let i = 0; i < 3; i++) {
+      const k = scanFrac(pulse + i / 3);
+      ctx.strokeStyle = scanRgba(SCAN_C.gold, 0.14 * (1 - k) * progress);
+      ctx.beginPath(); ctx.arc(cardX, cardY, size * (0.66 + k * 0.72), 0, SCAN_TAU); ctx.stroke();
+    }
+
+    if (showPhone && progress > 0.35) {
+      const beamProgress = scanSmooth(scanClamp((progress - 0.35) / 0.4, 0, 1));
+      const fromX = phoneX + phoneW * 0.52, fromY = phoneY - phoneH * 0.26;
+      const beam = ctx.createLinearGradient(fromX, fromY, left, cardY);
+      beam.addColorStop(0, scanRgba(SCAN_C.gold, 0));
+      beam.addColorStop(0.55, scanRgba(SCAN_C.gold, 0.055 * beamProgress));
+      beam.addColorStop(1, scanRgba(SCAN_C.hi, 0.16 * beamProgress));
+      ctx.fillStyle = beam;
+      ctx.beginPath();
+      ctx.moveTo(fromX, fromY - size * 0.012);
+      ctx.lineTo(left, cardY - size * 0.30);
+      ctx.lineTo(left, cardY + size * 0.30);
+      ctx.lineTo(fromX, fromY + size * 0.012);
+      ctx.closePath(); ctx.fill();
+      const rand = scanRng(77);
+      for (let i = 0; i < 16; i++) {
+        const offset = rand(), spread = rand() - 0.5;
+        const k = scanFrac(t * 0.55 + offset), eased = scanSmooth(k);
+        const x = scanLerp(left, fromX, eased);
+        const y = scanLerp(cardY + spread * size * 0.36, fromY, eased);
+        ctx.fillStyle = scanRgba(SCAN_C.soft, Math.sin(Math.PI * k) * 0.8 * beamProgress);
+        ctx.fillRect(x - 1.1, y - 1.1, 2.2, 2.2);
+      }
+    }
+
+    const plate = ctx.createLinearGradient(left, top, left, top + size);
+    plate.addColorStop(0, 'rgba(11,10,8,0.94)');
+    plate.addColorStop(1, 'rgba(4,4,4,0.97)');
+    ctx.fillStyle = plate;
+    scanRoundRect(ctx, left - size * 0.085, top - size * 0.085, size * 1.17, size * 1.17, size * 0.07);
+    ctx.fill();
+    ctx.strokeStyle = scanRgba(SCAN_C.gold, 0.26); ctx.lineWidth = 1; ctx.stroke();
+
+    const sweepY = top + size * scanFrac(t * 0.40), band = size * 0.11;
+    if (progress > 0.25) {
+      const sweep = scanSmooth(scanClamp((progress - 0.25) / 0.3, 0, 1));
+      const glow = ctx.createLinearGradient(left, sweepY - band, left, sweepY + band * 0.5);
+      glow.addColorStop(0, scanRgba(SCAN_C.gold, 0));
+      glow.addColorStop(0.8, scanRgba(SCAN_C.gold, 0.07 * sweep));
+      glow.addColorStop(1, scanRgba(SCAN_C.gold, 0.13 * sweep));
+      ctx.fillStyle = glow; ctx.fillRect(left, sweepY - band, size, band * 1.5);
+    }
+
+    const cell = size / N, pad = cell * 0.11, revealWave = progress * (N * 2 + 6);
+    for (let r = 0; r < N; r++) {
+      for (let c = 0; c < N; c++) {
+        if (!qr.matrix[r][c]) continue;
+        const appear = scanClamp((revealWave - (r + c)) / 4, 0, 1);
+        if (appear <= 0.02) continue;
+        const x = left + c * cell, y = top + r * cell;
+        const distance = Math.abs(y + cell / 2 - sweepY);
+        const lit = distance < band ? Math.pow(1 - distance / band, 1.6) : 0;
+        const structural = qr.reserved[r][c] === 1;
+        const alpha = ((structural ? 0.92 : 0.58) + lit * 0.40) * appear;
+        const moduleSize = (cell - pad * 2) * (1 + lit * 0.20) * (0.55 + 0.45 * appear);
+        ctx.fillStyle = lit > 0.2 ? scanRgba(SCAN_C.soft, alpha) : structural ? scanRgba(SCAN_C.cream, alpha) : scanRgba(SCAN_C.gold, alpha);
+        scanRoundRect(ctx, x + cell / 2 - moduleSize / 2, y + cell / 2 - moduleSize / 2, moduleSize, moduleSize, moduleSize * 0.26);
+        ctx.fill();
+      }
+    }
+
+    if (progress > 0.25) {
+      const sweep = scanSmooth(scanClamp((progress - 0.25) / 0.3, 0, 1));
+      scanGlow(ctx, scanRgba(SCAN_C.soft, 0.9), 14, () => {
+        ctx.strokeStyle = scanRgba(SCAN_C.cream, 0.85 * sweep); ctx.lineWidth = 1.3;
+        ctx.beginPath(); ctx.moveTo(left - size * 0.02, sweepY); ctx.lineTo(left + size * 1.02, sweepY); ctx.stroke();
+      });
+    }
+
+    if (progress > 0.55) {
+      const logoProgress = scanSmooth(scanClamp((progress - 0.55) / 0.35, 0, 1));
+      const logoSize = cell * 7.7;
+      ctx.save(); ctx.globalAlpha = logoProgress;
+      ctx.fillStyle = '#050505';
+      scanRoundRect(ctx, cardX - logoSize / 2, cardY - logoSize / 2, logoSize, logoSize, logoSize * 0.22);
+      ctx.fill(); ctx.strokeStyle = scanRgba(SCAN_C.gold, 0.5); ctx.lineWidth = 1; ctx.stroke();
+      drawScanMark(ctx, cardX, cardY, logoSize * 0.86, 0.95);
+      ctx.restore();
+    }
+
+    const bracketOffset = size * 0.605, bracketLength = size * 0.19;
+    const bracketProgress = scanSmooth(scanClamp(progress / 0.5, 0, 1));
+    const breathe = 1 + Math.sin(t * 1.5) * 0.012;
+    ctx.save(); ctx.strokeStyle = scanRgba(SCAN_C.hi, 0.92 * bracketProgress); ctx.lineWidth = 2; ctx.lineCap = 'square';
+    scanGlow(ctx, scanRgba(SCAN_C.gold, 0.5), 12, () => {
+      [[-1,-1],[1,-1],[-1,1],[1,1]].forEach((side) => {
+        const x = cardX + side[0] * bracketOffset * breathe;
+        const y = cardY + side[1] * bracketOffset * breathe;
+        ctx.beginPath();
+        ctx.moveTo(x, y - side[1] * bracketLength * bracketProgress);
+        ctx.lineTo(x, y);
+        ctx.lineTo(x - side[0] * bracketLength * bracketProgress, y);
+        ctx.stroke();
+      });
+    });
+    ctx.restore();
+
+    if (showPhone && progress > 0.35) {
+      const phoneProgress = scanSmooth(scanClamp((progress - 0.35) / 0.4, 0, 1));
+      ctx.save(); ctx.globalAlpha = phoneProgress;
+      ctx.fillStyle = 'rgba(7,7,8,0.96)';
+      scanRoundRect(ctx, phoneX, phoneY - phoneH / 2, phoneW, phoneH, phoneW * 0.17);
+      ctx.fill(); ctx.strokeStyle = scanRgba(SCAN_C.gold, 0.5); ctx.lineWidth = 1.2; ctx.stroke();
+      ctx.fillStyle = scanRgba(SCAN_C.gold, 0.32);
+      scanRoundRect(ctx, phoneX + phoneW * 0.38, phoneY - phoneH / 2 + phoneW * 0.095, phoneW * 0.24, phoneW * 0.032, phoneW * 0.02);
+      ctx.fill();
+      const screenX = phoneX + phoneW * 0.095, screenY = phoneY - phoneH / 2 + phoneW * 0.215;
+      const screenW = phoneW * 0.81, screenH = phoneH - phoneW * 0.42;
+      ctx.save(); scanRoundRect(ctx, screenX, screenY, screenW, screenH, phoneW * 0.08); ctx.clip();
+      ctx.fillStyle = scanRgba(SCAN_C.gold, 0.14); ctx.fillRect(screenX, screenY, screenW, screenH * 0.15);
+      ctx.fillStyle = scanRgba(SCAN_C.soft, 0.55); ctx.fillRect(screenX + screenW * 0.10, screenY + screenH * 0.062, screenW * 0.34, Math.max(1.5, screenH * 0.020));
+      ctx.fillStyle = scanRgba(SCAN_C.gold, 0.45); ctx.fillRect(screenX + screenW * 0.66, screenY + screenH * 0.062, screenW * 0.24, Math.max(1.5, screenH * 0.020));
+      for (let i = 0; i < 4; i++) {
+        const lineY = screenY + screenH * (0.30 + i * 0.135);
+        ctx.strokeStyle = scanRgba(SCAN_C.gold, 0.22); ctx.lineWidth = 1; ctx.setLineDash([3,4]);
+        ctx.beginPath(); ctx.moveTo(screenX + screenW * 0.06, lineY); ctx.lineTo(screenX + screenW * 0.94, lineY); ctx.stroke(); ctx.setLineDash([]);
+        const runner = scanFrac(t * (0.30 + i * 0.055) + i * 0.21);
+        const runnerX = screenX + screenW * (0.94 - 0.88 * runner), lead = i === 1;
+        ctx.fillStyle = scanRgba(lead ? SCAN_C.soft : SCAN_C.gold, lead ? 0.95 : 0.5);
+        ctx.beginPath(); ctx.arc(runnerX, lineY, lead ? 3 : 2, 0, SCAN_TAU); ctx.fill();
+      }
+      ctx.restore();
+      ctx.strokeStyle = scanRgba(SCAN_C.gold, 0.22); ctx.lineWidth = 1;
+      scanRoundRect(ctx, screenX, screenY, screenW, screenH, phoneW * 0.08); ctx.stroke();
+      const buttonW = screenW * 0.74, buttonH = phoneW * 0.20;
+      const buttonX = screenX + (screenW - buttonW) / 2, buttonY = screenY + screenH - buttonH - phoneW * 0.10;
+      const button = ctx.createLinearGradient(buttonX, buttonY, buttonX, buttonY + buttonH);
+      button.addColorStop(0, '#F2CE76'); button.addColorStop(1, '#C9922B');
+      ctx.fillStyle = button; scanRoundRect(ctx, buttonX, buttonY, buttonW, buttonH, buttonH / 2); ctx.fill();
+      ctx.fillStyle = 'rgba(23,17,4,0.75)'; ctx.fillRect(buttonX + buttonW * 0.30, buttonY + buttonH * 0.44, buttonW * 0.40, Math.max(1.6, buttonH * 0.11));
+      ctx.restore();
+    }
+
+    if (progress > 0.6) {
+      const statusProgress = scanSmooth(scanClamp((progress - 0.6) / 0.4, 0, 1));
+      const barW = size * 1.17, barX = cardX - barW / 2, barY = cardY + size * 0.70;
+      ctx.save(); ctx.globalAlpha = statusProgress;
+      ctx.strokeStyle = scanRgba(SCAN_C.gold, 0.20); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(barX, barY); ctx.lineTo(barX + barW, barY); ctx.stroke();
+      const fill = scanFrac(t * 0.40);
+      scanGlow(ctx, scanRgba(SCAN_C.gold, 0.7), 10, () => {
+        ctx.strokeStyle = scanRgba(SCAN_C.hi, 0.95); ctx.lineWidth = 1.6;
+        ctx.beginPath(); ctx.moveTo(barX, barY); ctx.lineTo(barX + barW * fill, barY); ctx.stroke();
+      });
+      ctx.font = '500 ' + Math.round(size * 0.045) + 'px "IBM Plex Mono", monospace';
+      ctx.textBaseline = 'top'; ctx.textAlign = 'left'; ctx.fillStyle = scanRgba(SCAN_C.gold, 0.6);
+      ctx.fillText(fill > 0.92 ? 'GATE OPEN' : 'SCANNING', barX, barY + size * 0.045);
+      ctx.textAlign = 'right'; ctx.fillStyle = scanRgba(SCAN_C.soft, 0.85);
+      ctx.fillText(String(Math.round(fill * 100)).padStart(2, '0') + '%', barX + barW, barY + size * 0.045);
+      ctx.restore();
+    }
+    ctx.restore();
+  }
 
   class SaheelEngine {
     constructor() {
@@ -34,7 +322,6 @@
       this.buildParticles();
       this.buildHorse();
       this.buildLogo();
-      this.buildScan();
       this.buildTaif();
       this.buildRiyadh();
       this.resize();
@@ -463,6 +750,30 @@
       ctx.globalCompositeOperation = 'lighter';
       this.scene();
       ctx.globalCompositeOperation = 'source-over';
+
+      // The scan act uses the supplied visual language as a dedicated premium
+      // interface layer. It stays above the ambient particle field and below
+      // the DOM copy, so the instruction remains readable at every viewport.
+      const seg = 1 / this.N;
+      const local = (this.p - seg * 2) / seg;
+      const enter = this.smooth(local / 0.20);
+      const exit = this.smooth((1 - local) / 0.22);
+      const visibility = Math.min(enter, exit) * (1 - this.hubMix);
+      if (visibility > 0.002) {
+        const showPhone = this.W >= 760;
+        const size = Math.min(
+          this.W * (showPhone ? 0.24 : 0.55),
+          this.H * (showPhone ? 0.39 : 0.30)
+        );
+        drawScanVisual(ctx, {
+          cx: this.W * (showPhone ? 0.56 : 0.43),
+          cy: this.H * (showPhone ? 0.40 : 0.32),
+          size,
+          t: this.t,
+          progress: visibility,
+          phone: showPhone
+        });
+      }
     }
 
     smooth(x) { x = Math.max(0, Math.min(1, x)); return x * x * (3 - 2 * x); }
@@ -561,16 +872,17 @@
     }
 
     posScan(q, k) {
-      const pts = this.scanPts || [];
-      if (!pts.length) return this.posDust(q);
-      const pt = pts[k % pts.length];
-      const scale = Math.min(this.W * (this.mobile ? 0.88 : 0.58), this.H * (this.mobile ? 0.70 : 0.84));
-      let a = 0.5 + Math.pow(q.s, 1.4) * 0.5;
-      if (pt[0] < -0.12) a += Math.sin(this.t * 3 + pt[1] * 4) * 0.18; // QR side pulses like a live scan
+      // A restrained peripheral field replaces the old particle QR. The main
+      // scan interface is now drawn with clean geometry, leaving the copy clear.
+      const t = this.t;
+      const x = (q.rx * 1.12 - 0.06) * this.W + Math.sin(t * 0.30 + q.s * 13) * 12;
+      const y = (q.ry * 1.12 - 0.06) * this.H + Math.cos(t * 0.26 + q.s * 11) * 10;
+      const lowerFade = y > this.H * 0.56 ? 0.22 : 1;
       return {
-        x: this.W * (this.mobile ? 0.50 : 0.61) + pt[0] * scale + Math.sin(this.t * 0.8 + q.s * 8) * 1.5,
-        y: this.H * (this.mobile ? 0.40 : 0.52) + pt[1] * scale * (this.scanAspect || 0.667) + Math.cos(this.t * 0.7 + q.s * 6) * 1.5,
-        a: a, s: 0.4 + q.s * 0.24
+        x,
+        y,
+        a: (0.025 + Math.pow(q.s, 2.2) * 0.10) * lowerFade,
+        s: 0.34 + q.s * 0.18
       };
     }
 
