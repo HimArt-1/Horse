@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#050504">
-  <meta name="description" content="ملف الرعاية الرسمي الرئيسي لبطولة سباقات الخيل الإلكترونية 2026 — منظومة رعاية متكاملة تمتد لعام كامل">
+  <meta name="description" content="ملف الرعاية الرسمي لسباقات الخيل الإلكترونية 2026 — تجربة تفاعلية وباقات شراكة واضحة قابلة للتفعيل.">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ar_SA">
-  <meta property="og:title" content="ملف الرعاية الرسمي — بطولة سباقات الخيل الإلكترونية 2026">
-  <meta property="og:description" content="تجربة رعاية تفاعلية من 19 مشهدًا تجمع الفروسية والتقنية والقيمة الممتدة لعام كامل.">
+  <meta property="og:title" content="ملف الرعاية الرسمي — سباقات الخيل الإلكترونية 2026">
+  <meta property="og:description" content="عرض تنفيذي مختصر يوضح تجربة سباقات الخيل الإلكترونية، حجم التفعيل، وباقات الشراكة.">
   <meta property="og:image" content="images/champion-racing.jpg">
-  <title>ملف الرعاية الرسمي — بطولة سباقات الخيل الإلكترونية 2026</title>
+  <title>ملف الرعاية الرسمي — سباقات الخيل الإلكترونية 2026</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -478,6 +478,61 @@
     .investment-scope > div:nth-child(1) { --card-image:url("images/cinematic/shot-09.webp"); }
     .investment-scope > div:nth-child(2) { --card-image:url("images/cinematic/shot-16.webp"); }
 
+    /* Executive content refinements — built from the existing visual system */
+    .experience-points { grid-template-columns:1fr; margin-top:0; gap:12px; }
+    .experience-points .rights-group { min-height:0; padding:18px 22px; border:1px solid var(--line); background:rgba(5,5,4,.62); }
+    .experience-points .rights-group .tag { margin-bottom:10px; }
+    .journey-grid { grid-template-columns:repeat(6,1fr); }
+    .journey-grid .touch { min-height:150px; padding:22px; }
+    .journey-grid .touch span { display:block; }
+    .journey-grid .touch b { display:block; margin-bottom:18px; color:var(--gold); font:600 10px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; direction:ltr; }
+    .journey-note { margin-top:24px; text-align:center; font-size:13px; color:rgba(245,233,210,.58); }
+    .journey-note strong { color:var(--gold-light); }
+
+    .activation-layout { display:grid; grid-template-columns:1.08fr .92fr; gap:clamp(18px,3vw,40px); margin-top:30px; align-items:stretch; }
+    .activation-primary { min-height:300px; display:flex; flex-direction:column; justify-content:flex-end; padding:clamp(26px,4vw,52px); border:1px solid var(--line-strong); background:linear-gradient(145deg,rgba(233,188,92,.1),rgba(5,5,4,.72)); box-shadow:inset 0 1px rgba(255,255,255,.04); }
+    .activation-primary strong { display:block; color:var(--gold-light); font:700 clamp(68px,9.5vw,142px)/.82 "IBM Plex Mono",monospace; letter-spacing:-.08em; direction:ltr; text-align:right; font-variant-numeric:tabular-nums; }
+    .activation-primary span { display:block; margin-top:26px; font:700 clamp(18px,2vw,28px)/1.35 "Almarai",sans-serif; color:var(--warm); }
+    .activation-support { display:grid; grid-template-columns:1fr; gap:1px; background:var(--line); border:1px solid var(--line); }
+    .activation-support article { min-width:0; padding:24px 16px; display:flex; flex-direction:column; justify-content:flex-end; background:rgba(5,5,4,.84); }
+    .activation-support strong { display:block; color:var(--warm); font:600 clamp(32px,3.8vw,58px)/1 "IBM Plex Mono",monospace; letter-spacing:-.06em; direction:ltr; text-align:right; font-variant-numeric:tabular-nums; }
+    .activation-support span { display:block; margin-top:15px; color:var(--muted); font-size:12px; line-height:1.5; }
+    .activation-context { margin-top:18px; max-width:96ch; font-size:12.5px; color:rgba(245,233,210,.58); }
+    .activation-footnote { margin-top:8px; max-width:108ch; font-size:10.5px; line-height:1.65; color:rgba(245,233,210,.34); }
+
+    .package-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:28px; }
+    .package-card { position:relative; min-height:390px; display:flex; flex-direction:column; padding:24px; overflow:hidden; border:1px solid var(--line); background:linear-gradient(180deg,rgba(18,14,9,.88),rgba(5,5,4,.92)); }
+    .package-card::before { content:""; position:absolute; inset:0; opacity:.12; background:linear-gradient(180deg,rgba(5,5,4,.2),rgba(5,5,4,.94)),var(--card-image); background-size:cover; background-position:center; pointer-events:none; }
+    .package-card > * { position:relative; z-index:1; }
+    .package-card:nth-child(1) { --card-image:url("images/cinematic/shot-04.webp"); }
+    .package-card:nth-child(2) { --card-image:url("images/cinematic/shot-05.webp"); }
+    .package-card:nth-child(3) { --card-image:url("images/cinematic/shot-17.webp"); }
+    .package-card.featured { border-color:rgba(242,206,118,.66); box-shadow:inset 0 0 0 1px rgba(242,206,118,.12),0 20px 60px rgba(0,0,0,.22); }
+    .package-kicker { margin-bottom:16px; color:rgba(233,188,92,.68); font:600 8px/1.4 "IBM Plex Mono",monospace; letter-spacing:.14em; direction:ltr; text-align:left; }
+    .package-card h3 { font-size:clamp(18px,1.6vw,24px); }
+    .package-subtitle { min-height:50px; margin-bottom:14px; color:rgba(245,233,210,.52); font-size:12.5px; }
+    .package-card ul.clean li { font-size:12px; }
+    .package-price { margin-top:auto; padding-top:18px; display:flex; align-items:baseline; gap:9px; border-top:1px solid rgba(233,188,92,.18); }
+    .package-price strong { color:var(--gold-light); font:700 clamp(32px,3.5vw,52px)/1 "IBM Plex Mono",monospace; letter-spacing:-.06em; direction:ltr; font-variant-numeric:tabular-nums; }
+    .package-price span { color:var(--muted); font-size:12px; }
+    .vat-note { margin-top:12px; text-align:center; font-size:10.5px; color:rgba(245,233,210,.38); }
+
+    .legal-note { width:min(920px,100%); margin:18px auto 0; padding-top:14px; border-top:1px solid rgba(233,188,92,.14); text-align:center; font-size:11px; color:rgba(245,233,210,.4); }
+    .closing-scene .scene-inner { width:min(1050px,100%); }
+    .priority-card { width:min(920px,100%); margin:24px auto 0; padding:24px clamp(22px,4vw,44px); border:1px solid var(--line-strong); background:rgba(8,7,5,.68); }
+    .priority-card h3 { color:var(--gold-light); font-size:clamp(19px,2vw,28px); }
+    .priority-card p { max-width:72ch; margin-inline:auto; }
+    .next-steps { display:grid; grid-template-columns:repeat(4,1fr); gap:1px; margin-top:22px; border:1px solid var(--line); background:var(--line); }
+    .next-steps span { min-height:74px; display:flex; align-items:center; justify-content:center; gap:10px; padding:14px; background:rgba(5,5,4,.88); color:rgba(245,233,210,.68); font-size:12px; }
+    .next-steps b { color:var(--gold); font:600 9px/1 "IBM Plex Mono",monospace; }
+    .closing-contact { display:flex; justify-content:center; flex-wrap:wrap; gap:10px 26px; margin-top:22px; direction:ltr; }
+    .closing-contact a { color:var(--warm); text-decoration:none; font:500 13px/1.4 "IBM Plex Mono",monospace; }
+    .closing-contact a:hover { color:var(--gold-light); }
+    .closing-brand { margin-top:20px; }
+    .closing-brand span,.closing-brand small { display:block; }
+    .closing-brand span { color:var(--warm); font:800 17px/1.4 "Almarai",sans-serif; }
+    .closing-brand small { margin-top:4px; color:rgba(233,188,92,.62); font:500 8px/1.4 "IBM Plex Mono",monospace; letter-spacing:.18em; text-transform:uppercase; direction:ltr; }
+
     .finale { align-items:center; text-align:center; }
     .finale .scene-inner { min-height:70vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding-top:2vh; }
     .finale h2 { font-size:clamp(48px,7.2vw,108px); margin-bottom:16px; }
@@ -493,7 +548,7 @@
     .footer-controls button:disabled { opacity:.28; cursor:not-allowed; transform:none; }
     .footer-note { position:fixed; bottom:26px; right:var(--edge); z-index:13; font:500 8px/1 "IBM Plex Mono",monospace; letter-spacing:.16em; color:rgba(245,233,210,.32); direction:ltr; }
     .scene-readout { position:fixed; left:50%; bottom:26px; z-index:13; transform:translateX(-50%); font:600 8px/1 "IBM Plex Mono",monospace; letter-spacing:.18em; color:rgba(233,188,92,.52); direction:ltr; }
-    .scroll-space { height:1900vh; min-height:1900dvh; position:relative; z-index:-1; pointer-events:none; }
+    .scroll-space { height:700vh; min-height:700dvh; position:relative; z-index:-1; pointer-events:none; }
 
     .scene-map { position:fixed; inset:0; z-index:40; display:grid; place-items:center; padding:clamp(18px,5vw,70px); background:rgba(3,3,2,.82); backdrop-filter:blur(20px) saturate(115%); opacity:0; visibility:hidden; transition:opacity .25s var(--ease), visibility .25s; }
     .scene-map.open { opacity:1; visibility:visible; }
@@ -525,6 +580,10 @@
       .measure { grid-template-columns:repeat(2,1fr); }
       .matrix-categories,.investment-scope { grid-template-columns:1fr; }
       .scene-map-grid { grid-template-columns:repeat(3,1fr); }
+      .activation-layout { grid-template-columns:1fr; }
+      .activation-primary { min-height:210px; }
+      .package-grid { grid-template-columns:1fr; max-height:56vh; overflow:auto; }
+      .package-card { min-height:330px; }
     }
 
     @media (max-width: 820px) {
@@ -604,6 +663,24 @@
       .scene-map-panel { max-height:90dvh; padding:18px; }
       .scene-map-grid { grid-template-columns:repeat(2,1fr); }
       .scene-map-grid button { min-height:78px; padding:12px; }
+      .experience-points { max-height:none; overflow:visible; }
+      .axes,.touch-grid,.journey-grid,.package-grid { max-height:none; overflow:visible; }
+      .journey-grid { grid-template-columns:1fr; }
+      .journey-grid .touch { min-height:78px; }
+      .journey-grid .touch b { margin-bottom:8px; }
+      .activation-layout { margin-top:18px; }
+      .activation-primary { min-height:150px; padding:20px; }
+      .activation-primary strong { font-size:clamp(54px,17vw,78px); }
+      .activation-primary span { margin-top:16px; font-size:16px; }
+      .activation-support { grid-template-columns:1fr; }
+      .activation-support article { min-height:68px; padding:14px 16px; }
+      .activation-support strong { font-size:30px; }
+      .activation-support span { margin-top:6px; }
+      .package-grid { margin-top:18px; }
+      .package-card { min-height:310px; padding:20px; }
+      .package-subtitle { min-height:0; }
+      .next-steps { grid-template-columns:repeat(2,1fr); }
+      .priority-card { padding:18px; }
     }
 
     @media (min-width: 721px) and (max-height: 800px) {
@@ -652,7 +729,7 @@
         <span class="brand-mark"><img src="favicon.svg" alt=""></span>
         <span>
           <span class="brand-ar">سباقات الخيل الإلكترونية</span>
-          <span class="brand-en">E-EQUESTRIAN RACING</span>
+          <span class="brand-en">ELECTRONIC HORSE RACING</span>
         </span>
       </a>
       <div class="mast-title">OFFICIAL SPONSORSHIP PROPOSAL · 2026</div>
@@ -660,7 +737,7 @@
         <button class="utility-btn" type="button" id="mapTop" aria-label="فتح فهرس المشاهد" title="فهرس المشاهد">⊞</button>
         <button class="utility-btn" type="button" id="printTop" aria-label="طباعة ملف الرعاية أو حفظه PDF" title="طباعة / حفظ PDF">⎙</button>
         <a href="index.html" class="home-link"><span>بوابة البطولة</span> ↗</a>
-        <div class="counter"><b id="pageNow">01</b> / <span id="pageTotal">19</span></div>
+        <div class="counter"><b id="pageNow">01</b> / <span id="pageTotal">07</span></div>
       </div>
     </header>
 
@@ -673,416 +750,147 @@
         <div class="scene-inner">
           <span class="scene-no">01 — OFFICIAL SPONSORSHIP</span>
           <div class="cover-copy">
-            <div class="eyebrow">RIYADH · 2026</div>
-            <h1><span class="title-small">ملف الرعاية الرسمي</span>سباقات الخيل الإلكترونية</h1>
-            <p class="lead ltr">BEYOND SPONSORSHIP · A YEAR OF STRATEGIC VALUE</p>
-            <div class="subline"><span>الفروسية</span><i>×</i><span>التقنية</span><i>×</i><span>التجربة</span><i>×</i><span>الأثر الممتد</span></div>
+            <div class="eyebrow">SPONSORSHIP PROPOSAL · 2026</div>
+            <h1><span class="title-small">مقترح شراكة رعاية</span>سباقات الخيل الإلكترونية</h1>
+            <p class="lead">رعاية تضع علامتكم داخل تجربة فريدة وجديدة من نوعها.</p>
+            <div class="subline"><span>فرصة شراكة في تجربة رياضية تفاعلية</span></div>
             <div class="scroll-cue">SCROLL TO EXPLORE</div>
           </div>
         </div>
       </section>
 
-      <!-- 02: THE CHAMPIONSHIP -->
-      <section class="scene" data-label="CHAMPIONSHIP">
-        <div class="scene-inner split">
-          <span class="scene-no">02 — THE CHAMPIONSHIP</span>
-          <div class="copy">
-            <div class="eyebrow">THE CHAMPIONSHIP</div>
-            <h2>سباق مختلف.<br><span class="gold">تجربة تتجاوز المضمار.</span></h2>
-            <p class="lead">بطولة سباقات خيل إلكترونية تفاعلية تجمع المنافسة الرقمية، وحماس الجماهير، والبث الميداني، والأصول التقنية في منظومة متكاملة.</p>
-          </div>
-          <div>
-            <div class="rule"></div>
-            <p class="subhead">حضور يتجاوز الظهور الإعلاني التقليدي ليصبح جزءاً من نسيج السباق والمجتمع الرياضي.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 03: WHY THIS CHAMPIONSHIP -->
-      <section class="scene" data-label="WHY RACING">
+      <!-- 02: WHY THIS SPONSORSHIP -->
+      <section class="scene" data-label="WHY SPONSORSHIP">
         <div class="scene-inner">
-          <span class="scene-no">03 — WHY THIS CHAMPIONSHIP</span>
-          <div class="eyebrow">FOUR CONNECTED FORCES</div>
-          <h2>أربعة محاور.<br><span class="gold">منظومة واحدة.</span></h2>
-          <div class="axes">
-            <article class="axis"><b>01</b><h3>الفروسية</h3><p>ثقافة راسخة وهوية متجذرة في تراث سباقات الخيل العربية الأصيلة.</p></article>
-            <article class="axis"><b>02</b><h3>التقنية</h3><p>محرك رقمي تفاعلي سريع عبر الويب دون الحاجة لتحميل تطبيقات.</p></article>
-            <article class="axis"><b>03</b><h3>المنافسة</h3><p>سباقات حاسمة وإثارة رياضية مدتها 60 ثانية أمام الجماهير والشاشات.</p></article>
-            <article class="axis"><b>04</b><h3>الأثر المستمر</h3><p>قيمة تمتد لما بعد الفعالية عبر الأصول الرقمية وترخيص المنصة السحابية.</p></article>
+          <span class="scene-no">02 — WHY THIS SPONSORSHIP</span>
+          <div class="eyebrow">ELECTRONIC HORSE RACING</div>
+          <h2>لماذا هذه الرعاية؟</h2>
+          <p class="lead">أربع قيم تجعل الرعاية جزءًا من التجربة نفسها.</p>
+          <div class="axes sponsor-values">
+            <article class="axis"><b>01</b><h3>جمهور مستهدف</h3><p>جمهور قريب من عالم الخيل واهتمامات الراعي.</p></article>
+            <article class="axis"><b>02</b><h3>الهوية داخل اللعبة</h3><p>هوية الراعي ترتبط بالاختيار والانطلاق والنتائج.</p></article>
+            <article class="axis"><b>03</b><h3>استقطاب مباشر</h3><p>ربط المشاركة بتجربة تعريفية أو تدريب أو زيارة أو حجز.</p></article>
+            <article class="axis"><b>04</b><h3>نتائج قابلة للقياس</h3><p>توثيق الجولات والنتائج وقياس فرص المشاركة أثناء التشغيل.</p></article>
           </div>
         </div>
       </section>
 
-      <!-- 04: INTEGRATED PRESENCE -->
-      <section class="scene" data-label="INTEGRATED">
-        <div class="scene-inner statement">
-          <span class="scene-no">04 — INTEGRATED PRESENCE</span>
-          <div class="eyebrow">SPONSORSHIP BEYOND PLACEMENT</div>
-          <h2>علامتك لا تقف بجانب السباق.<br><span class="gold">بل تظهر في قلبه.</span></h2>
-          <p class="lead">الرعاية ليست مجرد وضع شعار؛ بل اندماج استراتيجي متعدد نقاط الاتصال يشمل التجربة الرقمية، الميدان، أطقم المتسابقين، والبث المباشر.</p>
-          <div class="touch-grid">
-            <div class="touch"><span class="touch-label">بيئة السباق الرقمية</span></div><div class="touch"><span class="touch-label">المضمار والشاشات</span></div><div class="touch"><span class="touch-label">أطقم المتسابقين</span></div><div class="touch"><span class="touch-label">واجهات اللعبة</span></div><div class="touch"><span class="touch-label">البث المباشر</span></div>
-            <div class="touch"><span class="touch-label">لحظات الحسم والتتويج</span></div><div class="touch"><span class="touch-label">تحديات الجمهور</span></div><div class="touch"><span class="touch-label">تفعيل مقر الراعي</span></div><div class="touch"><span class="touch-label">المحتوى والإعلام</span></div><div class="touch"><span class="touch-label">منصة النادي الرقمية</span></div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 05: MAIN SPONSOR LOCKUP -->
-      <section class="scene hero-center" data-label="MAIN SPONSOR">
+      <!-- 03: HOW IT WORKS -->
+      <section class="scene" data-label="HOW IT WORKS">
         <div class="scene-inner">
-          <span class="scene-no">05 — OFFICIAL MAIN SPONSOR</span>
-          <div class="eyebrow">THE HIGHEST LEVEL OF COMMERCIAL VISIBILITY</div>
-          <h2>[اسم الراعي]</h2>
-          <p class="subhead">الراعي الرسمي الرئيسي لبطولة سباقات الخيل الإلكترونية</p>
-          <div class="sponsor-lockup" aria-label="موضع شعاري الراعي والبطولة">
-            <div class="logo-space"><div><strong>[شعار الراعي]</strong><span>OFFICIAL MAIN SPONSOR</span></div></div>
-            <div class="lock-mark">×</div>
-            <div class="logo-space"><div><strong>[شعار البطولة]</strong><span>CHAMPIONSHIP LOGO</span></div></div>
+          <span class="scene-no">03 — HOW IT WORKS</span>
+          <div class="eyebrow">ELECTRONIC HORSE RACING</div>
+          <h2>من الهاتف إلى خط النهاية</h2>
+          <p class="lead">رحلة مشاركة تبدأ خلال ثوانٍ، ثم تنطلق الجولة.</p>
+          <div class="touch-grid journey-grid">
+            <div class="touch"><span><b>01</b>استخدام الجوال للمشاركة في السباق</span></div>
+            <div class="touch"><span><b>02</b>مسح QR</span></div>
+            <div class="touch"><span><b>03</b>تسجيل الاسم واختيار الخيل</span></div>
+            <div class="touch"><span><b>04</b>انضمام باقي المتسابقين</span></div>
+            <div class="touch"><span><b>05</b>بدء السباق على الشاشة</span></div>
+            <div class="touch"><span><b>06</b>إعلان النتيجة</span></div>
           </div>
-          <p class="lead" style="margin-top:28px">حيازة الصفة الرسمية وأعلى مستوى من الحضور التجاري، التقني، والإعلامي الحصري طوال فترة الشراكة.</p>
+          <p class="journey-note">لا يحتاج المشارك إلى تحميل تطبيق · حتى <strong>8 متسابقين</strong> في الجولة الواحدة</p>
         </div>
       </section>
 
-      <!-- 06: CORE RIGHTS -->
-      <section class="scene" data-label="RIGHTS">
+      <!-- 04: ACTIVATION SCALE -->
+      <section class="scene" data-label="ACTIVATION SCALE">
         <div class="scene-inner">
-          <span class="scene-no">06 — SPONSORSHIP RIGHTS</span>
-          <div class="eyebrow">OFFICIAL SPONSORSHIP RIGHTS · LAYER 01</div>
-          <h2>حقوق الرعاية الرسمية</h2>
-          <div class="rights-lines">
-            <article class="rights-group"><div class="tag">OFFICIAL STATUS</div><h3>الصفة الرسمية</h3><ul class="clean"><li>استخدام لقب الراعي الرسمي الرئيسي.</li><li>ظهور الشعار بجوار هوية البطولة في كافة المواد المعتمدة.</li><li dir="ltr">Official Main Sponsor of [Championship]</li></ul></article>
-            <article class="rights-group"><div class="tag">CATEGORY EXCLUSIVITY</div><h3>الحصرية التجارية</h3><ul class="clean"><li>حصرية قطاع النشاط التجاري المتفق عليه.</li><li>عدم منح حقوق مماثلة لأي منافس مباشر في الفئة نفسها خلال مدة العقد.</li><li dir="ltr">Strict Category Exclusivity</li></ul></article>
-            <article class="rights-group"><div class="tag">BRAND PLACEMENT</div><h3>الهوية والظهور</h3><ul class="clean"><li>صدارة المواد الإعلامية والكتيبات والمطبوعات.</li><li>الشاشات الكبرى والمنصات الرقمية للبطولة.</li><li dir="ltr">Premium Co-Branding Framework</li></ul></article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 07: IN-GAME INTEGRATION & MOMENTS -->
-      <section class="scene" data-label="IN-GAME">
-        <div class="scene-inner split reverse">
-          <span class="scene-no">07 — IN-GAME INTEGRATION</span>
-          <div class="game-stage" aria-label="نموذج بصري للرعاية داخل اللعبة">
-            <div class="sponsor-slot" aria-label="مساحة شعار الراعي عند خط النهاية"><strong>[شعار الراعي]</strong><small>OFFICIAL FINISH LINE PARTNER</small></div>
-            <div class="hud hud-a"><small>FINAL SPRINT</small><strong>Powered by [Brand]</strong></div>
-            <div class="hud hud-b"><small>FINISH LINE · LAP 03</small><strong>00:59.284</strong></div>
-            <div class="hud hud-c"><small>WINNER MOMENT</small><strong>Presented by [Brand]</strong></div>
-          </div>
-          <div class="game-copy">
-            <div class="eyebrow">OWNABLE GAME MOMENTS</div>
-            <h2>امتلاك لحظات الحسم في اللعبة</h2>
-            <p>دمج هوية الراعي سياقياً في ذروة الحماس التنافسي: شارات الانطلاقة المثالية، لحظة السرعة القصوى، التتويج، ولوحات المضمار الرقمية بأسلوب راقٍ غير متطفل.</p>
-            <div class="pill-line"><span>INTEGRATED</span><span>CONTEXTUAL</span><span>PREMIUM</span></div>
-            <p class="dim" style="margin-top:20px;font-size:12px" dir="ltr">Perfect Start · Final Sprint · Fastest Lap · Podium Results</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 08: VENUE & AUDIENCE ENGAGEMENT -->
-      <section class="scene" data-label="VENUE">
-        <div class="scene-inner split">
-          <span class="scene-no">08 — VENUE & AUDIENCE</span>
-          <div class="copy">
-            <div class="eyebrow">PHYSICAL & AUDIENCE ACTIVATION</div>
-            <h2>الظهور الميداني وتحديات الجمهور</h2>
-            <p>منظومة حضور بارزة تشمل بوابات الدخول، الشاشات الكبرى بميدان الملك خالد، وخلفيات التصوير الإعلامي، بالإضافة إلى تفعيل تحدي الجمهور <strong>Beat the Champion</strong> في جناح الراعي مع لوحة المتصدرين وبطاقات الأداء الرقمية <strong>Digital Race Cards</strong>.</p>
-            <p class="dim" style="margin-top:16px;font-size:12.5px">Beat the Champion · Photo Backdrop · Audience Leaderboard · VIP Lounge.</p>
-          </div>
-          <div class="visual-box" aria-label="مخطط التموضع الميداني">
-            <div class="venue-blueprint">
-              <div class="venue-core"></div>
-              <span class="venue-label" style="top:10%;right:8%">بوابة الدخول الرئيسية</span>
-              <span class="venue-label" style="top:25%;left:6%">الشاشات الكبرى</span>
-              <span class="venue-label" style="top:50%;right:4%">منطقة المنافسة التفاعلية</span>
-              <span class="venue-label" style="bottom:18%;left:8%">منصة التتويج والجوائز</span>
-              <span class="venue-label" style="bottom:10%;right:18%">جناح VIP</span>
-              <span class="venue-label" style="top:12%;left:32%">جناح تفعيل الراعي</span>
+          <span class="scene-no">04 — ACTIVATION SCALE</span>
+          <div class="eyebrow">ELECTRONIC HORSE RACING</div>
+          <h2>حضور يتكرر طوال الفعالية</h2>
+          <p class="lead activation-lead">تشغيل مقترح يخلق فرص مشاركة متكررة.</p>
+          <div class="activation-layout">
+            <div class="activation-primary"><strong>216–440</strong><span>فرصة مشاركة مباشرة للزوار</span></div>
+            <div class="activation-support">
+              <article><strong>3</strong><span>أسابيع تشغيل</span></article>
+              <article><strong>9 + 2*</strong><span>أيام تشغيل</span></article>
+              <article><strong>3–5</strong><span>جولات يوميًا</span></article>
             </div>
           </div>
+          <p class="activation-context">يتزامن التشغيل المقترح مع أيام الخميس والجمعة والسبت لسباقات الخيل في ميدان الملك خالد بالطائف.</p>
+          <p class="activation-footnote">النطاق محسوب على أساس 8 متسابقين للجولة، واليومان الإضافيان مرتبطان بتأكيد برنامج إجازة اليوم الوطني، والأرقام لا تمثل عدد مشاركين فريدين.</p>
         </div>
       </section>
 
-      <!-- 09: SPONSOR VENUE / CLUB EXPERIENCE -->
-      <section class="scene" data-label="CLUB VENUE">
-        <div class="scene-inner split reverse">
-          <span class="scene-no">09 — RACING AT SPONSOR VENUE</span>
-          <div class="visual-box" aria-label="مخطط نقل التجربة لمقر الراعي">
-            <div class="venue-migration">
-              <div class="migration-hub">
-                <small>STAGE 01</small>
-                <strong>CHAMPIONSHIP ARENA</strong>
-                <p>ميدان البطولة الرئيسي والمنافسات الرسمية</p>
-              </div>
-              <div class="migration-arrow">→</div>
-              <div class="migration-hub">
-                <small>STAGE 02</small>
-                <strong>SPONSOR VENUE / CLUB</strong>
-                <p>تشغيل التجربة التفاعلية في مقر أو نادي الراعي</p>
-              </div>
-            </div>
-          </div>
-          <div class="copy">
-            <div class="eyebrow">THE RACE COMES TO YOU</div>
-            <h2>تجربة سباقات الخيل في مقر الراعي</h2>
-            <p class="lead">تمتد التجربة التفاعلية إلى مقر الراعي أو ناديه أو فعاليته الخاصة؛ لتوفير بطولة مصغرة وتجربة خاصة للأعضاء أو الموظفين أو كبار الضيوف مع بطولة داخلية <strong>Sponsor Internal Championship</strong>.</p>
-            <div class="rule"></div>
-            <p class="dim" style="font-size:12px">يخضع نطاق التشغيل والموقع والأجهزة المتفق عليها للتفاصيل التشغيلية في العقد النهائي.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- 10: TECHNOLOGY & CLUB SYSTEM DEVELOPMENT -->
-      <section class="scene" data-label="PLATFORM">
+      <!-- 05: PACKAGES -->
+      <section class="scene" data-label="PACKAGES">
         <div class="scene-inner">
-          <span class="scene-no">10 — DIGITAL INFRASTRUCTURE</span>
-          <div class="eyebrow">CUSTOM CLUB MANAGEMENT & OPERATIONS SYSTEM</div>
-          <h2>بناء نظام إدارة النادي والمحاسبة والجرد والحجوزات وغيرها وتطويره</h2>
-          <p class="lead">قيمة تقنية واستثمارية استثنائية: تصميم وبناء وتطوير نظام رقمي سحابي متكامل ومخصص للنادي يغطي المحاسبة العامة، الجرد الآلي، إدارة الأعضاء، الحجوزات، والعمليات التشغيلية.</p>
-          <div class="platform-visual" style="margin-top:32px">
-            <article class="platform-card"><b>MODULE 01</b><h4>إدارة النادي والأعضاء</h4><p>قواعد بيانات الأعضاء والفرسان، الاشتراكات، وسجلات الأنشطة والتدريب.</p></article>
-            <article class="platform-card"><b>MODULE 02</b><h4>المحاسبة العامة والفواتير</h4><p>النظام المالي، الفوترة الإلكترونية، القيود، وإدارة الإيرادات والمصروفات.</p></article>
-            <article class="platform-card"><b>MODULE 03</b><h4>إدارة الجرد والمستودعات</h4><p>تتبع الأصول والعتاد، مراقبة المخزون، وإدارة المشتريات ومعدات النادي.</p></article>
-            <article class="platform-card"><b>MODULE 04</b><h4>الحجوزات والفعاليات والتقارير</h4><p>جدولة الميدان والمرافق، حجز الفعاليات، والتقارير التشغيلية والمالية الشاملة.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 11: OFFICIAL APPAREL & RACING KITS -->
-      <section class="scene" data-label="APPAREL">
-        <div class="scene-inner">
-          <span class="scene-no">11 — APPAREL & IDENTITY</span>
-          <div class="eyebrow">YOUR BRAND ON THE RIDERS</div>
-          <h2>الزي الرسمي للمتسابقين وممثلي الراعي</h2>
-          <div class="apparel-grid">
-            <article class="apparel-card">
-              <div class="tag">COMPETITOR OFFICIAL KIT</div>
-              <h3>الزي الرسمي للمتسابقين</h3>
-              <p>تصميم وتنفيذ زي موحد للمتسابقين يحمل هوية البطولة وشعار الراعي الرئيسي في موضع بارز، يظهر في المنافسات، البث، المؤتمرات الصحفية، والتتويج.</p>
-              <ul class="clean" style="margin-top:16px"><li>حضور مستمر خلال كافة أشواط البطولة.</li><li>الظهور في الصور الرسمية واللقطات الحصرية.</li></ul>
+          <span class="scene-no">05 — SPONSORSHIP PACKAGES</span>
+          <div class="eyebrow">ELECTRONIC HORSE RACING</div>
+          <h2>ثلاث باقات للرعاية</h2>
+          <p class="lead">اختر مستوى الحضور المناسب.</p>
+          <div class="package-grid">
+            <article class="package-card">
+              <div class="package-kicker">01 · INTERACTIVE PARTNERSHIP</div>
+              <h3>الرعاية التفاعلية</h3>
+              <p class="package-subtitle">رعاية اللعبة في ميدان الملك خالد</p>
+              <ul class="clean"><li>حضور هوية الراعي داخل شاشات اللعبة والنتائج.</li><li>رعاية التجربة خلال النطاق التشغيلي المتفق عليه.</li><li>فرص محتوى وقياس الجولات والمشاركات.</li></ul>
+              <div class="package-price"><strong>70,000</strong><span>ريال</span></div>
             </article>
-            <article class="apparel-card">
-              <div class="tag">SPONSOR CLUB APPAREL</div>
-              <h3>زي ممثلي الراعي / النادي</h3>
-              <p>تطوير مجموعة أزياء رسمية خاصة بممثلي الراعي أو فريق النادي مخصصة للبطولة والفعاليات المتصلة بها وفق دليل الهوية المعتمد.</p>
-              <ul class="clean" style="margin-top:16px"><li>Official Sponsor Club Collection.</li><li>توزيع رسمي محدد وفق نطاق الاتفاق النهائي.</li></ul>
+            <article class="package-card">
+              <div class="package-kicker">02 · TOURNAMENT PARTNERSHIP</div>
+              <h3>رعاية البطولة</h3>
+              <p class="package-subtitle">اللعبة + بطولة في مقر الراعي</p>
+              <ul class="clean"><li>جميع مزايا الرعاية التفاعلية.</li><li>إقامة بطولة تفاعلية في مقر الراعي.</li><li>تجهيز فني وتنسيق مشترك للبطولة.</li></ul>
+              <div class="package-price"><strong>100,000</strong><span>ريال</span></div>
+            </article>
+            <article class="package-card featured">
+              <div class="package-kicker">03 · الأشمل</div>
+              <h3>الرعاية المتكاملة</h3>
+              <p class="package-subtitle">البطولة + التشغيل الإداري + الزي</p>
+              <ul class="clean"><li>جميع مزايا رعاية البطولة.</li><li>إنشاء موقع إلكتروني وتطوير نظام برمجي مخصص.</li><li>تصميم وإنتاج 60 قطعة زي حسب اختيار الراعي.</li></ul>
+              <div class="package-price"><strong>150,000</strong><span>ريال</span></div>
             </article>
           </div>
+          <p class="vat-note">جميع الأسعار غير شاملة ضريبة القيمة المضافة.</p>
         </div>
       </section>
 
-      <!-- 12: BROADCAST & MEDIA PACKAGE -->
-      <section class="scene" data-label="MEDIA">
+      <!-- 06: DELIVERY & RESPONSIBILITIES -->
+      <section class="scene" data-label="DELIVERY">
         <div class="scene-inner">
-          <span class="scene-no">12 — BROADCAST & CONTENT</span>
-          <div class="eyebrow">MEDIA ASSETS & BROADCAST VISIBILITY</div>
-          <h2>البث. المحتوى. حقوق الاستخدام.</h2>
-          <div class="media-columns">
-            <article class="media-col">
-              <h3>BROADCAST</h3>
-              <ul class="clean"><li>فواصل ورسومات البث المباشر.</li><li>رسومات الشوط وتسمية السباق الرسمي.</li><li>لوحة النتائج والهايلايتس.</li><li dir="ltr">Live Race Overlays</li></ul>
-            </article>
-            <article class="media-col">
-              <h3>SPONSOR CONTENT</h3>
-              <ul class="clean"><li>إعلان الرعاية الرسمي والحملة الرقمية.</li><li>فيديو ملخص مخصص للراعي Sponsor Cut.</li><li>الظهور في الفيلم التوثيقي الرسمي Aftermovie.</li><li dir="ltr">Curated Content Package</li></ul>
-            </article>
-            <article class="media-col">
-              <h3>USAGE RIGHTS</h3>
-              <ul class="clean"><li>حقوق استخدام مواد البطولة في قنوات الراعي.</li><li>صور عالية الدقة للمنصات والموقع المؤسسي.</li><li>المحتوى التسويقي والداخلي المتفق عليه.</li><li dir="ltr">Defined Content License</li></ul>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 13: SPONSORSHIP TIMELINE -->
-      <section class="scene" data-label="TIMELINE">
-        <div class="scene-inner">
-          <span class="scene-no">13 — SPONSORSHIP TIMELINE</span>
-          <div class="eyebrow">BEFORE · LIVE · AFTER</div>
-          <h2>الرعاية لا تبدأ مع صافرة البداية.<br><span class="gold">ولا تنتهي عند خط النهاية.</span></h2>
-          <div class="timeline">
-            <article class="phase"><div class="when">BEFORE</div><h3>قبل البطولة</h3><p>الإعلان الرسمي، الحملة التشويقية، دمج الهوية باللعبة، وإنتاج الأطقم والمواد التعريفية.</p></article>
-            <article class="phase"><div class="when">LIVE</div><h3>أثناء البطولة</h3><p>الظهور الميداني، البث، تفعيل اللعبة والشاشات، سباق الراعي الرسمي، وضيافة VIP.</p></article>
-            <article class="phase"><div class="when">AFTER</div><h3>بعد البطولة والقيمة المستمرة</h3><p>بناء وتطوير نظام إدارة النادي، تفعيل مقر الراعي، تسليم حزمة المحتوى، وتقرير الأداء الشامل.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 14: STRATEGIC VALUE ADDITIONS -->
-      <section class="scene" data-label="STRATEGIC">
-        <div class="scene-inner">
-          <span class="scene-no">14 — STRATEGIC VALUE ADDITIONS</span>
-          <div class="eyebrow">LAYER 02 · HIGH-VALUE ASSETS</div>
-          <h2>القيمة المضافة الاستراتيجية</h2>
-          <div class="axes">
-            <article class="axis"><b>01</b><h3>سباق وجائزة باسم الراعي</h3><p>تسمية شوط رسمي وجائزة أداء خاصة باسم الراعي يقدمها ممثله.</p></article>
-            <article class="axis"><b>02</b><h3>تفعيل المقر والبطولة الداخلية</h3><p>تشغيل التجربة وإقامة بطولة داخلية لموظفي أو أعضاء الراعي.</p></article>
-            <article class="axis"><b>03</b><h3>بناء وتطوير نظام النادي</h3><p>بناء نظام إدارة النادي والمحاسبة والجرد والحجوزات وتطويره.</p></article>
-            <article class="axis"><b>04</b><h3>الأطقم وبطاقات النتائج</h3><p>الزي الرسمي للمتسابقين وبطاقات الأداء الرقمية القابلة للنشر.</p></article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 15: ONE YEAR OF VALUE -->
-      <section class="scene" data-label="YEAR OF VALUE">
-        <div class="scene-inner">
-          <span class="scene-no">15 — BEYOND SPONSORSHIP</span>
-          <div class="eyebrow">A FULL YEAR OF STRATEGIC ROI</div>
-          <h2>البطولة هي البداية.<br><span class="gold">والقيمة تستمر لعام كامل.</span></h2>
-          <div class="pillars-year">
-            <article class="pillar-box">
-              <span class="num">01 — CHAMPIONSHIP</span>
-              <h3>حقوق البطولة</h3>
-              <p>الصفة الرسمية، الحصرية التجارية، التموضع الميداني، الشاشات الكبرى، والبث المباشر.</p>
-              <span class="badge">LIVE EXPOSURE</span>
-            </article>
-            <article class="pillar-box">
-              <span class="num">02 — EXPERIENCE</span>
-              <h3>التجربة والتفاعل</h3>
-              <p>رعاية لحظات اللعبة، سباق الراعي، تحدي الجمهور، ونقل التجربة لمقر ونادي الراعي.</p>
-              <span class="badge">IMMERSIVE ENGAGEMENT</span>
-            </article>
-            <article class="pillar-box">
-              <span class="num">03 — TECHNOLOGY</span>
-              <h3>المنظومة التقنية والنظام</h3>
-              <p>بناء وتطوير نظام إدارة النادي والمحاسبة والجرد والحجوزات المخصص والتشغيل السحابي.</p>
-              <span class="badge">CUSTOM CLUB SYSTEM</span>
-            </article>
-            <article class="pillar-box">
-              <span class="num">04 — LEGACY</span>
-              <h3>الأثر والأصول</h3>
-              <p>حزمة المحتوى، حقوق الاستخدام، الأطقم الرسمية، تقرير الأداء، وأولوية تجديد الرعاية.</p>
-              <span class="badge">LONG-TERM VALUE</span>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <!-- 16: COMPLETE RIGHTS MATRIX -->
-      <section class="scene" data-label="MATRIX">
-        <div class="scene-inner">
-          <span class="scene-no">16 — RIGHTS MATRIX</span>
-          <div class="eyebrow">حزمة الراعي الرسمي الرئيسي الشاملة</div>
-          <h2>مصفوفة المزايا والحقوق الشاملة</h2>
-          <div class="matrix-categories">
-            <div>
-              <div class="matrix-group">
-                <h4>الحقوق الرسمية والهوية التجارية</h4>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">لقب الراعي الرسمي الرئيسي للبطولة</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">الحصرية التجارية لقطاع النشاط</span><span class="tag">حصري بالكامل</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">الشعار المشترك وصدارة الهوية البصرية</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">تسمية شوط وجائزة أداء رسمية باسم الراعي</span><span class="tag">مشمول</span></div>
-              </div>
-              <div class="matrix-group" style="margin-top:14px">
-                <h4>التجربة والتفعيل التفاعلي</h4>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">رعاية لحظات الحسم والسرعة داخل اللعبة</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">تشغيل تجربة السباق التفاعلي بمقر الراعي</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">إقامة بطولة داخلية خاصة لموظفي وأعضاء الراعي</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">تفعيل تحدي الجمهور (Beat the Champion)</span><span class="tag">مشمول</span></div>
-              </div>
-              <div class="matrix-group" style="margin-top:14px">
-                <h4>المنظومة التقنية والأصول الرقمية</h4>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">بناء وتطوير نظام إدارة النادي والمحاسبة والجرد والحجوزات</span><span class="tag">نظام مخصص</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">بطاقات الأداء الرقمية للمتسابقين للنشر الفوري</span><span class="tag">مشمول</span></div>
-              </div>
-            </div>
-            <div>
-              <div class="matrix-group">
-                <h4>البث المباشر والإعلام والمحتوى</h4>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">رسومات وفواصل البث التلفزيوني والرقمي المباشر</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">الحملة الإعلامية والإعلان الصحفي الرسمي</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">حزمة الإنتاج المرئي والمحتوى المخصص للراعي</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">حقوق استخدام مواد البطولة في قنوات الراعي</span><span class="tag">نطاق معتمد</span></div>
-              </div>
-              <div class="matrix-group" style="margin-top:14px">
-                <h4>الضيافة والأطقم ومراسم التتويج</h4>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">ضيافة كبار الشخصيات وتذاكر الاستقبال VIP</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">الشعار على الزي الرسمي للمتسابقين</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">المجموعة الرسمية لزي ممثلي الراعي / النادي</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">المشاركة الرسمية في تسليم الكؤوس والتتويج</span><span class="tag">مشمول</span></div>
-              </div>
-              <div class="matrix-group" style="margin-top:14px">
-                <h4>التقارير وتحليل الأثر والتجديد</h4>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">تقرير أداء الرعاية وتحليل العائد الاستثماري</span><span class="tag">مشمول</span></div>
-                <div class="matrix-item"><span class="check">✓</span><span class="name">أولوية مناقشة تجديد الرعاية للمواسم القادمة</span><span class="tag">أولوية حصرية</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 17: INVESTMENT -->
-      <section class="scene investment" data-label="INVESTMENT">
-        <div class="scene-inner">
-          <span class="scene-no">17 — SPONSORSHIP INVESTMENT</span>
-          <div class="eyebrow">OFFICIAL MAIN SPONSORSHIP PACKAGE</div>
-          <h2>استثمار الرعاية الشامل</h2>
-          <div class="price-wrap">
-            <div class="price">350,000 <small>SAR</small></div>
-            <div class="vat">+ VAT (ضريبة القيمة المضافة)</div>
-          </div>
-          <p class="lead" style="margin:18px auto 0">تشمل القيمة حقوق البطولة الكاملة، دمج اللعبة، تفعيل المقر، بناء وتطوير نظام إدارة النادي والمحاسبة والجرد والحجوزات، الأطقم الرسمية، وحزمة المحتوى.</p>
-          <div class="investment-scope">
-            <div>
-              <h3>تشمل الحزمة الأساسية</h3>
-              <p>كافة الحقوق التجارية والظهور الميداني، اللعبة، البث، بناء وتطوير نظام النادي والمحاسبة والجرد، الأطقم المتفق عليها، إدارة التفعيل، وتقرير الأداء الختامي.</p>
-            </div>
-            <div>
-              <h3>التوسعات والإنتاجات الإضافية</h3>
-              <p>تخضع التجهيزات المعمارية الخاصة، الأجهزة والمعدات الإضافية، أو أيام التشغيل الزائدة لنطاق عمل واتفاق تفصيلي منفصل بحسب طلب الراعي.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- 18: COMMITMENTS -->
-      <section class="scene" data-label="COMMITMENTS">
-        <div class="scene-inner">
-          <span class="scene-no">18 — CLEAR COMMITMENTS</span>
-          <div class="eyebrow">RIGHTS · DELIVERY · PARTNERSHIP</div>
-          <h2>علاقة شراكة واضحة.<br><span class="gold">حقوق محددة. التزامات متبادلة.</span></h2>
+          <span class="scene-no">06 — DELIVERY & RESPONSIBILITIES</span>
+          <div class="eyebrow">ELECTRONIC HORSE RACING</div>
+          <h2>شراكة واضحة من اليوم الأول</h2>
+          <p class="lead">مسؤوليات محددة تحفظ سرعة التنفيذ وجودة التجربة.</p>
           <div class="commit-grid">
             <article class="commit">
-              <h3>ما نقدمه نحن للراعي</h3>
-              <ul class="clean">
-                <li>تنفيذ كافة حقوق الظهور الميداني والرقمي والبث.</li>
-                <li>بناء وتطوير نظام إدارة النادي والمحاسبة والجرد والحجوزات.</li>
-                <li>إعداد وتشغيل اللعبة وفعالية المقر المتفق عليها.</li>
-                <li>تنفيذ الأطقم الرسمية وتسليم حزمة المحتوى والتقرير.</li>
-              </ul>
+              <h3>فريق سباقات الخيل الإلكترونية</h3>
+              <ul class="clean"><li>تشغيل اللعبة في ميدان الملك خالد بهوية الراعي.</li><li>توفير جوائز الفائزين في ميدان الملك خالد.</li><li>تشغيل اللعبة في مقر الراعي.</li><li>تطوير موقع إلكتروني ونظام برمجي إداري خاص بالراعي.</li><li>تقديم الزي المخصص للراعي بعد اعتماده.</li></ul>
             </article>
             <article class="commit">
-              <h3>ما يقدمه الراعي</h3>
-              <ul class="clean">
-                <li>قيمة استثمار الرعاية وفق الجدول المالي المعتمد.</li>
-                <li>أصول وهوية العلامة التجارية ودليل الاستخدام.</li>
-                <li>الاعتمادات في المواعيد المحددة وتجهيز مكان تفعيل المقر.</li>
-                <li>دعم إعلان الشراكة عبر القنوات الرسمية المتفق عليها.</li>
-              </ul>
+              <h3>الراعي</h3>
+              <ul class="clean"><li>دفع مبلغ الرعاية المتفق عليه.</li><li>تزويد فريق سباقات الخيل الإلكترونية بالهوية البصرية والموافقات اللازمة.</li><li>تجهيز موقع تشغيل اللعبة وتوفير الجوائز الخاصة بالبطولة في مقره.</li></ul>
             </article>
           </div>
-          <div class="measure">
-            <div><b>CHAMPIONSHIP RIGHTS</b><span>حقوق حصرية كاملة</span></div>
-            <div><b>CLUB PLATFORM</b><span>بناء وتطوير النظام</span></div>
-            <div><b>SPONSOR ACTIVATION</b><span>تشغيل اللعبة بالمقر</span></div>
-            <div><b>PERFORMANCE REPORT</b><span>تقرير أثر الرعاية</span></div>
-          </div>
+          <p class="legal-note">أي رعاية شرفية أو ظهور رسمي يظل مشروطًا باكتمال التوثيق والموافقات الكتابية.</p>
         </div>
       </section>
 
-      <!-- 19: FINALE -->
-      <section class="scene finale" data-label="FINALE">
+      <!-- 07: NEXT STEP -->
+      <section class="scene hero-center closing-scene" data-label="NEXT STEP">
         <div class="scene-inner">
-          <span class="scene-no">19 — OFFICIAL MAIN SPONSOR</span>
-          <div class="eyebrow">BE AT THE HEART OF THE RACE</div>
-          <h2>كن في قلب السباق.</h2>
-          <div class="sponsor-name">[اسم الراعي]</div>
-          <div class="sponsor-role">OFFICIAL MAIN SPONSOR · بطولة سباقات الخيل الإلكترونية</div>
-          <div class="contact">
-            <span>[البريد الإلكتروني]</span>
-            <span>[رقم التواصل]</span>
-            <span>RIYADH · SAUDI ARABIA</span>
+          <span class="scene-no">07 — NEXT STEP</span>
+          <div class="eyebrow">ELECTRONIC HORSE RACING</div>
+          <h2>سباقات الخيل الإلكترونية</h2>
+          <p class="lead">خطوات قصيرة من اختيار الباقة إلى إطلاق التجربة.</p>
+          <div class="priority-card">
+            <h3>أولوية الرعاية في الرياض</h3>
+            <p>تمنح جميع الباقات الراعي حق الأولوية في رعاية اللعبة والبطولة عند تنفيذ الموسم الثاني في الرياض، وفق نطاق واتفاق مستقل.</p>
           </div>
+          <div class="next-steps" aria-label="خطوات إطلاق التفعيل">
+            <span><b>01</b>اختيار الباقة</span><span><b>02</b>اعتماد النطاق</span><span><b>03</b>تحديد الجدول</span><span><b>04</b>إطلاق اللعبة</span>
+          </div>
+          <div class="closing-contact">
+            <a href="tel:0537870530">0537870530</a>
+            <a href="mailto:ehorseracesa@gmail.com">ehorseracesa@gmail.com</a>
+          </div>
+          <p class="closing-brand"><span>سباقات الخيل الإلكترونية</span><small>Electronic Horse Racing</small></p>
         </div>
       </section>
+
 
     </div>
 
@@ -1099,7 +907,7 @@
     <div class="scene-map-panel" role="dialog" aria-modal="true" aria-labelledby="sceneMapTitle">
       <div class="scene-map-head">
         <div>
-          <div class="eyebrow">19 SCENES · QUICK NAVIGATION</div>
+          <div class="eyebrow">7 SCENES · QUICK NAVIGATION</div>
           <h2 id="sceneMapTitle">فهرس ملف الرعاية</h2>
         </div>
         <button class="scene-map-close" id="sceneMapClose" type="button" aria-label="إغلاق الفهرس">×</button>
@@ -1116,10 +924,8 @@
     const GOLD = [233,188,92];
     const scenes = [...document.querySelectorAll(".scene")];
     const sceneTitles = [
-      "الغلاف", "عن البطولة", "قوى البطولة الأربع", "الحضور المتكامل", "الراعي الرئيسي",
-      "حقوق الرعاية", "الرعاية داخل اللعبة", "الميدان والجمهور", "التفعيل في مقر الراعي", "البنية الرقمية",
-      "الزي والهوية", "البث والمحتوى", "الخط الزمني", "القيمة الاستراتيجية", "عام كامل من القيمة",
-      "مصفوفة الحقوق", "استثمار الرعاية", "الالتزامات", "كن في قلب السباق"
+      "الغلاف", "لماذا هذه الرعاية؟", "رحلة المشاركة", "حجم التفعيل",
+      "باقات الرعاية", "نطاق التنفيذ", "الخطوة التالية"
     ];
     const rail = document.getElementById("rail");
     const pageNow = document.getElementById("pageNow");
@@ -1504,8 +1310,8 @@
       }
       snapToHorse() {
         const index=Math.min(scenes.length-1,Math.floor(progress*scenes.length));
-        if(index!==0&&index!==4&&index!==18)return;
-        const variant=index===4?1:(index===18?2:0);
+        if(index!==0&&index!==4&&index!==6)return;
+        const variant=index===4?1:(index===6?2:0);
         for(let k=0;k<this.parts.length;k++){
           const q=this.parts[k],target=this.horse(q,k,variant);
           q.x=target.x;q.y=target.y;q.px=target.x;q.py=target.y;
@@ -1589,10 +1395,10 @@
       }
       drawHorseGhost(scene,nextScene,blend,horseStrength) {
         if(!this.horseGhost||horseStrength<=.08)return;
-        const horseA=scene===0||scene===4||scene===18;
+        const horseA=scene===0||scene===4||scene===6;
         const activeScene=horseA?scene:nextScene;
         if(mobile&&activeScene!==0)return;
-        const variant=activeScene===4?1:(activeScene===18?2:0);
+        const variant=activeScene===4?1:(activeScene===6?2:0);
         const {scale,cx,cy}=this.horseLayout(variant),height=scale*this.horseAspect;
         const visibility=horseA?1-blend:blend;
         const ctx=this.ctx;
@@ -1604,7 +1410,7 @@
         const W=this.W,H=this.H,t=this.t,a=q.a;
         if(scene===0)return this.horse(q,k,0);
         if(scene===4)return this.horse(q,k,1);
-        if(scene===18)return this.horse(q,k,2);
+        if(scene===6)return this.horse(q,k,2);
         
         // Scene 1: Championship circle
         if(scene===1){const r=Math.min(W,H)*(.15+q.rx*.28);return{x:W*.68+Math.cos(a+t*.09)*r,y:H*.48+Math.sin(a+t*.09)*r*.5,a:.12+q.s*.34,size:.4};}
@@ -1649,7 +1455,7 @@
         if(this.safeScene!==scene||now-this.safeStamp>240)this.refreshSafeZones(scene);
         const ctx=this.ctx; ctx.globalCompositeOperation="source-over";ctx.fillStyle="rgba(5,5,4,.36)";ctx.fillRect(0,0,this.W,this.H);ctx.globalCompositeOperation="lighter";
         this.ripples=this.ripples.filter(r=>now-r.start<1200);
-        const horseA=scene===0||scene===4||scene===18,horseB=nextScene===0||nextScene===4||nextScene===18;
+        const horseA=scene===0||scene===4||scene===6,horseB=nextScene===0||nextScene===4||nextScene===6;
         const horseStrength=(horseA?1:0)*(1-blend)+(horseB?1:0)*blend;
         this.drawHorseGhost(scene,nextScene,blend,horseStrength);
         for(let k=0;k<this.parts.length;k++){

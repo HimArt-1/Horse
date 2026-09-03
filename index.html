@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <meta name="theme-color" content="#050504">
-  <meta name="description" content="البوابة الرسمية لبطولة سباقات الخيل الإلكترونية 2026 — أول بطولة تفاعلية تجمع أصالة الفروسية مع أحدث التقنيات الرقمية">
+  <meta name="description" content="البوابة الرسمية لسباقات الخيل الإلكترونية ٢٠٢٦ — تجربة تفاعلية تجمع أصالة الفروسية مع أحدث التقنيات الرقمية">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="ar_SA">
-  <meta property="og:title" content="بطولة سباقات الخيل الإلكترونية 2026">
+  <meta property="og:title" content="سباقات الخيل الإلكترونية ٢٠٢٦">
   <meta property="og:description" content="تجربة سباق تنافسية جديدة تنقل حماس الفروسية إلى عالم اللعب الإلكتروني المباشر.">
   <meta property="og:image" content="images/cinematic/shot-17.webp">
-  <title>بطولة سباقات الخيل الإلكترونية 2026 — البوابة الرسمية</title>
+  <title>سباقات الخيل الإلكترونية ٢٠٢٦ — البوابة الرسمية</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
   <link rel="alternate icon" type="image/x-icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -340,41 +340,7 @@
     .filmstrip-button b { position:static; padding:10px 12px; font:600 10px/1 "IBM Plex Mono",monospace; letter-spacing:.1em; direction:ltr; text-align:right; }
     .filmstrip-button.active b { color:var(--gold-light); }
 
-    /* Interactive Game Simulator Demo Box */
-    .simulator-wrap {
-      background: linear-gradient(180deg, #110f0c, var(--bg));
-      border: 1px solid var(--border-strong); border-radius: 24px;
-      padding: clamp(28px, 4vw, 48px); position: relative; overflow: hidden;
-    }
-    .simulator-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
-    .sim-track {
-      background: #090806; border: 1px solid var(--border); border-radius: 16px;
-      padding: 24px; position: relative; min-height: 160px; display: flex; flex-direction: column; justify-content: space-around;
-    }
-    .sim-track::after { content:"FINISH"; position:absolute; top:12px; bottom:12px; left:9%; width:2px; border-left:2px dashed rgba(233,188,92,.55); color:rgba(233,188,92,.52); font:600 7px/1 "IBM Plex Mono",monospace; letter-spacing:.15em; writing-mode:vertical-rl; padding-left:7px; }
-    .race-lane {
-      position: relative; height: 36px; border-bottom: 1px dashed rgba(233, 188, 92, 0.2);
-      display: flex; align-items: center;
-    }
-    .runner-horse {
-      position: absolute; right: 0; display: flex; align-items: center; gap: 8px;
-      transition: right 0.2s linear; font-size: 13px; font-weight: 700;
-    }
-    .runner-horse.player { color: var(--gold); }
-    .runner-horse.ai { color: var(--muted); }
-    .runner-horse .horse-icon { width: 28px; height: 28px; border-radius: 50%; background: rgba(233, 188, 92, 0.15); display: grid; place-items: center; border: 1px solid var(--gold); }
-    .sim-controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-top: 24px; }
-    .sim-btn {
-      padding: 12px 32px; border-radius: 10px; border: none;
-      background: var(--gold); color: #050504; font-weight: 800; font-size: 14px;
-      cursor: pointer; transition: 0.2s;
-    }
-    .sim-btn:hover { background: var(--gold-light); transform:none; }
     .sim-btn:active, .btn-primary:active, .btn-secondary:active, .nav-cta:active { transform:none; }
-    .race-meter { display:grid; grid-template-columns:84px 1fr; gap:12px; align-items:center; margin-top:12px; font-size:11px; color:var(--muted); }
-    .race-meter-track { height:3px; background:rgba(245,233,210,.08); overflow:hidden; }
-    .race-meter-track span { display:block; width:0; height:100%; background:var(--gold); box-shadow:0 0 12px var(--gold-glow); transition:width .18s linear; }
-    .race-meter.ai .race-meter-track span { background:rgba(245,233,210,.4); box-shadow:none; }
 
     /* Footer */
     footer {
@@ -480,9 +446,6 @@
       .filmstrip-head { align-items:flex-end; }
       .filmstrip-head span { max-width:22ch; font-size:10px; }
       .filmstrip { grid-auto-columns:minmax(132px,46vw); }
-      .sim-track { padding:18px 12px; }
-      .runner-horse { font-size:11px; }
-      .runner-horse .horse-icon { width:24px; height:24px; }
       .sim-controls { flex-direction:column; }
       .sim-controls button { width:100%; }
       footer { align-items:flex-start; }
@@ -512,6 +475,7 @@
       .reveal { opacity:1; transform:none; }
     }
   </style>
+  <link rel="stylesheet" href="race-simulator.css?v=20260902">
 </head>
 <body>
 
@@ -522,8 +486,8 @@
     <a href="index.html" class="brand" aria-label="الصفحة الرئيسية">
       <div class="brand-icon" aria-hidden="true"><span class="brand-logo-mark"></span></div>
       <div class="brand-text">
-        <h1>سباقات الخيل الإلكترونية</h1>
-        <span>CHAMPIONSHIP 2026</span>
+        <h1>سباقات الخيل الإلكترونية ٢٠٢٦</h1>
+        <span>ELECTRONIC HORSE RACING</span>
       </div>
     </a>
     <ul class="nav-links" id="navLinks">
@@ -544,7 +508,7 @@
       <canvas class="story-canvas" id="saheel-canvas" aria-hidden="true"></canvas>
       <div class="story-vignette" aria-hidden="true"></div>
 
-      <div class="hero-network-logo" role="img" aria-label="الشعار الشبكي الذهبي لبطولة سباقات الخيل الإلكترونية">
+      <div class="hero-network-logo" role="img" aria-label="الشعار الشبكي الذهبي لسباقات الخيل الإلكترونية ٢٠٢٦">
         <span class="hero-network-logo-mark" aria-hidden="true"></span>
         <span class="hero-network-logo-scan" aria-hidden="true"></span>
       </div>
@@ -830,40 +794,40 @@
   <section id="simulator" class="reveal">
     <div class="section-head">
       <div class="section-eyebrow">INTERACTIVE PREVIEW</div>
-      <h2 class="section-title">محاكاة تفاعلية سريعة لسرعة السباق</h2>
-      <p class="section-lead">اضغط على زر (تعزيز السرعة) لتجربة حماس التقدم نحو خط النهاية.</p>
+      <h2 class="section-title">شوط تفاعلي يحاكي إيقاع المضمار</h2>
+      <p class="section-lead">ابدأ من بوابة الانطلاق، حافظ على إيقاع التعزيز، واحسم السباق قبل المنافس الذكي.</p>
     </div>
 
-    <div class="simulator-wrap">
+    <div class="simulator-wrap" data-race-simulator>
       <div class="simulator-header">
-        <div>
-          <h3 style="font-size:20px;color:var(--paper);">شوط التحدي التجريبي</h3>
-          <span style="font-size:12px;color:var(--gold);font-family:'IBM Plex Mono',monospace;">LIVE SPEED SIMULATOR</span>
+        <div class="simulator-heading">
+          <code>LIVE RACE · 900 M</code>
+          <h3>شوط الحسم التجريبي</h3>
         </div>
-        <div id="raceStatus" style="font-size:13px;color:var(--gold);font-weight:700;" role="status" aria-live="polite">جاهز للانطلاق</div>
+        <div class="race-status-chip" id="raceStatusChip" data-state="idle" role="status" aria-live="polite"><i aria-hidden="true"></i><span id="raceStatus">جاهز للانطلاق</span></div>
       </div>
 
-      <div class="race-meter"><span>فارس التحدي</span><div class="race-meter-track"><span id="playerMeter"></span></div></div>
-      <div class="race-meter ai"><span>المنافس</span><div class="race-meter-track"><span id="aiMeter"></span></div></div>
+      <div class="race-stage-shell race-stage-corners">
+        <canvas id="raceCanvas" width="1200" height="510" role="img" aria-label="محاكاة سباق بين فارس التحدي والمنافس الذكي من اليمين نحو خط النهاية في اليسار"></canvas>
+        <span class="race-track-label">KING KHALID DIGITAL TRACK</span>
+        <div class="race-position-badge"><span>المركز</span><strong id="raceRank">—</strong></div>
+        <div class="race-countdown" id="raceCountdown" hidden>3</div>
+      </div>
 
-      <div class="sim-track">
-        <div class="race-lane">
-          <div class="runner-horse player" id="playerHorse">
-            <span>فارس التحدي (أنت)</span>
-            <div class="horse-icon">🐎</div>
-          </div>
-        </div>
-        <div class="race-lane">
-          <div class="runner-horse ai" id="aiHorse">
-            <span>المنافس الذكي</span>
-            <div class="horse-icon" style="border-color:rgba(245,233,210,0.3);">🐎</div>
-          </div>
-        </div>
+      <div class="race-telemetry" aria-label="بيانات السباق المباشرة">
+        <div class="race-data"><span>السرعة</span><strong id="raceSpeed">00</strong><small>كم/س</small></div>
+        <div class="race-data"><span>طاقة التعزيز</span><strong id="raceEnergy">100%</strong><div class="race-energy-track"><i id="raceEnergyBar"></i></div></div>
+        <div class="race-data"><span>إيقاع الضغط</span><strong id="raceRhythm">—</strong></div>
+        <div class="race-data"><span>المسافة</span><strong id="raceDistance">0 / 900</strong><small>م</small></div>
       </div>
 
       <div class="sim-controls">
-        <button type="button" class="sim-btn" id="boostBtn">⚡ اضغط لتعزيز السرعة (Boost)</button>
-        <button type="button" class="btn-secondary" id="resetBtn" style="padding:10px 20px;font-size:13px;">إعادة السباق</button>
+        <button type="button" class="sim-btn" id="boostBtn">
+          <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m13 2-9 12h7l-1 8 9-12h-7l1-8Z"/></svg>
+          <span id="boostLabel">ابدأ شوط التحدي</span>
+        </button>
+        <button type="button" class="sim-reset-btn" id="resetBtn">إعادة ضبط الشوط</button>
+        <span class="race-control-hint">المس الشاشة أو استخدم زر التعزيز · لوحة المفاتيح <kbd>SPACE</kbd></span>
       </div>
     </div>
   </section>
@@ -871,7 +835,7 @@
   <!-- Footer -->
   <footer>
     <div>
-      <b style="color:var(--paper);font-family:'Almarai',sans-serif;">بطولة سباقات الخيل الإلكترونية 2026</b>
+      <b style="color:var(--paper);font-family:'Almarai',sans-serif;">سباقات الخيل الإلكترونية ٢٠٢٦</b>
       <p style="font-size:12px;color:var(--muted);margin-top:4px;">صنع بحب في المملكة العربية السعودية</p>
     </div>
     <div class="footer-links">
@@ -903,76 +867,14 @@
   <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" crossorigin="anonymous"></script>
   <script src="saheel-hero-engine.js"></script>
+  <script src="race-simulator.js?v=20260902"></script>
   <script>
     window.SAHEEL_CFG = { count: 2800, links: true };
     if (window.SaheelEngine && !window.__saheelHero) window.__saheelHero = new window.SaheelEngine();
 
-    // Simple interactive simulator logic
-    let playerPos = 0;
-    let aiPos = 0;
-    let raceActive = false;
-    let raceInterval = null;
-
-    const playerHorse = document.getElementById('playerHorse');
-    const aiHorse = document.getElementById('aiHorse');
-    const statusText = document.getElementById('raceStatus');
-    const boostBtn = document.getElementById('boostBtn');
-    const resetBtn = document.getElementById('resetBtn');
-    const playerMeter = document.getElementById('playerMeter');
-    const aiMeter = document.getElementById('aiMeter');
     const siteNav = document.getElementById('siteNav');
     const navToggle = document.getElementById('navToggle');
     const navLinks = document.querySelector('.nav-links');
-
-    function syncRaceUI() {
-      playerMeter.style.width = Math.min(100, playerPos / 85 * 100) + '%';
-      aiMeter.style.width = Math.min(100, aiPos / 85 * 100) + '%';
-    }
-
-    function startRace() {
-      if (raceActive) return;
-      raceActive = true;
-      statusText.textContent = "السباق جارٍ... اضغط بسرعة!";
-      raceInterval = setInterval(() => {
-        aiPos += Math.random() * 4 + 2;
-        if (aiPos >= 85) {
-          aiPos = 85;
-          endRace("فاز المنافس الذكي! حاول ثانية.");
-        }
-        aiHorse.style.right = aiPos + '%';
-        syncRaceUI();
-      }, 100);
-    }
-
-    boostBtn.addEventListener('click', () => {
-      if (!raceActive && playerPos === 0) startRace();
-      if (!raceActive) return;
-
-      playerPos += 7;
-      if (playerPos >= 85) {
-        playerPos = 85;
-        endRace("🎉 مبروك! حققت المركز الأول في شوط الحسم!");
-      }
-      playerHorse.style.right = playerPos + '%';
-      syncRaceUI();
-    });
-
-    function endRace(msg) {
-      raceActive = false;
-      clearInterval(raceInterval);
-      statusText.textContent = msg;
-    }
-
-    resetBtn.addEventListener('click', () => {
-      raceActive = false;
-      clearInterval(raceInterval);
-      playerPos = 0;
-      aiPos = 0;
-      playerHorse.style.right = '0%';
-      aiHorse.style.right = '0%';
-      statusText.textContent = "جاهز للانطلاق";
-      syncRaceUI();
-    });
 
     navToggle.addEventListener('click', () => {
       const open = siteNav.classList.toggle('open');
@@ -1168,13 +1070,6 @@
 
     window.addEventListener('scroll', () => siteNav.classList.toggle('scrolled', scrollY > 24), { passive: true });
 
-    // Safari fallback: block pinch gestures while keeping one-finger vertical scrolling intact.
-    ['gesturestart', 'gesturechange'].forEach(type => {
-      document.addEventListener(type, event => event.preventDefault(), { passive: false });
-    });
-    document.addEventListener('touchmove', event => {
-      if (event.touches.length > 1) event.preventDefault();
-    }, { passive: false });
   </script>
 </body>
 </html>
