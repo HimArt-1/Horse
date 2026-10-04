@@ -22,18 +22,31 @@
 
 ---
 
-## 🚀 النشر على Render (Deploy on Render)
-هذا المشروع مجهز بالكامل للنشر الفوري كـ **Static Site** على Render من خلال ملف `render.yaml`:
-1. اربط المستودع في حسابك على [Render.com](https://render.com).
-2. اختر **New Static Site** أو **Blueprint**.
-3. اترك **Build Command** فارغاً واجعل **Publish Directory** هو `.` (Root).
-4. اضغط **Deploy**.
+## 🚀 النشر على Vercel
+المشروع مهيأ للنشر على Vercel كموقع ثابت مع وظائف Serverless للوحة التحليلات:
+
+1. اربط مستودع GitHub بمشروع Vercel.
+2. اربط قاعدة PostgreSQL من Neon واضبط `DATABASE_URL`.
+3. أضف متغيرات البيئة `ADMIN_PASSWORD` و`SESSION_SECRET` و`ANALYTICS_SALT`.
+4. انشر المشروع؛ يحوّل `vercel.json` المسار `/` إلى صفحة الهبوط والمسار `/admin` إلى لوحة الإدارة.
+
+لا تُخزّن عناوين IP بصورتها الأصلية؛ تُستخدم بصمة مشفّرة مجهولة لحساب الزوار والحد من إساءة الاستخدام.
 
 ---
 
 ## 💻 التشغيل المحلي (Local Development)
 ```bash
-# تشغيل خادم محلي
+# تشغيل الموقع فقط دون لوحة التحليلات
 python3 -m http.server 4344
+
+# تشغيل الموقع ولوحة التحليلات المحمية
+ADMIN_PASSWORD='ضع-كلمة-مرور-قوية' \
+SESSION_SECRET='ضع-رمزًا-عشوائيًا-طويلًا' \
+ANALYTICS_SALT='ضع-رمزًا-عشوائيًا-مختلفًا' \
+npm run local
 ```
 ثم افتح في المتصفح: `http://localhost:4344`
+
+لوحة الإدارة: `http://localhost:4344/admin`
+
+تُحفظ الإحصاءات مجهولة الهوية في `.data/analytics.json` محليًا، بينما يستخدم نشر Vercel قاعدة Neon الدائمة. لا تنشر كلمة المرور أو الرموز السرية في المستودع؛ أضفها كمتغيرات بيئة في منصة النشر فقط.

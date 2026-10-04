@@ -475,7 +475,9 @@
       .reveal { opacity:1; transform:none; }
     }
   </style>
-  <link rel="stylesheet" href="race-simulator.css?v=20260902">
+  <link rel="stylesheet" href="race-simulator.css?v=20260906">
+  <script type="importmap">{"imports":{"three":"./vendor/three/build/three.module.js"}}</script>
+  <script defer src="analytics.js?v=20260913"></script>
 </head>
 <body>
 
@@ -794,26 +796,39 @@
   <section id="simulator" class="reveal">
     <div class="section-head">
       <div class="section-eyebrow">INTERACTIVE PREVIEW</div>
-      <h2 class="section-title">شوط تفاعلي يحاكي إيقاع المضمار</h2>
-      <p class="section-lead">ابدأ من بوابة الانطلاق، حافظ على إيقاع التعزيز، واحسم السباق قبل المنافس الذكي.</p>
+      <h2 class="section-title">فارسُك. إيقاعُك. لحظة الحسم.</h2>
+      <p class="section-lead">جرّب الحصان والفارس بتصميم ثلاثي الأبعاد. وازن بين السوط والطاقة، ونافس على خط النهاية.</p>
     </div>
 
-    <div class="simulator-wrap" data-race-simulator>
+    <div class="simulator-wrap" data-race-simulator data-render-state="loading">
       <div class="simulator-header">
         <div class="simulator-heading">
-          <code>LIVE RACE · 900 M</code>
+          <code>3D RACE EXPERIENCE · 900 M</code>
           <h3>شوط الحسم التجريبي</h3>
         </div>
         <div class="race-status-chip" id="raceStatusChip" data-state="idle" role="status" aria-live="polite"><i aria-hidden="true"></i><span id="raceStatus">جاهز للانطلاق</span></div>
       </div>
 
+      <div class="race-view-toolbar">
+        <div class="race-runner-legend"><span><i class="player-silk"></i>أنت · الذهبي</span><span><i class="opponent-silk"></i>المنافس · الفضي</span></div>
+        <div class="race-cameras" role="group" aria-label="زاوية مشاهدة السباق">
+          <button type="button" data-race-camera="side" aria-pressed="true" disabled>جانبية</button>
+          <button type="button" data-race-camera="follow" aria-pressed="false" disabled>متابعة</button>
+          <button type="button" data-race-camera="front" aria-pressed="false" disabled>أمامية</button>
+        </div>
+      </div>
       <div class="race-stage-shell race-stage-corners">
         <canvas id="raceCanvas" width="1200" height="510" role="img" aria-label="محاكاة سباق بين فارس التحدي والمنافس الذكي من اليمين نحو خط النهاية في اليسار"></canvas>
-        <span class="race-track-label">KING KHALID DIGITAL TRACK</span>
+        <span class="race-track-label">مضمار تجريبي · ثلاثي الأبعاد</span>
+        <div class="race-asset-status" id="raceAssetStatus" role="status">جارٍ تجهيز الحصان والفارس…</div>
+        <span class="race-motion-label" id="raceMotionLabel">استعداد للانطلاق</span>
         <div class="race-position-badge"><span>المركز</span><strong id="raceRank">—</strong></div>
         <div class="race-countdown" id="raceCountdown" hidden>3</div>
       </div>
 
+      <div class="race-distance-map" aria-label="تقدّم المتسابقين نحو خط النهاية">
+        <span>الانطلاق</span><div class="race-progress-lanes"><i id="raceProgressPlayer" style="--race-progress:0"></i><i id="raceProgressOpponent" style="--race-progress:0"></i></div><span>900 م</span>
+      </div>
       <div class="race-telemetry" aria-label="بيانات السباق المباشرة">
         <div class="race-data"><span>السرعة</span><strong id="raceSpeed">00</strong><small>كم/س</small></div>
         <div class="race-data"><span>طاقة التعزيز</span><strong id="raceEnergy">100%</strong><div class="race-energy-track"><i id="raceEnergyBar"></i></div></div>
@@ -827,7 +842,7 @@
           <span id="boostLabel">ابدأ شوط التحدي</span>
         </button>
         <button type="button" class="sim-reset-btn" id="resetBtn">إعادة ضبط الشوط</button>
-        <span class="race-control-hint">المس الشاشة أو استخدم زر التعزيز · لوحة المفاتيح <kbd>SPACE</kbd></span>
+        <span class="race-control-hint">اضغط بإيقاع متوازن للحفاظ على الطاقة · <kbd>SPACE</kbd> أو زر السوط</span>
       </div>
     </div>
   </section>
@@ -867,7 +882,7 @@
   <script src="https://unpkg.com/d3@7.9.0/dist/d3.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/topojson-client@3.1.0/dist/topojson-client.min.js" crossorigin="anonymous"></script>
   <script src="saheel-hero-engine.js"></script>
-  <script src="race-simulator.js?v=20260902"></script>
+  <script src="race-simulator.js?v=20260906"></script>
   <script>
     window.SAHEEL_CFG = { count: 2800, links: true };
     if (window.SaheelEngine && !window.__saheelHero) window.__saheelHero = new window.SaheelEngine();

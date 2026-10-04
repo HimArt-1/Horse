@@ -289,3 +289,49 @@
   .race-status-chip[data-state="racing"] i { animation:none; }
   .sim-btn::after { display:none; }
 }
+
+/* Imported horse/jockey experience: controls remain outside the camera view. */
+.simulator-wrap { border-radius:18px; padding:clamp(16px,2.4vw,32px); }
+.race-view-toolbar { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin:22px 0 14px; }
+.race-runner-legend { display:flex; gap:18px; color:#c9c1b3; font-size:12px; }
+.race-runner-legend span { display:flex; align-items:center; gap:7px; }
+.race-runner-legend i { width:9px; height:9px; border-radius:50%; background:#c3a367; }
+.race-runner-legend .opponent-silk { background:#c5cdd5; }
+.race-cameras { display:flex; gap:4px; padding:3px; border:1px solid rgba(233,188,92,.2); border-radius:9px; }
+.race-cameras button { padding:9px 16px; min-height:42px; border:0; border-radius:6px; background:transparent; color:#bcb3a4; font:600 12px "IBM Plex Sans Arabic",sans-serif; cursor:pointer; touch-action:manipulation; }
+.race-cameras button[aria-pressed="true"] { color:#f5e1b9; background:#2d271b; }
+.race-cameras button:disabled { opacity:.4; cursor:wait; }
+.race-cameras button:hover:not(:disabled) { background:#332b1e; }
+.race-cameras button:focus-visible,.sim-btn:focus-visible,.sim-reset-btn:focus-visible { outline:2px solid #ddc699; outline-offset:3px; }
+.race-stage-shell,#raceCanvas { height:clamp(360px,40vw,540px); min-height:360px; }
+.race-stage-shell { border-radius:12px; }
+.race-stage-corners::before,.race-stage-corners::after { display:none; }
+.race-track-label { font:500 12px/1.4 "IBM Plex Sans Arabic",sans-serif; letter-spacing:0; direction:rtl; color:#fff6e5; padding:7px 10px; border-radius:4px; background:rgba(20,19,17,.65); }
+.race-position-badge { padding:8px 12px; background:rgba(20,19,17,.7); border-radius:4px; color:#e5ddcc; }
+.race-motion-label { position:absolute; bottom:18px; right:20px; padding:7px 12px; font-size:12px; color:#fff1d7; background:rgba(20,19,17,.7); border-radius:4px; pointer-events:none; }
+.race-asset-status { position:absolute; inset:0; z-index:4; display:grid; place-items:center; background:#171612; color:#dbc8a5; font-size:16px; text-align:center; padding:24px; }
+.race-asset-status[hidden] { display:none; }
+[data-render-state="fallback"] .race-asset-status { inset:auto 10px 8px; padding:9px 12px; background:rgba(9,8,6,.88); font-size:12px; }
+[data-render-state="fallback"] .race-motion-label { display:none; }
+.race-distance-map { display:flex; align-items:center; gap:16px; margin:20px 0; font-size:11px; color:#bcb3a4; }
+.race-progress-lanes { flex:1; display:grid; gap:6px; }
+.race-progress-lanes i { height:3px; display:block; background:#353128; position:relative; }
+.race-progress-lanes i::after { content:""; position:absolute; inset:0; background:#c3a367; transform-origin:right; transform:scaleX(var(--race-progress)); }
+.race-progress-lanes i:nth-child(2)::after { background:#a9b4bf; }
+.race-telemetry { border-radius:8px; }
+.race-data span { font-size:12px; color:#bcb3a4; }
+.race-control-hint { font-size:12px; color:#c0b7a6; }
+.race-status-chip { border-radius:6px; }
+@media (max-width:700px) {
+  .race-view-toolbar { margin-top:14px; gap:12px; }
+  .race-cameras { width:100%; }
+  .race-cameras button { flex:1; min-height:44px; }
+  .race-runner-legend { width:100%; justify-content:space-between; font-size:12px; }
+  .race-stage-shell,#raceCanvas { height:380px; min-height:380px; }
+  .race-track-label { font-size:10px; top:12px; right:10px; }
+  .race-position-badge { left:10px; top:12px; }
+  .race-motion-label { right:12px; bottom:12px; }
+  .race-control-hint { display:block; }
+  .sim-controls { gap:10px; }
+}
+#raceDistance { direction: ltr; unicode-bidi: isolate; }

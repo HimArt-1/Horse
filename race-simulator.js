@@ -2,7 +2,7 @@
   'use strict';
 
   const root = document.querySelector('[data-race-simulator]');
-  const canvas = document.getElementById('raceCanvas');
+  let canvas = document.getElementById('raceCanvas');
   if (!root || !canvas) return;
 
   const ctx = canvas.getContext('2d');
@@ -27,6 +27,11 @@
   let dpr = 1;
   let lastFrame = performance.now();
   let manualTime = false;
+  let raceView = null;
+  let onScreen = false;
+  let viewLoading = false;
+  const assetStatus = document.getElementById('raceAssetStatus');
+  const motionLabel = document.getElementById('raceMotionLabel');
 
   const state = {
     mode: 'idle',
@@ -71,6 +76,10 @@
     statusChip.dataset.state = mode || state.mode;
   }
 
+  function track(type, details) {
+    if (typeof window.trackSiteEvent === 'function') window.trackSiteEvent(type, details || {});
+  }
+
   function resetRace() {
     state.mode = 'idle';
     state.elapsed = 0;
@@ -88,10 +97,11 @@
     state.taps = 0;
     state.resultTime = 0;
     countdownEl.hidden = true;
-    boostBtn.disabled = false;
+    boostBtn.disabled = viewLoading;
     boostLabel.textContent = 'ابدأ شوط التحدي';
     setStatus('جاهز للانطلاق', 'idle');
     syncHud();
+    if (raceView) raceView.step(state, 0, reduceMotion.matches);
     render();
   }
 
@@ -106,6 +116,7 @@
     boostBtn.disabled = true;
     boostLabel.textContent = 'استعد للانطلاق';
     setStatus('البوابة تستعد للفتح', 'countdown');
+    track('race_start');
   }
 
   function launchRace() {
@@ -115,7 +126,7 @@
     state.countdown = 0;
     countdownEl.hidden = true;
     boostBtn.disabled = false;
-    boostLabel.textContent = 'اضغط لتعزيز السرعة';
+    boostLabel.textContent = 'استخدم السوط لتعزيز السرعة';
     setStatus('الشوط مباشر — حافظ على الإيقاع', 'racing');
   }
 
@@ -133,6 +144,7 @@
     } else {
       setStatus('فارق بسيط — أعد الشوط وارفع الإيقاع', 'lost');
     }
+    track('race_complete', { outcome: winner, duration: Math.round(state.resultTime) });
   }
 
   function boost() {
@@ -186,6 +198,7 @@
     }
 
     syncHud();
+    if (raceView) raceView.step(state, dt, reduceMotion.matches);
   }
 
   function syncHud() {
@@ -198,12 +211,16 @@
     energyBar.style.transform = 'scaleX(' + (state.energy / 100).toFixed(3) + ')';
     rhythmEl.textContent = state.combo > 1 ? '×' + state.combo : state.mode === 'racing' ? '01' : '—';
     distanceEl.textContent = Math.round(Math.min(RACE_DISTANCE, state.playerDistance)) + ' / ' + RACE_DISTANCE;
+    if (motionLabel) motionLabel.textContent = state.mode === 'racing' ? (state.elapsed-state.lastBoostAt < .85 ? 'تعزيز بالسوط' : 'عدو على المضمار') : state.mode === 'finished' ? (state.winner === 'player' ? 'لحظة الفوز' : 'انتهى الشوط') : 'استعداد للانطلاق';
+    document.getElementById('raceProgressPlayer')?.style.setProperty('--race-progress', playerProgress.toFixed(4));
+    document.getElementById('raceProgressOpponent')?.style.setProperty('--race-progress', aiProgress.toFixed(4));
   }
 
   function resizeCanvas() {
     const rect = canvas.getBoundingClientRect();
     viewW = Math.max(320, rect.width);
     viewH = Math.max(280, rect.height);
+    if (raceView) { raceView.resize(viewW, viewH); raceView.render(); return; }
     dpr = Math.min(window.devicePixelRatio || 1, 2);
     canvas.width = Math.round(viewW * dpr);
     canvas.height = Math.round(viewH * dpr);
@@ -314,6 +331,7 @@
   }
 
   function render() {
+    if (raceView) { raceView.render(); return; }
     if (!ctx) return;
     ctx.clearRect(0, 0, viewW, viewH);
     const sky = ctx.createLinearGradient(0, 0, 0, viewH);
@@ -406,9 +424,9 @@
   }
 
   function frame(now) {
-    if (!manualTime) update((now - lastFrame) / 1000);
+    if (!manualTime && onScreen && !document.hidden) update((now - lastFrame) / 1000);
     lastFrame = now;
-    render();
+    if (onScreen && !document.hidden) render();
     requestAnimationFrame(frame);
   }
 
@@ -430,24 +448,65 @@
   }
 
   boostBtn.addEventListener('click', boost);
-  canvas.addEventListener('click', boost);
+  root.querySelector('.race-stage-shell').addEventListener('click', event => {
+    if (event.target === canvas && !viewLoading) boost();
+  });
   resetBtn.addEventListener('click', resetRace);
   window.addEventListener('keydown', (event) => {
-    if (event.code === 'Space' && document.activeElement !== resetBtn) {
+    if (onScreen && !viewLoading && event.code === 'Space' && document.activeElement !== resetBtn && !event.target.closest('a,input,textarea,select,[data-race-camera]')) {
       event.preventDefault();
       boost();
     }
   });
 
-  new ResizeObserver(resizeCanvas).observe(canvas);
+  new ResizeObserver(resizeCanvas).observe(root.querySelector('.race-stage-shell'));
   reduceMotion.addEventListener('change', render);
   installViewportLock();
   resetRace();
+
+  async function loadRaceView() {
+    if(viewLoading || raceView) return;
+    viewLoading = true;
+    boostBtn.disabled = true;
+    root.dataset.renderState = 'loading';
+    try {
+      const { createRaceView } = await import('./race-view3d.js?v=20260906');
+      const view = await createRaceView(viewW, viewH);
+      canvas.replaceWith(view.canvas);
+      canvas = view.canvas;
+      raceView = view;
+      raceView.step(state,0,reduceMotion.matches);
+      root.dataset.renderState = 'ready';
+      if (assetStatus) assetStatus.hidden = true;
+      root.querySelectorAll('[data-race-camera]').forEach(button => button.disabled = false);
+      resizeCanvas();
+    } catch(error) {
+      root.dataset.renderState = 'fallback';
+      root.querySelector('.race-track-label').textContent = 'مضمار تجريبي · عرض مبسّط';
+      if(assetStatus) assetStatus.textContent = 'تعذّر تشغيل العرض ثلاثي الأبعاد على هذا المتصفح. المحاكاة المبسّطة متاحة.';
+      console.warn('Race 3D fallback:', error.message);
+      render();
+    } finally { viewLoading = false; boostBtn.disabled = state.mode === 'countdown'; }
+  }
+  root.querySelectorAll('[data-race-camera]').forEach(button => {
+    button.addEventListener('click', () => {
+      if(!raceView)return;
+      raceView.setCamera(button.dataset.raceCamera);
+      root.querySelectorAll('[data-race-camera]').forEach(item=>item.setAttribute('aria-pressed',String(item===button)));
+    });
+  });
+  const loadObserver = new IntersectionObserver(entries => {
+    if(entries[0].isIntersecting) { loadRaceView(); loadObserver.disconnect(); }
+  },{rootMargin:'500px'});
+  loadObserver.observe(root);
+  const visibilityObserver = new IntersectionObserver(entries => { onScreen=entries[0].isIntersecting; },{threshold:0});
+  visibilityObserver.observe(root);
 
   window.render_game_to_text = function () {
     return JSON.stringify({
       coordinateSystem: 'المسافة بالمتر من بوابة الانطلاق (0) إلى خط النهاية (900)، والسرعة متر/ثانية',
       mode: state.mode,
+      visual: raceView ? raceView.diagnostics() : {renderer:'2d',loading:viewLoading},
       player: { distance: Math.round(state.playerDistance), speed: Math.round(state.playerSpeed), energy: Math.round(state.energy), combo: state.combo },
       opponent: { distance: Math.round(state.aiDistance), speed: Math.round(state.aiSpeed) },
       rank: state.mode === 'idle' || state.mode === 'countdown' ? null : state.playerDistance >= state.aiDistance ? 1 : 2,
@@ -466,5 +525,6 @@
   };
 
   window.__raceSimulator = { state, boost, reset: resetRace, render };
+  window.__THREE_GAME_DIAGNOSTICS__ = () => raceView ? raceView.diagnostics() : {ready:false,loading:viewLoading};
   requestAnimationFrame(frame);
 })();
