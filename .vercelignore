@@ -1,0 +1,14 @@
+.git
+.data
+.env
+.env.*
+.DS_Store
+node_modules
+progress.md
+render.yaml
+dev
+abdaa-him
+ksa-numbers
+*.key
+*.pptx
+*.pdf

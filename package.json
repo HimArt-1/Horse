@@ -1,0 +1,14 @@
+{
+  "name": "electronic-horse-racing-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "local": "node dev/server.mjs"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.2.0"
+  }
+}
