@@ -94,6 +94,14 @@ function countBy(items, getter) {
   return [...map.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
 }
 
+function uniqueSessions(items, predicate = () => true) {
+  return new Set(items.filter(predicate).map(event => event.session)).size;
+}
+
+function percentage(part, whole) {
+  return whole ? Math.round((part / whole) * 100) : 0;
+}
+
 export function makeSummary(events, days) {
   const now = Date.now(), period = days * 86400000;
   const current = events.filter(event => event.ts >= now - period);
@@ -102,7 +110,8 @@ export function makeSummary(events, days) {
   const previousViews = previous.filter(event => event.type === 'page_view');
   const unique = new Set(pageViews.map(event => event.visitor)).size;
   const previousUnique = new Set(previousViews.map(event => event.visitor)).size;
-  const sessions = new Set(pageViews.map(event => event.session)).size;
+  const visitSessionSet = new Set(pageViews.map(event => event.session));
+  const sessions = visitSessionSet.size;
   const daily = [];
   for (let offset = days - 1; offset >= 0; offset -= 1) {
     const key = dayKey(now - offset * 86400000);
@@ -110,14 +119,73 @@ export function makeSummary(events, days) {
     daily.push({ date: key, visits: rows.length, visitors: new Set(rows.map(event => event.visitor)).size });
   }
   const eventCounts = Object.fromEntries([...EVENT_TYPES].map(type => [type, current.filter(event => event.type === type).length]));
-  const recent = pageViews.slice().sort((a, b) => b.ts - a.ts).slice(0, 40).map(event => ({
+  const contactTypes = new Set(['contact_phone', 'contact_whatsapp', 'contact_email']);
+  const raceStartSessions = uniqueSessions(current, event => event.type === 'race_start');
+  const raceCompleteSessions = uniqueSessions(current, event => event.type === 'race_complete');
+  const eligibleRaceStartSessions = uniqueSessions(current, event => visitSessionSet.has(event.session) && event.type === 'race_start');
+  const eligibleRaceCompleteSessions = uniqueSessions(current, event => visitSessionSet.has(event.session) && event.type === 'race_complete');
+  const sponsorshipSessions = uniqueSessions(current, event => visitSessionSet.has(event.session) && event.type === 'sponsorship_open');
+  const contactSessions = uniqueSessions(current, event => visitSessionSet.has(event.session) && contactTypes.has(event.type));
+  const engagedSessions = uniqueSessions(current, event => visitSessionSet.has(event.session) && event.type !== 'page_view');
+  const activeNow = new Set(pageViews.filter(event => event.ts >= now - 15 * 60000).map(event => event.visitor)).size;
+  const today = dayKey(now);
+  const todayViews = pageViews.filter(event => dayKey(event.ts) === today);
+  const visitorSessions = new Map();
+  for (const event of pageViews) {
+    if (!visitorSessions.has(event.visitor)) visitorSessions.set(event.visitor, new Set());
+    visitorSessions.get(event.visitor).add(event.session);
+  }
+  const returningVisitors = [...visitorSessions.values()].filter(value => value.size > 1).length;
+  const funnel = [
+    { key: 'visit', label: 'زيارة الموقع', sessions },
+    { key: 'race_start', label: 'بدء المحاكاة', sessions: eligibleRaceStartSessions },
+    { key: 'race_complete', label: 'إكمال السباق', sessions: eligibleRaceCompleteSessions },
+    { key: 'sponsorship_open', label: 'فتح ملف الرعاية', sessions: sponsorshipSessions },
+    { key: 'contact', label: 'التواصل', sessions: contactSessions }
+  ].map((step, index, rows) => ({
+    ...step,
+    rate: percentage(step.sessions, sessions),
+    fromPrevious: index ? percentage(step.sessions, rows[index - 1].sessions) : 100
+  }));
+  const recent = current.slice().sort((a, b) => b.ts - a.ts).slice(0, 60).map(event => ({
     ts: event.ts, visitor: `زائر ${event.visitor.slice(0, 6).toUpperCase()}`, path: event.path,
-    device: event.device, source: event.source, country: event.country
+    type: event.type, device: event.device, source: event.source, country: event.country,
+    campaign: event.utm || '', outcome: event.outcome || ''
   }));
   return {
     generatedAt: now, range: days,
-    metrics: { visits: pageViews.length, visitors: unique, sessions, pagesPerSession: sessions ? Number((pageViews.length / sessions).toFixed(1)) : 0, visitChange: percentChange(pageViews.length, previousViews.length), visitorChange: percentChange(unique, previousUnique) },
+    metrics: {
+      visits: pageViews.length,
+      visitors: unique,
+      sessions,
+      pagesPerSession: sessions ? Number((pageViews.length / sessions).toFixed(1)) : 0,
+      visitChange: percentChange(pageViews.length, previousViews.length),
+      visitorChange: percentChange(unique, previousUnique),
+      activeNow,
+      todayVisits: todayViews.length,
+      todayVisitors: new Set(todayViews.map(event => event.visitor)).size,
+      returningVisitors,
+      returnRate: percentage(returningVisitors, unique),
+      engagedSessions,
+      engagementRate: percentage(engagedSessions, sessions),
+      contactSessions,
+      contactRate: percentage(contactSessions, sessions)
+    },
+    race: {
+      starts: eventCounts.race_start,
+      completes: eventCounts.race_complete,
+      startingSessions: raceStartSessions,
+      completingSessions: raceCompleteSessions,
+      completionRate: Math.min(100, percentage(raceCompleteSessions, raceStartSessions))
+    },
+    contacts: {
+      actions: eventCounts.contact_phone + eventCounts.contact_whatsapp + eventCounts.contact_email,
+      sessions: contactSessions,
+      conversionRate: percentage(contactSessions, sessions)
+    },
+    funnel,
     daily, devices: countBy(pageViews, event => event.device), sources: countBy(pageViews, event => event.source).slice(0, 8),
-    countries: countBy(pageViews, event => event.country).slice(0, 8), pages: countBy(pageViews, event => event.path).slice(0, 10), events: eventCounts, recent
+    countries: countBy(pageViews, event => event.country).slice(0, 8), pages: countBy(pageViews, event => event.path).slice(0, 10),
+    campaigns: countBy(pageViews.filter(event => event.utm), event => event.utm).slice(0, 8), events: eventCounts, recent
   };
 }

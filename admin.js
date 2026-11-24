@@ -8,10 +8,14 @@
   const dashboardContent = $('#dashboardContent');
   const dashboardError = $('#dashboardError');
   let days = 7;
+  let latestData = null;
 
   const labels = {
     '/': 'صفحة الهبوط', '/landing.html': 'صفحة الهبوط', '/index.html': 'صفحة الهبوط',
     '/showcase.html': 'ملف الرعاية', mobile: 'جوال', tablet: 'جهاز لوحي', desktop: 'كمبيوتر',
+    page_view: 'زيارة صفحة', race_start: 'بدء السباق', race_complete: 'إكمال السباق',
+    sponsorship_open: 'فتح ملف الرعاية', contact_whatsapp: 'واتساب', contact_phone: 'اتصال',
+    contact_email: 'بريد إلكتروني', cta_click: 'دعوة إجراء',
     '—': 'غير متاح'
   };
   const label = value => labels[value] || value;
@@ -51,29 +55,38 @@
     host.replaceChildren();
     if (!rows.length) return;
     const width = 900, height = 270, padX = 24, padY = 24;
-    const max = Math.max(1, ...rows.map(row => row.visits));
-    const points = rows.map((row, index) => ({
+    const max = Math.max(1, ...rows.flatMap(row => [row.visits, row.visitors]));
+    const pointFor = (row, index, field) => ({
       x: padX + index * ((width - padX * 2) / Math.max(1, rows.length - 1)),
-      y: height - padY - (row.visits / max) * (height - padY * 2), row
-    }));
+      y: height - padY - (row[field] / max) * (height - padY * 2), row
+    });
+    const visitPoints = rows.map((row, index) => pointFor(row, index, 'visits'));
+    const visitorPoints = rows.map((row, index) => pointFor(row, index, 'visitors'));
     const ns = 'http://www.w3.org/2000/svg';
     const svg = document.createElementNS(ns, 'svg');
     svg.setAttribute('viewBox', `0 0 ${width} ${height}`);
     svg.setAttribute('role', 'img');
-    svg.setAttribute('aria-label', 'حركة مشاهدات الصفحات يوميًا');
+    svg.setAttribute('aria-label', 'حركة مشاهدات الصفحات والزوار يوميًا');
     const defs = document.createElementNS(ns, 'defs');
     const gradient = document.createElementNS(ns, 'linearGradient');
     gradient.id = 'areaFill'; gradient.setAttribute('x1', '0'); gradient.setAttribute('y1', '0'); gradient.setAttribute('x2', '0'); gradient.setAttribute('y2', '1');
     for (const [offset, opacity] of [['0%', '.28'], ['100%', '0']]) { const stop = document.createElementNS(ns, 'stop'); stop.setAttribute('offset', offset); stop.setAttribute('stop-color', '#c5a55f'); stop.setAttribute('stop-opacity', opacity); gradient.append(stop); }
     defs.append(gradient); svg.append(defs);
-    for (let i = 0; i < 4; i++) { const line = document.createElementNS(ns, 'line'); const y = padY + i * ((height - padY * 2) / 3); line.setAttribute('x1', padX); line.setAttribute('x2', width - padX); line.setAttribute('y1', y); line.setAttribute('y2', y); line.setAttribute('class', 'chart-grid'); svg.append(line); }
-    const path = points.map((p, i) => `${i ? 'L' : 'M'}${p.x},${p.y}`).join(' ');
-    const area = document.createElementNS(ns, 'path'); area.setAttribute('d', `${path} L${points.at(-1).x},${height - padY} L${points[0].x},${height - padY} Z`); area.setAttribute('class', 'chart-area'); svg.append(area);
-    const line = document.createElementNS(ns, 'path'); line.setAttribute('d', path); line.setAttribute('class', 'chart-line'); svg.append(line);
+    for (let i = 0; i < 4; i++) {
+      const line = document.createElementNS(ns, 'line'); const y = padY + i * ((height - padY * 2) / 3);
+      line.setAttribute('x1', padX); line.setAttribute('x2', width - padX); line.setAttribute('y1', y); line.setAttribute('y2', y); line.setAttribute('class', 'chart-grid'); svg.append(line);
+      const tick = document.createElementNS(ns, 'text'); tick.setAttribute('x', 2); tick.setAttribute('y', y + 3); tick.setAttribute('class', 'chart-value'); tick.textContent = Math.round(max - i * (max / 3)); svg.append(tick);
+    }
+    const visitPath = visitPoints.map((p, i) => `${i ? 'L' : 'M'}${p.x},${p.y}`).join(' ');
+    const visitorPath = visitorPoints.map((p, i) => `${i ? 'L' : 'M'}${p.x},${p.y}`).join(' ');
+    const area = document.createElementNS(ns, 'path'); area.setAttribute('d', `${visitPath} L${visitPoints.at(-1).x},${height - padY} L${visitPoints[0].x},${height - padY} Z`); area.setAttribute('class', 'chart-area'); svg.append(area);
+    const line = document.createElementNS(ns, 'path'); line.setAttribute('d', visitPath); line.setAttribute('class', 'chart-line'); svg.append(line);
+    const visitorLine = document.createElementNS(ns, 'path'); visitorLine.setAttribute('d', visitorPath); visitorLine.setAttribute('class', 'visitor-chart-line'); svg.append(visitorLine);
     const step = Math.max(1, Math.ceil(rows.length / 7));
-    points.forEach((point, index) => {
+    visitPoints.forEach((point, index) => {
       const dot = document.createElementNS(ns, 'circle'); dot.setAttribute('cx', point.x); dot.setAttribute('cy', point.y); dot.setAttribute('r', rows.length > 31 ? 1.8 : 3); dot.setAttribute('class', 'chart-dot');
-      const title = document.createElementNS(ns, 'title'); title.textContent = `${point.row.date}: ${point.row.visits}`; dot.append(title); svg.append(dot);
+      const title = document.createElementNS(ns, 'title'); title.textContent = `${point.row.date}: ${point.row.visits} مشاهدة، ${point.row.visitors} زائر`; dot.append(title); svg.append(dot);
+      const visitorDot = document.createElementNS(ns, 'circle'); visitorDot.setAttribute('cx', visitorPoints[index].x); visitorDot.setAttribute('cy', visitorPoints[index].y); visitorDot.setAttribute('r', rows.length > 31 ? 1.5 : 2.5); visitorDot.setAttribute('class', 'visitor-dot'); svg.append(visitorDot);
       if (index % step === 0 || index === rows.length - 1) { const text = document.createElementNS(ns, 'text'); text.setAttribute('x', point.x); text.setAttribute('y', height - 5); text.setAttribute('text-anchor', 'middle'); text.setAttribute('class', 'chart-label'); text.textContent = point.row.date.slice(5); svg.append(text); }
     });
     host.append(svg);
@@ -94,32 +107,90 @@
     renderRanks('#deviceList', rows);
   }
 
+  function renderFunnel(rows) {
+    const host = $('#funnelList'); host.replaceChildren();
+    rows.forEach((item, index) => {
+      const article = document.createElement('article'); article.className = 'funnel-step'; article.style.setProperty('--fill', `${Math.min(100, item.rate)}%`);
+      const marker = document.createElement('span'); marker.className = 'step-index'; marker.textContent = String(index + 1).padStart(2, '0');
+      const title = document.createElement('h3'); title.textContent = item.label;
+      const value = document.createElement('strong'); value.textContent = number(item.sessions);
+      const note = document.createElement('small'); note.textContent = index ? `${number(item.rate)}٪ من جلسات الزيارة` : 'إجمالي الجلسات المسجلة';
+      article.append(marker, title, value, note); host.append(article);
+    });
+  }
+
   function renderRecent(rows) {
+    const filter = $('#eventFilter').value;
+    const query = $('#activitySearch').value.trim().toLowerCase();
+    const contacts = new Set(['contact_phone', 'contact_whatsapp', 'contact_email']);
+    const filtered = rows.filter(item => {
+      const matchesType = filter === 'all' || item.type === filter || (filter === 'contact' && contacts.has(item.type));
+      const haystack = [item.visitor, label(item.type), label(item.path), label(item.source), label(item.device), label(item.country)].join(' ').toLowerCase();
+      return matchesType && (!query || haystack.includes(query));
+    });
     const body = $('#recentTable'); body.replaceChildren();
     const empty = $('#emptyState'); const table = $('.table-scroll');
-    empty.hidden = rows.length > 0; table.hidden = rows.length === 0;
-    rows.forEach(item => {
+    empty.hidden = filtered.length > 0; table.hidden = filtered.length === 0;
+    filtered.forEach(item => {
       const row = document.createElement('tr');
-      [item.visitor, label(item.path), label(item.source), label(item.device), label(item.country), time(item.ts)].forEach(value => { const cell = document.createElement('td'); cell.textContent = value; row.append(cell); });
+      [item.visitor, label(item.type), label(item.path), label(item.source), label(item.device), label(item.country), time(item.ts)].forEach(value => { const cell = document.createElement('td'); cell.textContent = value; row.append(cell); });
       body.append(row);
     });
   }
 
   function render(data) {
+    latestData = data;
     changeText('#metricVisits', number(data.metrics.visits));
     changeText('#metricVisitors', number(data.metrics.visitors));
     changeText('#metricSessions', number(data.metrics.sessions));
     changeText('#metricDepth', String(data.metrics.pagesPerSession).replace('.', '٫'));
+    changeText('#metricRaceComplete', number(data.race.completingSessions));
+    changeText('#metricEngagement', `${number(data.metrics.engagementRate)}٪`);
+    changeText('#metricContacts', number(data.contacts.sessions));
+    changeText('#activeNow', number(data.metrics.activeNow));
+    changeText('#todayVisits', number(data.metrics.todayVisits));
+    changeText('#todayVisitors', number(data.metrics.todayVisitors));
+    changeText('#returnRate', `${number(data.metrics.returnRate)}٪`);
+    changeText('#returningVisitors', `${number(data.metrics.returningVisitors)} زائر عائد`);
+    changeText('#raceCompletionNote', `${number(data.race.completionRate)}٪ من جلسات بدء السباق`);
+    changeText('#contactRateNote', `${number(data.contacts.conversionRate)}٪ من إجمالي الجلسات`);
     changeLabel('#changeVisits', data.metrics.visitChange);
     changeLabel('#changeVisitors', data.metrics.visitorChange);
     changeText('#updatedAt', `آخر تحديث ${time(data.generatedAt)}`);
     changeText('#eventRaceStart', number(data.events.race_start));
     changeText('#eventRaceComplete', number(data.events.race_complete));
+    changeText('#raceStartingSessions', number(data.race.startingSessions));
+    changeText('#completionRate', `${number(data.race.completionRate)}٪`);
+    $('#completionRing').style.background = `conic-gradient(var(--gold) ${data.race.completionRate * 3.6}deg,#2c2a22 0deg)`;
+    changeText('#eventSponsorship', number(data.events.sponsorship_open));
     changeText('#eventWhatsapp', number(data.events.contact_whatsapp));
     changeText('#eventPhone', number(data.events.contact_phone));
     changeText('#eventEmail', number(data.events.contact_email));
+    changeText('#eventCta', number(data.events.cta_click));
     renderChart(data.daily); renderDevices(data.devices, data.metrics.visits);
-    renderRanks('#pagesList', data.pages); renderRanks('#sourcesList', data.sources); renderRanks('#countriesList', data.countries); renderRecent(data.recent);
+    renderFunnel(data.funnel);
+    renderRanks('#pagesList', data.pages); renderRanks('#sourcesList', data.sources); renderRanks('#campaignsList', data.campaigns); renderRanks('#countriesList', data.countries); renderRecent(data.recent);
+  }
+
+  function csvCell(value) { return `"${String(value ?? '').replaceAll('"', '""')}"`; }
+  function exportCsv() {
+    if (!latestData) return;
+    const rows = [
+      ['المؤشر', 'القيمة'],
+      ['الفترة بالأيام', latestData.range],
+      ['الزوار', latestData.metrics.visitors],
+      ['مشاهدات الصفحات', latestData.metrics.visits],
+      ['الجلسات', latestData.metrics.sessions],
+      ['معدل التفاعل', `${latestData.metrics.engagementRate}%`],
+      ['جلسات إكمال السباق', latestData.race.completingSessions],
+      ['معدل إكمال السباق', `${latestData.race.completionRate}%`],
+      ['جلسات التواصل', latestData.contacts.sessions],
+      [],
+      ['الوقت', 'الزائر', 'النشاط', 'الصفحة', 'المصدر', 'الجهاز', 'الدولة'],
+      ...latestData.recent.map(item => [new Date(item.ts).toISOString(), item.visitor, label(item.type), label(item.path), label(item.source), label(item.device), label(item.country)])
+    ];
+    const blob = new Blob([`\uFEFF${rows.map(row => row.map(csvCell).join(',')).join('\n')}`], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `analytics-${days}-days.csv`; link.click(); URL.revokeObjectURL(url);
   }
 
   async function loadSummary() {
@@ -147,6 +218,10 @@
   });
   $('#logoutButton').addEventListener('click', async () => { await request('/api/admin/logout', { method: 'POST' }).catch(() => {}); showLogin(); });
   $('#refreshButton').addEventListener('click', loadSummary);
+  $('#exportButton').addEventListener('click', exportCsv);
+  $('#printButton').addEventListener('click', () => window.print());
+  $('#eventFilter').addEventListener('change', () => latestData && renderRecent(latestData.recent));
+  $('#activitySearch').addEventListener('input', () => latestData && renderRecent(latestData.recent));
   dashboardError.querySelector('button').addEventListener('click', loadSummary);
   document.querySelectorAll('[data-days]').forEach(button => button.addEventListener('click', () => {
     days = Number(button.dataset.days); document.querySelectorAll('[data-days]').forEach(item => item.setAttribute('aria-pressed', String(item === button))); loadSummary();

@@ -3,6 +3,7 @@ import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { EVENT_TYPES, makeSummary } from '../api/_lib/common.js';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PORT = Number(process.env.PORT || 4344);
@@ -28,10 +29,6 @@ const MIME = {
   '.webp': 'image/webp', '.ico': 'image/x-icon', '.glb': 'model/gltf-binary',
   '.pptx': 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
 };
-const EVENT_TYPES = new Set([
-  'page_view', 'race_start', 'race_complete', 'contact_phone',
-  'contact_whatsapp', 'contact_email', 'sponsorship_open', 'cta_click'
-]);
 
 function json(res, status, value, headers = {}) {
   const body = JSON.stringify(value);
@@ -129,65 +126,6 @@ function allowRate(map, key, max, windowMs) {
   return current.count <= max;
 }
 
-function dayKey(ts) {
-  return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Riyadh', year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(ts));
-}
-
-function percentChange(current, previous) {
-  if (!previous) return current ? 100 : 0;
-  return Math.round(((current - previous) / previous) * 100);
-}
-
-function countBy(items, getter) {
-  const map = new Map();
-  for (const item of items) {
-    const key = getter(item) || '—';
-    map.set(key, (map.get(key) || 0) + 1);
-  }
-  return [...map.entries()].map(([name, count]) => ({ name, count })).sort((a, b) => b.count - a.count);
-}
-
-function summary(events, days) {
-  const now = Date.now();
-  const period = days * 86400000;
-  const current = events.filter(e => e.ts >= now - period);
-  const previous = events.filter(e => e.ts >= now - period * 2 && e.ts < now - period);
-  const pageViews = current.filter(e => e.type === 'page_view');
-  const previousViews = previous.filter(e => e.type === 'page_view');
-  const unique = new Set(pageViews.map(e => e.visitor)).size;
-  const previousUnique = new Set(previousViews.map(e => e.visitor)).size;
-  const sessions = new Set(pageViews.map(e => e.session)).size;
-  const daily = [];
-  for (let offset = days - 1; offset >= 0; offset--) {
-    const date = new Date(now - offset * 86400000);
-    const key = dayKey(date);
-    const rows = pageViews.filter(e => dayKey(e.ts) === key);
-    daily.push({ date: key, visits: rows.length, visitors: new Set(rows.map(e => e.visitor)).size });
-  }
-  const eventCounts = Object.fromEntries([...EVENT_TYPES].map(type => [type, current.filter(e => e.type === type).length]));
-  const recent = pageViews.slice().sort((a, b) => b.ts - a.ts).slice(0, 40).map(e => ({
-    ts: e.ts, visitor: `زائر ${e.visitor.slice(0, 6).toUpperCase()}`, path: e.path,
-    device: e.device, source: e.source, country: e.country
-  }));
-  return {
-    generatedAt: now,
-    range: days,
-    metrics: {
-      visits: pageViews.length, visitors: unique, sessions,
-      pagesPerSession: sessions ? Number((pageViews.length / sessions).toFixed(1)) : 0,
-      visitChange: percentChange(pageViews.length, previousViews.length),
-      visitorChange: percentChange(unique, previousUnique)
-    },
-    daily,
-    devices: countBy(pageViews, e => e.device),
-    sources: countBy(pageViews, e => e.source).slice(0, 8),
-    countries: countBy(pageViews, e => e.country).slice(0, 8),
-    pages: countBy(pageViews, e => e.path).slice(0, 10),
-    events: eventCounts,
-    recent
-  };
-}
-
 async function api(req, res, url) {
   const ip = clientIp(req);
   if (url.pathname === '/api/analytics/event' && req.method === 'POST') {
@@ -233,7 +171,7 @@ async function api(req, res, url) {
   if (url.pathname === '/api/admin/summary' && req.method === 'GET') {
     if (!isAdmin(req)) return json(res, 401, { error: 'unauthorized' });
     const days = [7, 30, 90].includes(Number(url.searchParams.get('days'))) ? Number(url.searchParams.get('days')) : 7;
-    return json(res, 200, summary(loadStore().events, days));
+    return json(res, 200, makeSummary(loadStore().events, days));
   }
   return json(res, 404, { error: 'not_found' });
 }
@@ -277,7 +215,7 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, '0.0.0.0', () => {
-  console.log(`Electronic Horse Racing site: http://localhost:${PORT}`);
+  console.log(`Electronic Horse Racing: http://localhost:${PORT}`);
   console.log(ADMIN_PASSWORD ? 'Admin authentication: configured' : 'Admin authentication: missing ADMIN_PASSWORD');
   console.log(`Analytics storage: ${DATA_FILE}`);
 });

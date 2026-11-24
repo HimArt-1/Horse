@@ -6,8 +6,8 @@
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>مركز المتابعة | سباقات الخيل الإلكترونية</title>
   <link rel="icon" type="image/svg+xml" href="favicon.svg">
-  <link rel="stylesheet" href="admin.css">
-  <script defer src="admin.js"></script>
+  <link rel="stylesheet" href="admin.css?v=2">
+  <script defer src="admin.js?v=2"></script>
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -45,17 +45,24 @@
 
   <main class="dashboard" id="dashboardView" hidden>
     <header class="dashboard-header">
-      <a class="compact-brand" href="/" aria-label="العودة إلى الموقع"><img src="favicon.svg" width="42" height="42" alt=""><span>مركز المتابعة</span></a>
+      <a class="compact-brand" href="/" aria-label="لوحة المتابعة"><img src="favicon.svg" width="42" height="42" alt=""><span>مركز المتابعة</span></a>
+      <nav class="dashboard-nav" aria-label="أقسام اللوحة">
+        <a href="#overview">النظرة التنفيذية</a>
+        <a href="#funnel">مسار التحويل</a>
+        <a href="#acquisition">الاكتساب</a>
+      </nav>
       <div class="header-actions">
-        <span class="live-state"><i></i>بيانات مباشرة</span>
+        <span class="live-state"><i></i><span>بيانات مباشرة</span></span>
+        <button class="utility-button" id="exportButton" type="button" title="تصدير البيانات بصيغة CSV">CSV</button>
+        <button class="utility-button" id="printButton" type="button" title="حفظ التقرير بصيغة PDF">PDF</button>
         <button class="icon-button" id="refreshButton" type="button" aria-label="تحديث البيانات" title="تحديث البيانات"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6.1 8.5A7 7 0 0 1 18.7 7M5.3 17A7 7 0 0 0 17.9 15.5"/></svg></button>
         <button class="logout-button" id="logoutButton" type="button">تسجيل الخروج</button>
       </div>
     </header>
 
     <div class="dashboard-body">
-      <section class="dashboard-intro">
-        <div><span class="eyebrow">AUDIENCE OVERVIEW</span><h1>نبض الموقع</h1><p id="updatedAt">آخر تحديث الآن</p></div>
+      <section class="dashboard-intro" id="overview">
+        <div><span class="eyebrow">EXECUTIVE PERFORMANCE</span><h1>لوحة الأداء التنفيذي</h1><p>صورة واضحة لمسار الزائر وأداء تجربة السباق.</p></div>
         <div class="range-control" role="group" aria-label="الفترة الزمنية">
           <button type="button" data-days="7" aria-pressed="true">7 أيام</button>
           <button type="button" data-days="30" aria-pressed="false">30 يومًا</button>
@@ -63,49 +70,110 @@
         </div>
       </section>
 
+      <section class="signal-bar" aria-label="حالة البيانات">
+        <div><span class="signal-dot"></span><strong id="activeNow">—</strong><span>زائر نشط خلال آخر 15 دقيقة</span></div>
+        <div><strong id="todayVisits">—</strong><span>مشاهدة اليوم</span></div>
+        <div><strong id="todayVisitors">—</strong><span>زائر اليوم</span></div>
+        <div class="signal-time"><span id="updatedAt">آخر تحديث الآن</span></div>
+      </section>
+
       <div class="dashboard-error" id="dashboardError" hidden role="alert"><strong>تعذّر تحميل البيانات</strong><span></span><button type="button">إعادة المحاولة</button></div>
 
       <div class="dashboard-content" id="dashboardContent" data-state="loading">
         <section class="metrics" aria-label="المؤشرات الرئيسية">
-          <article class="metric metric-primary"><span>مشاهدات الصفحات</span><strong id="metricVisits">—</strong><small id="changeVisits">—</small></article>
-          <article class="metric"><span>الزوار</span><strong id="metricVisitors">—</strong><small id="changeVisitors">—</small></article>
-          <article class="metric"><span>الجلسات</span><strong id="metricSessions">—</strong><small>جلسات منفصلة</small></article>
-          <article class="metric"><span>صفحات لكل جلسة</span><strong id="metricDepth">—</strong><small>متوسط التصفح</small></article>
+          <article class="metric metric-primary"><div><span>الزوار</span><em>الوصول</em></div><strong id="metricVisitors">—</strong><small id="changeVisitors">—</small></article>
+          <article class="metric"><div><span>مشاهدات الصفحات</span><em>الحركة</em></div><strong id="metricVisits">—</strong><small id="changeVisits">—</small></article>
+          <article class="metric"><div><span>إكمال السباق</span><em>النتيجة</em></div><strong id="metricRaceComplete">—</strong><small id="raceCompletionNote">—</small></article>
+          <article class="metric"><div><span>التفاعل</span><em>الجودة</em></div><strong id="metricEngagement">—</strong><small>جلسات نفّذت إجراءً واحدًا على الأقل</small></article>
+          <article class="metric"><div><span>فرص التواصل</span><em>التحويل</em></div><strong id="metricContacts">—</strong><small id="contactRateNote">—</small></article>
         </section>
 
         <section class="main-grid">
           <article class="panel traffic-panel">
-            <div class="panel-head"><div><span>حركة الزيارات</span><h2>الإيقاع اليومي</h2></div><div class="chart-legend"><i></i>مشاهدات الصفحات</div></div>
+            <div class="panel-head"><div><span>الاتجاه</span><h2>حركة الموقع اليومية</h2></div><div class="chart-legend"><span><i></i>مشاهدات</span><span><i class="visitor-line"></i>زوار</span></div></div>
             <div class="chart-wrap" id="trafficChart" aria-label="رسم حركة الزيارات"></div>
           </article>
+          <article class="panel pulse-panel">
+            <div class="panel-head"><div><span>جودة الجمهور</span><h2>قراءة سريعة</h2></div></div>
+            <div class="pulse-list">
+              <article><span>الجلسات</span><strong id="metricSessions">—</strong><small>جلسة منفصلة</small></article>
+              <article><span>العودة</span><strong id="returnRate">—</strong><small id="returningVisitors">—</small></article>
+              <article><span>عمق التصفح</span><strong id="metricDepth">—</strong><small>صفحة لكل جلسة</small></article>
+            </div>
+          </article>
+        </section>
+
+        <section class="panel funnel-panel" id="funnel">
+          <div class="panel-head">
+            <div><span>مسار التحويل</span><h2>من الزيارة إلى التواصل</h2></div>
+            <p>عدد الجلسات التي سجّلت كل مرحلة خلال الفترة المحددة.</p>
+          </div>
+          <div class="funnel-list" id="funnelList"></div>
+        </section>
+
+        <section class="performance-grid">
+          <article class="panel race-panel">
+            <div class="panel-head"><div><span>المحاكاة</span><h2>أداء تجربة السباق</h2></div></div>
+            <div class="race-performance">
+              <div class="completion-ring" id="completionRing"><div><strong id="completionRate">—</strong><span>معدل الإكمال</span></div></div>
+              <div class="race-stats">
+                <article><span>محاولات البدء</span><strong id="eventRaceStart">—</strong></article>
+                <article><span>السباقات المكتملة</span><strong id="eventRaceComplete">—</strong></article>
+                <article><span>جلسات بدأت</span><strong id="raceStartingSessions">—</strong></article>
+              </div>
+            </div>
+          </article>
+
+          <article class="panel interaction-panel" aria-label="تفاعل الزوار">
+            <div class="panel-head"><div><span>نقاط التحويل</span><h2>إجراءات الزوار</h2></div></div>
+            <div class="interaction-values">
+              <article><span>فتح الرعاية</span><strong id="eventSponsorship">—</strong></article>
+              <article><span>واتساب</span><strong id="eventWhatsapp">—</strong></article>
+              <article><span>اتصال</span><strong id="eventPhone">—</strong></article>
+              <article><span>البريد</span><strong id="eventEmail">—</strong></article>
+              <article><span>دعوات الإجراء</span><strong id="eventCta">—</strong></article>
+            </div>
+          </article>
+
           <article class="panel device-panel">
             <div class="panel-head"><div><span>الأجهزة</span><h2>طريقة الدخول</h2></div></div>
             <div class="device-visual"><div class="device-ring" id="deviceRing"><strong id="mobileShare">—</strong><span>جوال</span></div><div class="device-list" id="deviceList"></div></div>
           </article>
         </section>
 
-        <section class="interaction-strip" aria-label="تفاعل الزوار">
-          <div class="section-label"><span>التفاعل</span><h2>ما الذي فعله الزوار؟</h2></div>
-          <div class="interaction-values">
-            <article><span>بدء السباق</span><strong id="eventRaceStart">—</strong></article>
-            <article><span>إكمال السباق</span><strong id="eventRaceComplete">—</strong></article>
-            <article><span>واتساب</span><strong id="eventWhatsapp">—</strong></article>
-            <article><span>اتصال</span><strong id="eventPhone">—</strong></article>
-            <article><span>البريد</span><strong id="eventEmail">—</strong></article>
-          </div>
-        </section>
-
-        <section class="detail-grid">
+        <section class="detail-grid" id="acquisition">
           <article class="panel"><div class="panel-head"><div><span>المحتوى</span><h2>أكثر الصفحات مشاهدة</h2></div></div><div class="rank-list" id="pagesList"></div></article>
           <article class="panel"><div class="panel-head"><div><span>الاكتساب</span><h2>مصادر الزيارة</h2></div></div><div class="rank-list" id="sourcesList"></div></article>
+          <article class="panel"><div class="panel-head"><div><span>الحملات</span><h2>وسوم UTM</h2></div></div><div class="rank-list" id="campaignsList"></div></article>
           <article class="panel"><div class="panel-head"><div><span>الموقع التقريبي</span><h2>الدول</h2></div></div><div class="rank-list" id="countriesList"></div></article>
         </section>
 
         <section class="panel recent-panel">
-          <div class="panel-head"><div><span>آخر النشاط</span><h2>الزيارات الأخيرة</h2></div><span class="privacy-badge">هوية مجهولة</span></div>
-          <div class="table-scroll"><table><thead><tr><th>الزائر</th><th>الصفحة</th><th>المصدر</th><th>الجهاز</th><th>الدولة</th><th>الوقت</th></tr></thead><tbody id="recentTable"></tbody></table></div>
-          <div class="empty-state" id="emptyState" hidden><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 35V20m11 15V12m12 23V24m11 11V7"/></svg><strong>بانتظار أول زيارة</strong><span>ستظهر البيانات هنا تلقائيًا عند دخول الزوار إلى الموقع.</span></div>
+          <div class="panel-head recent-head">
+            <div><span>سجل النشاط</span><h2>أحدث تفاعلات الزوار</h2></div>
+            <div class="recent-tools">
+              <label class="visually-hidden" for="eventFilter">نوع النشاط</label>
+              <select id="eventFilter">
+                <option value="all">كل الأنشطة</option>
+                <option value="page_view">زيارة صفحة</option>
+                <option value="race_start">بدء السباق</option>
+                <option value="race_complete">إكمال السباق</option>
+                <option value="sponsorship_open">فتح الرعاية</option>
+                <option value="contact">تواصل</option>
+              </select>
+              <label class="visually-hidden" for="activitySearch">بحث في النشاط</label>
+              <input id="activitySearch" type="search" placeholder="بحث…" autocomplete="off">
+              <span class="privacy-badge">بيانات مجهولة</span>
+            </div>
+          </div>
+          <div class="table-scroll"><table><thead><tr><th>الزائر</th><th>النشاط</th><th>الصفحة</th><th>المصدر</th><th>الجهاز</th><th>الدولة</th><th>الوقت</th></tr></thead><tbody id="recentTable"></tbody></table></div>
+          <div class="empty-state" id="emptyState" hidden><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M7 35V20m11 15V12m12 23V24m11 11V7"/></svg><strong>لا توجد نتائج مطابقة</strong><span>غيّر البحث أو الفترة الزمنية لعرض نشاط آخر.</span></div>
         </section>
+
+        <footer class="dashboard-footer">
+          <span>سباقات الخيل الإلكترونية</span>
+          <span>الإحصاءات مبنية على أحداث مجهولة الهوية ولا تعرض بيانات شخصية مباشرة.</span>
+        </footer>
       </div>
     </div>
   </main>
